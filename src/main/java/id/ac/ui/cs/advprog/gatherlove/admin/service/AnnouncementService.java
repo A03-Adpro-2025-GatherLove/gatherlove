@@ -10,5 +10,5 @@ public interface AnnouncementService {
 
     void notifyObservers(Announcement announcement);
 
-    void sendAnnouncement(String content);
+    void sendAnnouncement(Announcement announcement);
 }
