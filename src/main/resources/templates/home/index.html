@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GatherLove - Crowdfunding Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-green-600">GatherLove</div>
+            <div class="hidden md:flex space-x-4">
+                <a href="#" class="text-gray-700 hover:text-green-600">Home</a>
+                <a href="#" class="text-gray-700 hover:text-green-600">Campaigns</a>
+                <a href="#" class="text-gray-700 hover:text-green-600">About</a>
+                <a href="#" class="text-gray-700 hover:text-green-600">Articles</a>
+            </div>
+            <div class="hidden md:flex space-x-4">
+                <a href="#" class="bg-green-600 text-white px-4 py-2 rounded hover:shadow-lg">Login</a>
+                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:shadow-lg">Sign Up</a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-gray-700 focus:outline-none" id="menu-button">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="md:hidden" id="mobile-menu" style="display: none;">
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Home</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Campaigns</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">About</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Articles</a>
+            <a href="#" class="block bg-green-600 text-white px-4 py-2 rounded hover:shadow-lg">Login</a>
+            <a href="#" class="block bg-blue-600 text-white px-4 py-2 rounded hover:shadow-lg">Sign Up</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-green-100 to-blue-100 py-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl font-bold text-gray-800">Empower Change with Transparent Fundraising.</h1>
+            <p class="mt-4 text-lg text-gray-600">Create or support campaigns for social causes. Track every donation securely.</p>
+            <div class="mt-8 space-x-4">
+                <a href="#" class="bg-green-600 text-white px-6 py-3 rounded hover:scale-105 hover:shadow-lg">Start a Campaign</a>
+                <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded hover:scale-105 hover:shadow-lg">Browse Campaigns</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Key Features Section -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800">Why Choose GatherLove?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                    <div class="text-4xl">🟢</div>
+                    <h3 class="mt-4 text-xl font-semibold">Create Campaigns</h3>
+                    <p class="mt-2 text-gray-600">Easily launch and manage fundraising campaigns.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                    <div class="text-4xl">💸</div>
+                    <h3 class="mt-4 text-xl font-semibold">Secure Donations</h3>
+                    <p class="mt-2 text-gray-600">Track donations and ensure funds reach their goals.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                    <div class="text-4xl">📊</div>
+                    <h3 class="mt-4 text-xl font-semibold">Transparent Reports</h3>
+                    <p class="mt-2 text-gray-600">Real-time updates and proof of fund usage.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                    <div class="text-4xl">🔒</div>
+                    <h3 class="mt-4 text-xl font-semibold">Admin-Verified</h3>
+                    <p class="mt-2 text-gray-600">All campaigns are screened for legitimacy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                    <div class="text-4xl">1️⃣</div>
+                    <h3 class="mt-4 text-xl font-semibold">Sign Up / Create a Campaign</h3>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                    <div class="text-4xl">2️⃣</div>
+                    <h3 class="mt-4 text-xl font-semibold">Share with Your Network</h3>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                    <div class="text-4xl">3️⃣</div>
+                    <h3 class="mt-4 text-xl font-semibold">Withdraw Funds Securely After Approval</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-white py-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="flex justify-center space-x-4 mb-4">
+                <a href="#" class="text-gray-600 hover:text-green-600">Facebook</a>
+                <a href="#" class="text-gray-600 hover:text-green-600">Twitter
+                <a href="#" class="text-gray-600 hover:text-green-600">Twitter</a>
+                <a href="#" class="text-gray-600 hover:text-green-600">Instagram</a>
+            </div>
+            <p class="text-gray-500 text-sm">© 2025 GatherLove. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle mobile menu
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuButton.addEventListener('click', () => {
+            if (mobileMenu.style.display === "none" || mobileMenu.style.display === "") {
+                mobileMenu.style.display = "block";
+            } else {
+                mobileMenu.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
