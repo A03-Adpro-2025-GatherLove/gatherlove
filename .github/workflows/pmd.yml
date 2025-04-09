@@ -24,20 +24,21 @@ jobs:
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
         with:
           java-version: '21'
           distribution: 'temurin'
       - name: Run PMD
         id: pmd
-        uses: pmd/pmd-github-action@967a81f8b657c87f7c3e96b62301cb1a48efef29
+        uses: pmd/pmd-github-action@e437795e6760134d4f306df4ab35edf298a42d70
         with:
+          version: '7.0.0-rc4'
           rulesets: 'rulesets/java/quickstart.xml'
           sourcePath: 'src/main/java'
           analyzeModifiedFilesOnly: false
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@86b04fb0e47484f7282357688f21d5d0e32175fe
         with:
           sarif_file: pmd-report.sarif
