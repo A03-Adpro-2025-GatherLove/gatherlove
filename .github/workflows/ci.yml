@@ -12,6 +12,24 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-22.04
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     steps:
       - name: Check out the Git repository
         uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
@@ -24,4 +42,4 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Run unit tests
-        run: ./gradlew test --scan
+        run: ./gradlew test
