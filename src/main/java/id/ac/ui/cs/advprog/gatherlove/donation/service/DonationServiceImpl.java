@@ -27,6 +27,11 @@ public class DonationServiceImpl implements DonationService {
         this.donationRepository = r; this.walletService = w; this.campaignService = c;
     }
 
+    private Donation findDonationByIdInternal(UUID donationId) {
+        return donationRepository.findById(donationId)
+                .orElseThrow(() -> new DonationNotFoundException("Donation not found with ID: " + donationId));
+    }
+
     @Override
     @Transactional
     public Donation createDonation(UUID donorId, UUID campaignId, BigDecimal amount, String message) {
@@ -43,9 +48,25 @@ public class DonationServiceImpl implements DonationService {
         return savedDonation;
     }
 
-    @Override public Donation removeDonationMessage(UUID d, UUID u) { throw new UnsupportedOperationException("Not implemented"); }
+    @Override
+    @Transactional
+    public Donation removeDonationMessage(UUID donationId, UUID requestingUserId)
+    {
+        Donation donation = findDonationByIdInternal(donationId); // Use helper
+        if (!donation.getDonorId().equals(requestingUserId)) {
+            throw new UnauthorizedException("User not authorized to modify this donation message.");
+        }
+        donation.setMessage(null);
+        return donationRepository.save(donation);
+    }
+
+    @Override
+    public Donation findDonationById(UUID donationId) {
+        return findDonationByIdInternal(donationId);
+    }
+
     @Override public List<Donation> findDonationsByDonor(UUID d) { throw new UnsupportedOperationException("Not implemented"); }
-    @Override public Donation findDonationById(UUID d) { throw new UnsupportedOperationException("Not implemented"); }
     @Override public List<Donation> findDonationsByCampaign(UUID c) { throw new UnsupportedOperationException("Not implemented"); }
     @Override public List<Donation> findAllDonations() { throw new UnsupportedOperationException("Not implemented"); }
+
 }
