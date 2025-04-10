@@ -65,8 +65,7 @@ public class DonationServiceImpl implements DonationService {
         return findDonationByIdInternal(donationId);
     }
 
-    @Override public List<Donation> findDonationsByDonor(UUID d) { throw new UnsupportedOperationException("Not implemented"); }
-    @Override public List<Donation> findDonationsByCampaign(UUID c) { throw new UnsupportedOperationException("Not implemented"); }
-    @Override public List<Donation> findAllDonations() { throw new UnsupportedOperationException("Not implemented"); }
-
+    @Override public List<Donation> findDonationsByDonor(UUID donorId) { return donationRepository.findByDonorIdOrderByDonationTimestampDesc(donorId); }
+    @Override public List<Donation> findDonationsByCampaign(UUID campaignId) { return donationRepository.findByCampaignIdOrderByDonationTimestampDesc(campaignId); }
+    @Override public List<Donation> findAllDonations() { return donationRepository.findAll(); }
 }
