@@ -27,7 +27,22 @@ public class DonationServiceImpl implements DonationService {
         this.donationRepository = r; this.walletService = w; this.campaignService = c;
     }
 
-    @Override public Donation createDonation(UUID d, UUID c, BigDecimal a, String m) { throw new UnsupportedOperationException("Not implemented"); }
+    @Override
+    @Transactional
+    public Donation createDonation(UUID donorId, UUID campaignId, BigDecimal amount, String message) {
+        campaignService.validateCampaignForDonation(campaignId); // Placeholder call
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Donation amount must be positive.");
+        }
+        walletService.debit(donorId, amount); // Placeholder call
+        Donation donation = Donation.builder()
+                .donorId(donorId).campaignId(campaignId).amount(amount).message(message)
+                .donationTimestamp(LocalDateTime.now()).build();
+        Donation savedDonation = donationRepository.save(donation);
+        campaignService.addCollectedAmount(campaignId, amount); // Placeholder call
+        return savedDonation;
+    }
+
     @Override public Donation removeDonationMessage(UUID d, UUID u) { throw new UnsupportedOperationException("Not implemented"); }
     @Override public List<Donation> findDonationsByDonor(UUID d) { throw new UnsupportedOperationException("Not implemented"); }
     @Override public Donation findDonationById(UUID d) { throw new UnsupportedOperationException("Not implemented"); }
