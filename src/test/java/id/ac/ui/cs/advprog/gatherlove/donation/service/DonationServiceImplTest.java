@@ -19,6 +19,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class DonationServiceImplTest {
@@ -155,6 +158,75 @@ class DonationServiceImplTest {
 
         verify(donationRepository, times(1)).findById(nonExistentDonationId);
         verify(donationRepository, never()).save(any(Donation.class));
+    }
+
+    @Test
+    void findDonationsByDonor_shouldReturnDonorDonations() {
+        // Arrange
+        List<Donation> expectedDonations = Arrays.asList(donation);
+        when(donationRepository.findByDonorIdOrderByDonationTimestampDesc(donorId)).thenReturn(expectedDonations);
+
+        // Act
+        List<Donation> actualDonations = donationService.findDonationsByDonor(donorId);
+
+        // Assert
+        assertThat(actualDonations).isEqualTo(expectedDonations);
+        verify(donationRepository, times(1)).findByDonorIdOrderByDonationTimestampDesc(donorId);
+    }
+
+    @Test
+    void findDonationsByCampaign_shouldReturnCampaignDonations() {
+        // Arrange
+        List<Donation> expectedDonations = Arrays.asList(donation);
+        when(donationRepository.findByCampaignIdOrderByDonationTimestampDesc(campaignId)).thenReturn(expectedDonations);
+
+        // Act
+        List<Donation> actualDonations = donationService.findDonationsByCampaign(campaignId);
+
+        // Assert
+        assertThat(actualDonations).isEqualTo(expectedDonations);
+        verify(donationRepository, times(1)).findByCampaignIdOrderByDonationTimestampDesc(campaignId);
+    }
+
+    @Test
+    void findAllDonations_shouldReturnAllDonations() {
+        // Arrange
+        Donation anotherDonation = Donation.builder().id(UUID.randomUUID()).build();
+        List<Donation> expectedDonations = Arrays.asList(donation, anotherDonation);
+        when(donationRepository.findAll()).thenReturn(expectedDonations);
+
+        // Act
+        List<Donation> actualDonations = donationService.findAllDonations();
+
+        // Assert
+        assertThat(actualDonations).isEqualTo(expectedDonations);
+        verify(donationRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findDonationById_whenFound_shouldReturnDonation() {
+        // Arrange
+        UUID donationId = donation.getId();
+        when(donationRepository.findById(donationId)).thenReturn(Optional.of(donation));
+
+        // Act
+        Donation found = donationService.findDonationById(donationId);
+
+        // Assert
+        assertThat(found).isEqualTo(donation);
+        verify(donationRepository, times(1)).findById(donationId);
+    }
+
+    @Test
+    void findDonationById_whenNotFound_shouldThrowNotFoundException() {
+        // Arrange
+        UUID nonExistentId = UUID.randomUUID();
+        when(donationRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThatThrownBy(() -> donationService.findDonationById(nonExistentId))
+                .isInstanceOf(DonationNotFoundException.class);
+        verify(donationRepository, times(1)).findById(nonExistentId);
     }
 
 }
