@@ -109,4 +109,52 @@ class DonationServiceImplTest {
         verify(walletService, never()).debit(any(UUID.class), any(BigDecimal.class)); // Ensure debit wasn't called
     }
 
+    @Test
+    void removeDonationMessage_whenOwnerRequests_shouldSetMessageNullAndSave() {
+        // Arrange
+        UUID donationId = donation.getId();
+        when(donationRepository.findById(donationId)).thenReturn(Optional.of(donation));
+        when(donationRepository.save(any(Donation.class))).thenReturn(donation); // Return updated donation
+
+        // Act
+        Donation updatedDonation = donationService.removeDonationMessage(donationId, donorId); // donorId is owner
+
+        // Assert
+        assertThat(updatedDonation).isNotNull();
+        assertThat(updatedDonation.getMessage()).isNull();
+        verify(donationRepository, times(1)).findById(donationId);
+        verify(donationRepository, times(1)).save(donation); // Verify save was called with the updated object
+    }
+
+    @Test
+    void removeDonationMessage_whenNotOwner_shouldThrowUnauthorizedException() {
+        // Arrange
+        UUID donationId = donation.getId();
+        UUID wrongUserId = UUID.randomUUID();
+        when(donationRepository.findById(donationId)).thenReturn(Optional.of(donation));
+
+        // Act & Assert
+        assertThatThrownBy(() -> donationService.removeDonationMessage(donationId, wrongUserId))
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessage("User not authorized to modify this donation message.");
+
+        verify(donationRepository, times(1)).findById(donationId);
+        verify(donationRepository, never()).save(any(Donation.class)); // Ensure save wasn't called
+    }
+
+    @Test
+    void removeDonationMessage_whenDonationNotFound_shouldThrowNotFoundException() {
+        // Arrange
+        UUID nonExistentDonationId = UUID.randomUUID();
+        when(donationRepository.findById(nonExistentDonationId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThatThrownBy(() -> donationService.removeDonationMessage(nonExistentDonationId, donorId))
+                .isInstanceOf(DonationNotFoundException.class)
+                .hasMessageContaining("Donation not found with ID:");
+
+        verify(donationRepository, times(1)).findById(nonExistentDonationId);
+        verify(donationRepository, never()).save(any(Donation.class));
+    }
+
 }
