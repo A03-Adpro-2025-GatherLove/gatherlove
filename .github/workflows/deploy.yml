@@ -61,11 +61,22 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Start the Docker service
+            sudo service docker start
+
+            # Ensure the EC2 user can run Docker commands without sudo
+            sudo usermod -aG docker ${{ secrets.EC2_USER }}
+
+            # Log into DockerHub
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
             # Pull the latest image from DockerHub
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gatherlove:latest
+
             # Stop and remove any existing container with the same name
             docker stop gatherlove || true
             docker rm gatherlove || true
+
             # Run the new container, passing environment variables for DB connectivity
             docker run -d --name gatherlove -p 8080:8080 \
               -e DB_URL=${{ secrets.DB_URL_PROD }} \
