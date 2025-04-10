@@ -1,17 +1,23 @@
 package id.ac.ui.cs.advprog.gatherlove.donation.model;
 
-// Minimal skeleton
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "donations")
+@Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
 public class Donation {
-    // Empty or just basic fields without annotations
-    private java.util.UUID id;
-    public java.util.UUID getId() { return id; }
-    // Need builder, other fields, getters/setters later for test assertions
-    public static DonationBuilder builder() { return new DonationBuilder(); }
-    public static class DonationBuilder {
-        public DonationBuilder campaignId(java.util.UUID id){ return this;}
-        public DonationBuilder donorId(java.util.UUID id){ return this;}
-        public DonationBuilder amount(java.math.BigDecimal a){ return this;}
-        public DonationBuilder message(String m){ return this;}
-        public Donation build() { return new Donation(); }
-    }
+    @Id @GeneratedValue(strategy = GenerationType.UUID) private UUID id;
+    @Column(nullable = false) private UUID campaignId;
+    @Column(nullable = false) private UUID donorId;
+    @Column(nullable = false, precision = 19, scale = 2) private BigDecimal amount;
+    @Column(nullable = true) private String message;
+    @Column(nullable = false, updatable = false) @Builder.Default private LocalDateTime donationTimestamp = LocalDateTime.now();
 }
