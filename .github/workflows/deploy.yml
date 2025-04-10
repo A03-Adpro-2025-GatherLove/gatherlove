@@ -86,3 +86,4 @@ jobs:
               -e DB_USERNAME=${{ secrets.DB_USERNAME_PROD }} \
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD_PROD }} \
               ${{ secrets.DOCKERHUB_USERNAME }}/gatherlove:latest
+              
