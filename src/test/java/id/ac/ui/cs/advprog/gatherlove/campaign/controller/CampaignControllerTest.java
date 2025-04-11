@@ -62,4 +62,13 @@ public class CampaignControllerTest {
                 .andExpect(model().attributeExists("campaignDto"));
     }
 
+    @Test
+    @DisplayName("[RED] Should delete campaign and redirect")
+    @WithMockUser
+    void testDeleteCampaign() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/campaign/delete/abc123"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/campaign/my"));
+    }
+
 }
