@@ -40,4 +40,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         announcementRepository.save(announcement);
         notifyObservers(announcement);
     }
+
+    @Override
+    public List<AnnouncementObserver> getObservers() {
+        return observers;
+    }
 }
