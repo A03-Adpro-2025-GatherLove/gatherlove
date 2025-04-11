@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.gatherlove.profile.controller;
 
-import com.yourapp.profile.model.Profile;
-import com.yourapp.profile.service.ProfileService;
+import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
+import id.ac.ui.cs.advprog.gatherlove.profile.service.ProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
