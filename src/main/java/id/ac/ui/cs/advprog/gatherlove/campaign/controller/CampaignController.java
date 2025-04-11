@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class CampaignController {
 
     private final CampaignService campaignService;
+    private static final String CREATE_VIEW = "campaign/create";
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
-        model.addAttribute("campaignDto", new CampaignDto());
-        return "campaign/create";
+        if (!model.containsAttribute("campaignDto")) {
+            model.addAttribute("campaignDto", new CampaignDto());
+        }
+        return CREATE_VIEW;
     }
 
     @PostMapping("/create")
@@ -29,13 +32,17 @@ public class CampaignController {
             @Valid @ModelAttribute("campaignDto") CampaignDto campaignDto,
             BindingResult bindingResult,
             @AuthenticationPrincipal User user,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            return "campaign/create";
+            return CREATE_VIEW;
         }
 
         campaignService.createCampaign(campaignDto, user);
-        return "redirect:/campaign/my";
+        redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil dibuat!");
+
+        return "redirect:/campaign/create";
     }
+
 }
