@@ -38,6 +38,7 @@ dependencies {
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6") // <-- ADDED for Thymeleaf security tags
 
     implementation("org.postgresql:postgresql")
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
