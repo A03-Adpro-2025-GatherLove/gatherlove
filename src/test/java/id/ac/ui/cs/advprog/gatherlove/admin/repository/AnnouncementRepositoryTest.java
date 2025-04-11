@@ -1,4 +1,3 @@
-// src/test/java/id/ac/ui/cs/advprog/gatherlove/admin/repository/AnnouncementRepositoryTest.java
 package id.ac.ui.cs.advprog.gatherlove.admin.repository;
 
 import id.ac.ui.cs.advprog.gatherlove.admin.model.Announcement;
