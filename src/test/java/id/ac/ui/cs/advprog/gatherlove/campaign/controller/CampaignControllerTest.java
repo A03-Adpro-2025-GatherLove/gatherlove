@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.gatherlove.campaign.controller;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
 import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
+import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.service.CampaignService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CampaignController.class)
@@ -43,4 +45,21 @@ public class CampaignControllerTest {
                 .andExpect(view().name("campaign/my"))
                 .andExpect(model().attributeExists("campaignList"));
     }
+
+    @Test
+    @DisplayName("[RED] Should display edit form for specific campaign owned by user")
+    @WithMockUser(username = "user1")
+    void testEditForm_ReturnsEditPage() throws Exception {
+        Campaign campaign = new Campaign();
+        campaign.setId("abc123");
+        campaign.setTitle("Old Title");
+
+        when(campaignService.getCampaignById("abc123")).thenReturn(campaign);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/campaign/edit/abc123"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("campaign/edit"))
+                .andExpect(model().attributeExists("campaignDto"));
+    }
+
 }
