@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -67,6 +69,13 @@ public class CampaignServiceImpl implements CampaignService {
     public Campaign verifyCampaign(String id, CampaignStatus status) {
         Campaign campaign = getCampaignById(id);
         campaign.setStatus(status);
+        return campaignRepository.save(campaign);
+    }
+
+    @Override
+    public Campaign addDonationToCampaign(String campaignId, BigDecimal amount) {
+        Campaign campaign = getCampaignById(campaignId);
+        campaign.addDonation(amount);
         return campaignRepository.save(campaign);
     }
 }

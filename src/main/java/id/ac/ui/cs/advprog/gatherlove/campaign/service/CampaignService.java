@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.user.model.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CampaignService {
@@ -26,4 +27,11 @@ public interface CampaignService {
      * campaignService.verifyCampaign(id, CampaignStatus.REJECTED);
      */
     Campaign verifyCampaign(String id, CampaignStatus status);
+
+    /*
+     * NOTE FOR DONATION MODULE:
+     * To update donation amount to campaign, call:
+     * campaignService.addDonationToCampaign(campaignId, amount);
+     */
+    Campaign addDonationToCampaign(String campaignId, BigDecimal amount);
 }
