@@ -87,5 +87,11 @@ public class CampaignController {
         return "redirect:/campaign/my";
     }
 
-
+    // Digunakan oleh controller AdminCampaignController
+    // @PostMapping("/admin/verify/{id}")
+    // public String verifyCampaign(@PathVariable String id,
+    //                               @RequestParam CampaignStatus status) {
+    //     campaignService.verifyCampaign(id, status);
+    //     return "redirect:/admin/campaigns";
+    // }
 }
