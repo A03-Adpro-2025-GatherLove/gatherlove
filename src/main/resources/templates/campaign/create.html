@@ -9,6 +9,10 @@
 <div class="w-full max-w-xl bg-white p-8 rounded shadow">
     <h1 class="text-2xl font-bold mb-6">Buat Kampanye Baru</h1>
 
+    <div th:if="${successMessage}" class="mb-4 p-3 bg-green-100 text-green-800 rounded">
+        <p th:text="${successMessage}"></p>
+    </div>
+
     <form th:action="@{/campaign/create}" th:object="${campaignDto}" method="post" class="space-y-4">
         <div>
             <label class="block text-sm font-medium">Judul</label>
