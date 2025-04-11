@@ -1,4 +1,3 @@
-// src/test/java/id/ac/ui/cs/advprog/gatherlove/admin/controller/AdminControllerTest.java
 package id.ac.ui.cs.advprog.gatherlove.admin.controller;
 
 import org.junit.jupiter.api.BeforeEach;
