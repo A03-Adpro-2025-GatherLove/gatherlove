@@ -18,10 +18,11 @@ public class CampaignDto {
     private String description;
 
     @NotNull
-    @DecimalMin("10000.00")
+    @DecimalMin(value = "10000.00", message = "Target dana minimal Rp10.000")
     private BigDecimal targetAmount;
 
-    @NotNull
+    @NotNull(message = "Deadline tidak boleh kosong")
+    @Future(message = "Deadline harus di masa depan")
     private LocalDate deadline;
 
     private String imageUrl;

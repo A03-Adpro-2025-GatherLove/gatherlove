@@ -16,6 +16,10 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Campaign createCampaign(CampaignDto dto, User fundraiser) {
+        if (dto.getDeadline() != null && dto.getDeadline().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Deadline harus di masa depan");
+        }
+
         Campaign campaign = Campaign.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
@@ -28,4 +32,5 @@ public class CampaignServiceImpl implements CampaignService {
 
         return campaignRepository.save(campaign);
     }
+
 }
