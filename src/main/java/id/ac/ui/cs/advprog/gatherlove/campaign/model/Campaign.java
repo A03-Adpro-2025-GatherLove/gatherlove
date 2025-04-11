@@ -31,4 +31,12 @@ public class Campaign {
 
     @ManyToOne
     private User fundraiser;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private BigDecimal totalDonated = BigDecimal.ZERO;
+
+    public void addDonation(BigDecimal amount) {
+        this.totalDonated = this.totalDonated.add(amount);
+    }
 }
