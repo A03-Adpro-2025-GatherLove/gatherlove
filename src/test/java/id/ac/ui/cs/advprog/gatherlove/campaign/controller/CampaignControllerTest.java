@@ -33,4 +33,14 @@ public class CampaignControllerTest {
                 .andExpect(view().name("campaign/create"))
                 .andExpect(model().attributeExists("campaignDto"));
     }
+
+    @Test
+    @DisplayName("[RED] Should display list of campaigns owned by current user")
+    @WithMockUser(username = "user1")
+    void testShowMyCampaigns_ShouldReturnMyCampaignsView() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/campaign/my"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("campaign/my"))
+                .andExpect(model().attributeExists("campaignList"));
+    }
 }
