@@ -42,7 +42,14 @@ public class CampaignController {
         campaignService.createCampaign(campaignDto, user);
         redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil dibuat!");
 
-        return "redirect:/campaign/create";
+        return "redirect:/campaign/my";
     }
+
+    @GetMapping("/my")
+    public String showMyCampaigns(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("campaignList", campaignService.getCampaignsByUser(user));
+        return "campaign/my";
+    }
+
 
 }
