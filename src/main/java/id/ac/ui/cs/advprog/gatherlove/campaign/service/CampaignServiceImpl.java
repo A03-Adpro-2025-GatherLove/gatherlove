@@ -8,6 +8,8 @@ import id.ac.ui.cs.advprog.gatherlove.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CampaignServiceImpl implements CampaignService {
@@ -33,4 +35,8 @@ public class CampaignServiceImpl implements CampaignService {
         return campaignRepository.save(campaign);
     }
 
+    @Override
+    public List<Campaign> getCampaignsByUser(User user) {
+        return campaignRepository.findByFundraiser(user);
+    }
 }
