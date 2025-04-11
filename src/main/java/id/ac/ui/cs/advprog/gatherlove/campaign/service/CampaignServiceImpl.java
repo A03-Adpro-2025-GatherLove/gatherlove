@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
 import id.ac.ui.cs.advprog.gatherlove.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.openqa.selenium.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,4 +40,22 @@ public class CampaignServiceImpl implements CampaignService {
     public List<Campaign> getCampaignsByUser(User user) {
         return campaignRepository.findByFundraiser(user);
     }
+
+    @Override
+    public Campaign getCampaignById(String id) {
+        return campaignRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Campaign not found"));
+    }
+
+    @Override
+    public Campaign updateCampaign(String id, CampaignDto dto) {
+        Campaign campaign = getCampaignById(id);
+        campaign.setTitle(dto.getTitle());
+        campaign.setDescription(dto.getDescription());
+        campaign.setTargetAmount(dto.getTargetAmount());
+        campaign.setDeadline(dto.getDeadline());
+        campaign.setImageUrl(dto.getImageUrl());
+        return campaignRepository.save(campaign);
+    }
+
 }

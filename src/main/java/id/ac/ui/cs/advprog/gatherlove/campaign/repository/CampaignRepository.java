@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CampaignRepository extends JpaRepository<Campaign, String> {
     List<Campaign> findByFundraiser(User user);
+    Optional<Campaign> findById(String id);
 }

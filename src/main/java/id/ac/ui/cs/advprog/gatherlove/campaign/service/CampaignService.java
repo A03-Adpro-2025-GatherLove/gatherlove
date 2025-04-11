@@ -10,4 +10,8 @@ public interface CampaignService {
     Campaign createCampaign(CampaignDto dto, User fundraiser);
 
     List<Campaign> getCampaignsByUser(User user);
+
+    Campaign getCampaignById(String id);
+
+    Campaign updateCampaign(String id, CampaignDto dto);
 }
