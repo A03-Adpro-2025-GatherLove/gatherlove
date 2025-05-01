@@ -27,7 +27,6 @@ class WalletServiceTest {
     @Mock
     private TransactionRepository transactionRepository;
 
-    @InjectMocks
     private WalletServiceImpl walletService;
 
     @Mock
@@ -45,6 +44,9 @@ class WalletServiceTest {
     void setup() {
         exampleWallet = new Wallet(123L, BigDecimal.valueOf(80000));
         when(walletRepository.findByUserId(123L)).thenReturn(Optional.of(exampleWallet));
+
+        walletService = new WalletServiceImpl(walletRepository, transactionRepository, walletEventPublisher,
+                danaStrategy, goPayStrategy);
     }
 
     @Test
