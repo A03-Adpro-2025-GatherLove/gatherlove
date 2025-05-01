@@ -27,8 +27,7 @@ class WalletServiceTest {
     @Mock
     private TransactionRepository transactionRepository;
 
-    @InjectMocks
-    private WalletService walletService;
+    private WalletServiceImpl walletService;
 
     @Mock
     private WalletEventPublisher walletEventPublisher;
@@ -45,6 +44,9 @@ class WalletServiceTest {
     void setup() {
         exampleWallet = new Wallet(123L, BigDecimal.valueOf(80000));
         when(walletRepository.findByUserId(123L)).thenReturn(Optional.of(exampleWallet));
+
+        walletService = new WalletServiceImpl(walletRepository, transactionRepository, walletEventPublisher,
+                danaStrategy, goPayStrategy);
     }
 
     @Test
@@ -58,7 +60,7 @@ class WalletServiceTest {
 
     @Test
     void testTopUpFailure() {
-        when(danaStrategy.pay(any(BigDecimal.class), anyString())).thenReturn(false);
+        when(danaStrategy.pay(eq(BigDecimal.valueOf(10000)), eq("080808080808"))).thenReturn(false);
         assertThrows(RuntimeException.class, () -> {
             walletService.topUp(123L, BigDecimal.valueOf(10000), "080808080808", "DANA");
         });
