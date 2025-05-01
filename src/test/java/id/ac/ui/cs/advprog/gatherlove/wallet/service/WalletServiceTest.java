@@ -58,6 +58,7 @@ class WalletServiceTest {
 
     @Test
     void testTopUpFailure() {
+        when(danaStrategy.pay(eq(BigDecimal.valueOf(10000)), eq("080808080808"))).thenReturn(false);
         assertThrows(RuntimeException.class, () -> {
             walletService.topUp(123L, BigDecimal.valueOf(10000), "080808080808", "DANA");
         });
