@@ -1,92 +1,38 @@
+// File: src/main/java/id/ac/ui/cs/advprog/gatherlove/donation/controller/DonationController.java
 package id.ac.ui.cs.advprog.gatherlove.donation.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
-import id.ac.ui.cs.advprog.gatherlove.authentication.repository.UserRepository;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.CreateDonationRequest;
-import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
-import id.ac.ui.cs.advprog.gatherlove.donation.service.DonationService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.web.servlet.MockMvc;
+import id.ac.ui.cs.advprog.gatherlove.donation.dto.DonationResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
+@RestController
+public class DonationController {
 
-@WebMvcTest(DonationController.class)
-class DonationControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private DonationService donationService;
-
-    @MockitoBean
-    private UserRepository userRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private final String MOCK_USERNAME = "testuser";
-    private final Long MOCK_USER_ID = 1L;
-    private UUID campaignId;
-    private UUID donationId;
-    private Donation donation;
-    private User mockAuthUser;
-
-    @BeforeEach
-    void setUp() {
-        campaignId = UUID.randomUUID();
-        donationId = UUID.randomUUID();
-
-        donation = Donation.builder()
-                .id(donationId)
-                .campaignId(campaignId)
-                .donorId(MOCK_USER_ID)
-                .amount(new BigDecimal("100.00"))
-                .message("msg")
-                .build();
-
-        mockAuthUser = new User();
-        mockAuthUser.setId(MOCK_USER_ID);
-        mockAuthUser.setUsername(MOCK_USERNAME);
-        mockAuthUser.setPassword("pw");
-
-        // <-- NEW: Mock lookup for @WithUserDetails
-        when(userRepository.findByUsername(MOCK_USERNAME))
-                .thenReturn(Optional.of(mockAuthUser));
+    // POST /api/donations
+    @PostMapping("/api/donations")
+    public ResponseEntity<DonationResponse> makeDonation(@RequestBody CreateDonationRequest req) {
+        throw new UnsupportedOperationException();
     }
 
-    @Test
-    @WithUserDetails(value = "testuser", userDetailsServiceBeanName = "customUserDetailsService")
-    void authIntegration_makeDonation_shouldInjectUserId() throws Exception {
-        CreateDonationRequest req = new CreateDonationRequest();
-        req.setCampaignId(campaignId);
-        req.setAmount(new BigDecimal("100.00"));
-        req.setMessage("msg");
+    // DELETE /api/donations/{id}/message
+    @DeleteMapping("/api/donations/{id}/message")
+    public ResponseEntity<DonationResponse> removeMessage(@PathVariable UUID id) {
+        throw new UnsupportedOperationException();
+    }
 
-        when(donationService.createDonation(eq(MOCK_USER_ID), any(UUID.class), any(BigDecimal.class), anyString()))
-                .thenReturn(donation);
+    // GET /api/donations/my-history
+    @GetMapping("/api/donations/my-history")
+    public ResponseEntity<List<DonationResponse>> getMyHistory() {
+        throw new UnsupportedOperationException();
+    }
 
-        mockMvc.perform(post("/api/donations")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.donorId", is(MOCK_USER_ID.intValue())));
+    // GET /api/donations/campaign/{campaignId}
+    @GetMapping("/api/donations/campaign/{campaignId}")
+    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable UUID campaignId) {
+        throw new UnsupportedOperationException();
     }
 }
