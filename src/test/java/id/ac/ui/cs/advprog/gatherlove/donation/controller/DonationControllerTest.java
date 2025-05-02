@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.gatherlove.donation.controller;
 
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.repository.UserRepository;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.CreateDonationRequest;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
 import id.ac.ui.cs.advprog.gatherlove.donation.service.DonationService;
@@ -33,6 +35,9 @@ class DonationControllerTest {
     @MockitoBean
     private DonationService donationService;
 
+    @MockitoBean
+    private UserRepository userRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -41,6 +46,7 @@ class DonationControllerTest {
     private UUID campaignId;
     private UUID donationId;
     private Donation donation;
+    private User mockAuthUser;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +60,15 @@ class DonationControllerTest {
                 .amount(new BigDecimal("100.00"))
                 .message("msg")
                 .build();
+
+        mockAuthUser = new User();
+        mockAuthUser.setId(MOCK_USER_ID);
+        mockAuthUser.setUsername(MOCK_USERNAME);
+        mockAuthUser.setPassword("pw");
+
+        // <-- NEW: Mock lookup for @WithUserDetails
+        when(userRepository.findByUsername(MOCK_USERNAME))
+                .thenReturn(Optional.of(mockAuthUser));
     }
 
     @Test
