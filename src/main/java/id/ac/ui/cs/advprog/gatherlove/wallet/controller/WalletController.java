@@ -2,7 +2,7 @@ package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.Wallet;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -11,8 +11,11 @@ import java.math.BigDecimal;
 @RequestMapping("/api/v1/wallet")
 public class WalletController {
 
-    @Autowired
-    private WalletService walletService;
+    private final WalletService walletService;
+
+    public WalletController(WalletService walletService) {
+        this.walletService = walletService;
+    }
 
     @GetMapping("/{userId}/balance")
     public BigDecimal getBalance(@PathVariable Long userId) {
@@ -31,18 +34,12 @@ public class WalletController {
     }
 
     @DeleteMapping("/{userId}/transactions/{transactionId}")
-    public void deleteTopUpTransaction(
-            @PathVariable Long userId,
-            @PathVariable Long transactionId
-    ) {
+    public void deleteTopUpTransaction(@PathVariable Long userId, @PathVariable Long transactionId) {
         walletService.deleteTopUpTransaction(userId, transactionId);
     }
 
     @PostMapping("/{userId}/withdraw")
-    public Wallet withdraw(
-            @PathVariable Long userId,
-            @RequestParam BigDecimal amount
-    ) {
+    public Wallet withdraw(@PathVariable Long userId, @RequestParam BigDecimal amount) {
         return walletService.withdrawFunds(userId, amount);
     }
 }
