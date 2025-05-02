@@ -16,5 +16,13 @@ public class DonationDummy {
     private Long amount;
     
     private String name;
+
+    public DonationDummy() {}
+
+    public DonationDummy(Long id, Long amount, String name) {
+        this.id = id;
+        this.amount = amount;
+        this.name = name;
+    }
     
 }
