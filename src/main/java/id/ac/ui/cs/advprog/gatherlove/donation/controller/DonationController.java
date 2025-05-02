@@ -20,7 +20,30 @@ public class DonationController {
     @Autowired
     private DonationService donationService;
 
-    // POST already implemented in previous commit...
+    @PostMapping("/api/donations")
+    public ResponseEntity<DonationResponse> makeDonation(@RequestBody CreateDonationRequest req) {
+        Long userId = ((UserDetailsImpl)
+                SecurityContextHolder.getContext()
+                        .getAuthentication().getPrincipal())
+                .getId();
+
+        Donation d = donationService.createDonation(
+                userId, req.getCampaignId(), req.getAmount(), req.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(DonationResponse.from(d));
+    }
+
+    @GetMapping("/api/donations/campaign/{campaignId}")
+    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable UUID campaignId) {
+        List<Donation> list = donationService.findDonationsByCampaign(campaignId);
+        List<DonationResponse> resp = list.stream()
+                .map(DonationResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(resp);
+    }
 
     @DeleteMapping("/api/donations/{id}/message")
     public ResponseEntity<DonationResponse> removeMessage(@PathVariable UUID id) {
@@ -47,6 +70,4 @@ public class DonationController {
 
         return ResponseEntity.ok(resp);
     }
-
-    // POST and campaign endpoint remain unsupported until next commit...
 }
