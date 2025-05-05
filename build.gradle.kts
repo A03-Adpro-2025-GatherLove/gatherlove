@@ -42,6 +42,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation") // <-- ADDED for DTO validation
+    implementation("org.springframework.boot:spring-boot-starter-security")  // <-- ADDED for authentication/authorization
+    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6") // <-- ADDED for Thymeleaf security tags
+
     implementation("org.postgresql:postgresql")
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -51,6 +55,9 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation("org.springframework.security:spring-security-test") // <-- ADDED for testing secured endpoints
+
     testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
     testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
     testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
