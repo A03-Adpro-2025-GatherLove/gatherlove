@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.gatherlove.profile.service;
 
-import com.yourapp.profile.model.Profile;
-import com.yourapp.profile.repository.ProfileRepository;
+import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
+import id.ac.ui.cs.advprog.gatherlove.profile.repository.ProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
