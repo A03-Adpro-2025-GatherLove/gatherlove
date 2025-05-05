@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Buat Kampanye</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex justify-center items-center">
+<div class="w-full max-w-xl bg-white p-8 rounded shadow">
+    <h1 class="text-2xl font-bold mb-6">Buat Kampanye Baru</h1>
+
+    <div th:if="${successMessage}" class="mb-4 p-3 bg-green-100 text-green-800 rounded">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <form th:action="@{/campaign/create}" th:object="${campaignDto}" method="post" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium">Judul</label>
+            <input th:field="*{title}" type="text" class="mt-1 block w-full rounded border border-gray-300 p-2" />
+            <p class="text-red-500 text-sm" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Deskripsi</label>
+            <textarea th:field="*{description}" class="mt-1 block w-full rounded border border-gray-300 p-2"></textarea>
+            <p class="text-red-500 text-sm" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Target Dana (Rp)</label>
+            <input th:field="*{targetAmount}" type="number" class="mt-1 block w-full rounded border border-gray-300 p-2" />
+            <p class="text-red-500 text-sm" th:if="${#fields.hasErrors('targetAmount')}" th:errors="*{targetAmount}"></p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Tenggat Waktu</label>
+            <input th:field="*{deadline}" type="date" class="mt-1 block w-full rounded border border-gray-300 p-2" />
+            <p class="text-red-500 text-sm" th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}"></p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">URL Gambar (Opsional)</label>
+            <input th:field="*{imageUrl}" type="text" class="mt-1 block w-full rounded border border-gray-300 p-2" />
+        </div>
+
+        <div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+                Buat Kampanye
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
