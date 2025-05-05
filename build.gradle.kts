@@ -35,6 +35,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-security")
 
+    testImplementation("org.springframework.modulith:spring-modulith-starter-test:1.1.1")
+
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
@@ -45,6 +47,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation") // <-- ADDED for DTO validation
     implementation("org.springframework.boot:spring-boot-starter-security")  // <-- ADDED for authentication/authorization
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6") // <-- ADDED for Thymeleaf security tags
+
+    testImplementation("org.springframework.modulith:spring-modulith-starter-test:1.1.1")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
     implementation("org.postgresql:postgresql")
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
