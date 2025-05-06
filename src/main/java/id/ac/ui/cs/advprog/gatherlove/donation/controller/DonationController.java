@@ -7,6 +7,7 @@ import id.ac.ui.cs.advprog.gatherlove.donation.dto.DonationResponse;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
 import id.ac.ui.cs.advprog.gatherlove.donation.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class DonationController {
 
     @PostMapping("/api/donations")
     public ResponseEntity<DonationResponse> makeDonation(@RequestBody CreateDonationRequest req) {
-        Long userId = ((User)
+        UUID userId = ((User)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();
@@ -32,7 +33,7 @@ public class DonationController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(DonationResponse.from(d));
+                .body(DonationResponse.from(d)); // Saya buat method .from(Donation d), tolong sesuaikan dengan rencana anda - Yasin
     }
 
     @GetMapping("/api/donations/campaign/{campaignId}")
@@ -47,7 +48,7 @@ public class DonationController {
 
     @DeleteMapping("/api/donations/{id}/message")
     public ResponseEntity<DonationResponse> removeMessage(@PathVariable UUID id) {
-        Long userId = ((User)
+        UUID userId = ((User)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();
@@ -58,7 +59,7 @@ public class DonationController {
 
     @GetMapping("/api/donations/my-history")
     public ResponseEntity<List<DonationResponse>> getMyHistory() {
-        Long userId = ((User)
+        UUID userId = ((User)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();

@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -17,7 +18,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id; // Saya ubah jadi pake UUID - Yasin
 
     @NotBlank(message = "Username cannot be blank")
     @Column(unique = true)
