@@ -4,14 +4,15 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
-import id.ac.ui.cs.advprog.gatherlove.user.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.NoSuchElementException;
+// import org.openqa.selenium.NoSuchElementException; //TODO: Sesuaikan rencana anda (Kenapa ada selenium?)
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +46,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Campaign getCampaignById(String id) {
-        return campaignRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Campaign not found"));
+        return campaignRepository.findById(id).orElseThrow(); //TODO: Sesuaikan dengan rencana
     }
 
     @Override
@@ -77,5 +77,15 @@ public class CampaignServiceImpl implements CampaignService {
         Campaign campaign = getCampaignById(campaignId);
         campaign.addDonation(amount);
         return campaignRepository.save(campaign);
+    }
+
+    @Override
+    public void validateCampaignForDonation(UUID campaignId) {
+        // TODO: Sesuaikan rencana dengan DonationService
+    }
+
+    @Override
+    public void addCollectedAmount(UUID campaignId, BigDecimal amount) {
+        // TODO: Sesuaikan rencana dengan DonationService
     }
 }

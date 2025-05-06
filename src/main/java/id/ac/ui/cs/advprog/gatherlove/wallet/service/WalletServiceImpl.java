@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 public class WalletServiceImpl implements WalletService {
@@ -109,5 +110,10 @@ public class WalletServiceImpl implements WalletService {
         transactionRepository.save(tx);
         walletEventPublisher.notifyBalanceChanged(wallet, tx);
         return wallet;
+    }
+
+    @Override
+    public void debit(UUID donorId, BigDecimal amount) {
+        // TODO: Sesuaikan rencana dengan DonationService
     }
 }
