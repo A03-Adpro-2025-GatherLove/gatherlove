@@ -5,7 +5,7 @@ import id.ac.ui.cs.advprog.gatherlove.authentication.dto.SignupRequest;
 import id.ac.ui.cs.advprog.gatherlove.authentication.dto.JwtResponse;
 import id.ac.ui.cs.advprog.gatherlove.authentication.enums.RoleEnum;
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.Role;
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.authentication.repository.RoleRepository;
 import id.ac.ui.cs.advprog.gatherlove.authentication.repository.UserRepository;
 import id.ac.ui.cs.advprog.gatherlove.authentication.security.JwtUtils;
@@ -58,13 +58,13 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
+        UserEntity userEntity = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
 
         return ResponseEntity.ok(new JwtResponse(
                 jwt,
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
+                userEntity.getId(),
+                userEntity.getUsername(),
+                userEntity.getEmail(),
                 roles));
     }
 
@@ -79,10 +79,10 @@ public class AuthController {
         }
 
         // Create new user's account
-        User user = new User();
-        user.setUsername(signUpRequest.getUsername());
-        user.setEmail(signUpRequest.getEmail());
-        user.setPassword(encoder.encode(signUpRequest.getPassword()));
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(signUpRequest.getUsername());
+        userEntity.setEmail(signUpRequest.getEmail());
+        userEntity.setPassword(encoder.encode(signUpRequest.getPassword()));
 
         Set<String> strRoles = signUpRequest.getRoles();
         Set<Role> roles = new HashSet<>();
@@ -107,8 +107,8 @@ public class AuthController {
             });
         }
 
-        user.setRoles(roles);
-        userRepository.save(user);
+        userEntity.setRoles(roles);
+        userRepository.save(userEntity);
 
         return ResponseEntity.ok("User registered successfully!");
     }

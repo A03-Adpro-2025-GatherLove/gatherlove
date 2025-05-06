@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.authentication.service;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.Role;
 import id.ac.ui.cs.advprog.gatherlove.authentication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +18,23 @@ import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                mapRolesToAuthorities(user.getRoles()));
+        return new UserEntity(
+                userEntity.getUsername(),
+                userEntity.getPassword(),
+                mapRolesToAuthorities(userEntity.getRoles()));
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
