@@ -4,9 +4,9 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
-import id.ac.ui.cs.advprog.gatherlove.user.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.NoSuchElementException;
+// import org.openqa.selenium.NoSuchElementException; //TODO: Sesuaikan rencana anda (Kenapa ada selenium?)
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,8 +45,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Campaign getCampaignById(String id) {
-        return campaignRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Campaign not found"));
+        return campaignRepository.findById(id).orElseThrow(); //TODO: Sesuaikan dengan rencana
     }
 
     @Override
