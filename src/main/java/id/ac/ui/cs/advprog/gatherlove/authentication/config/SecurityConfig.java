@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.authentication.config;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.security.AuthTokenFilter;
+import id.ac.ui.cs.advprog.gatherlove.authentication.generation.validation.AuthTokenFilter;
 import id.ac.ui.cs.advprog.gatherlove.authentication.service.CustomUserDetailsService;
 import jakarta.servlet.Filter;
 
