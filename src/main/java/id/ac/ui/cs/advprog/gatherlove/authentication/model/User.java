@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // Saya ubah jadi pake UUID - Yasin
 
     @NotBlank(message = "Username cannot be blank")
