@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -76,5 +77,15 @@ public class CampaignServiceImpl implements CampaignService {
         Campaign campaign = getCampaignById(campaignId);
         campaign.addDonation(amount);
         return campaignRepository.save(campaign);
+    }
+
+    @Override
+    public void validateCampaignForDonation(UUID campaignId) {
+        // TODO: Sesuaikan rencana dengan DonationService
+    }
+
+    @Override
+    public void addCollectedAmount(UUID campaignId, BigDecimal amount) {
+        // TODO: Sesuaikan rencana dengan DonationService
     }
 }
