@@ -6,6 +6,8 @@ import java.util.TimeZone;
 import java.util.Calendar;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +18,8 @@ import lombok.Setter;
 public class Announcement {
     
     @Id
-    private UUID id = UUID.randomUUID();
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     
     private String title;
     
