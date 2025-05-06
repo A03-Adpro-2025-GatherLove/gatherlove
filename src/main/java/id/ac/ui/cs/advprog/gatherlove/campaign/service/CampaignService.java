@@ -7,6 +7,7 @@ import id.ac.ui.cs.advprog.gatherlove.authentication.model.User; // TODO: Saya u
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public interface CampaignService {
     Campaign createCampaign(CampaignDto dto, User fundraiser);
@@ -34,4 +35,8 @@ public interface CampaignService {
      * campaignService.addDonationToCampaign(campaignId, amount);
      */
     Campaign addDonationToCampaign(String campaignId, BigDecimal amount);
+
+    void validateCampaignForDonation(UUID campaignId); // TODO: Sesuaikan rencana dengan DonationService
+
+    void addCollectedAmount(UUID campaignId, BigDecimal amount); // TODO: Sesuaikan rencana dengan DonationService
 }
