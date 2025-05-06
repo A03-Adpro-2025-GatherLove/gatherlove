@@ -3,7 +3,7 @@ package id.ac.ui.cs.advprog.gatherlove.campaign.service;
 import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
-import id.ac.ui.cs.advprog.gatherlove.user.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.User; // TODO: Saya ubah menjadi User di authentication, sesuaikan dengan rencana anda
 
 import java.math.BigDecimal;
 import java.util.List;
