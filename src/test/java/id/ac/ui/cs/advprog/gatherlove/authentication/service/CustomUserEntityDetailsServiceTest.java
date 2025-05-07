@@ -2,7 +2,7 @@ package id.ac.ui.cs.advprog.gatherlove.authentication.service;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.enums.RoleEnum;
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.Role;
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.authentication.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CustomUserDetailsServiceTest {
+public class CustomUserEntityDetailsServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -30,27 +30,27 @@ public class CustomUserDetailsServiceTest {
     @InjectMocks
     private CustomUserDetailsService userDetailsService;
 
-    private User user;
+    private UserEntity userEntity;
 
     @BeforeEach
     public void setup() {
-        user = new User();
-        user.setId(1L);
-        user.setUsername("testuser");
-        user.setEmail("test@example.com");
-        user.setPassword("encodedPassword");
+        userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("testuser");
+        userEntity.setEmail("test@example.com");
+        userEntity.setPassword("encodedPassword");
 
         Set<Role> roles = new HashSet<>();
         Role role = new Role();
         role.setName(RoleEnum.ROLE_USER);
         roles.add(role);
-        user.setRoles(roles);
+        userEntity.setRoles(roles);
     }
 
     @Test
     public void whenLoadByUsername_thenReturnUserDetails() {
         // Given
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(userEntity));
 
         // When
         UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
