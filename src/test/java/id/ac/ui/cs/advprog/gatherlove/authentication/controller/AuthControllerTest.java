@@ -1,11 +1,11 @@
 package id.ac.ui.cs.advprog.gatherlove.authentication.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import id.ac.ui.cs.advprog.gatherlove.authentication.dto.LoginRequest;
-import id.ac.ui.cs.advprog.gatherlove.authentication.dto.SignupRequest;
+import id.ac.ui.cs.advprog.gatherlove.authentication.dto.LoginDto;
+import id.ac.ui.cs.advprog.gatherlove.authentication.dto.RegisterDto;
 import id.ac.ui.cs.advprog.gatherlove.authentication.enums.RoleEnum;
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.Role;
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.authentication.repository.RoleRepository;
 import id.ac.ui.cs.advprog.gatherlove.authentication.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,16 +54,16 @@ public class AuthControllerTest {
     @MockBean
     private JwtUtils jwtUtils;
 
-    private User user;
+    private UserEntity userEntity;
     private Role role;
 
     @BeforeEach
     public void setup() {
-        user = new User();
-        user.setId(1L);
-        user.setUsername("testuser");
-        user.setEmail("test@example.com");
-        user.setPassword("encodedPassword");
+        userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("testuser");
+        userEntity.setEmail("test@example.com");
+        userEntity.setPassword("encodedPassword");
 
         role = new Role();
         role.setId(1);
@@ -71,15 +71,15 @@ public class AuthControllerTest {
 
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        user.setRoles(roles);
+        userEntity.setRoles(roles);
     }
 
     @Test
     public void givenValidCredentials_whenSignin_thenReturnJwt() throws Exception {
         // Given
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("testuser");
-        loginRequest.setPassword("password");
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsername("testuser");
+        loginDto.setPassword("password");
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username("testuser")
@@ -92,12 +92,12 @@ public class AuthControllerTest {
 
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtUtils.generateJwtToken(authentication)).thenReturn("testToken");
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(userEntity));
 
         // When & Then
         mockMvc.perform(post("/api/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
+                        .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("testToken"))
                 .andExpect(jsonPath("$.username").value("testuser"));
@@ -106,10 +106,10 @@ public class AuthControllerTest {
     @Test
     public void givenValidSignupData_whenSignup_thenReturnSuccess() throws Exception {
         // Given
-        SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("newuser");
-        signupRequest.setEmail("new@example.com");
-        signupRequest.setPassword("password");
+        RegisterDto registerDto = new RegisterDto();
+        registerDto.setUsername("newuser");
+        registerDto.setEmail("new@example.com");
+        registerDto.setPassword("password");
 
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
@@ -119,34 +119,34 @@ public class AuthControllerTest {
         // When & Then
         mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)))
+                        .content(objectMapper.writeValueAsString(registerDto)))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void givenExistingUsername_whenSignup_thenReturnBadRequest() throws Exception {
         // Given
-        SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("testuser");
-        signupRequest.setEmail("new@example.com");
-        signupRequest.setPassword("password");
+        RegisterDto registerDto = new RegisterDto();
+        registerDto.setUsername("testuser");
+        registerDto.setEmail("new@example.com");
+        registerDto.setPassword("password");
 
         when(userRepository.existsByUsername("testuser")).thenReturn(true);
 
         // When & Then
         mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)))
+                        .content(objectMapper.writeValueAsString(registerDto)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void givenExistingEmail_whenSignup_thenReturnBadRequest() throws Exception {
         // Given
-        SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("newuser");
-        signupRequest.setEmail("test@example.com");
-        signupRequest.setPassword("password");
+        RegisterDto registerDto = new RegisterDto();
+        registerDto.setUsername("newuser");
+        registerDto.setEmail("test@example.com");
+        registerDto.setPassword("password");
 
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
@@ -154,7 +154,7 @@ public class AuthControllerTest {
         // When & Then
         mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)))
+                        .content(objectMapper.writeValueAsString(registerDto)))
                 .andExpect(status().isBadRequest());
     }
 }
