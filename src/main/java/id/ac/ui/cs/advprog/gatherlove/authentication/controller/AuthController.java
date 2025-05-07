@@ -50,16 +50,6 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtUtils.generateJwtToken(authentication);
 
-//        org.springframework.security.core.userdetails.UserDetails userDetails =
-//                (org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal();
-//
-//        List<String> roles = userDetails.getAuthorities().stream()
-//                .map(item -> item.getAuthority())
-//                .collect(Collectors.toList());
-
-//        userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
-//        UserEntity user;
-
         return ResponseEntity.ok(String.valueOf(new JwtResponse(token)));
     }
 
