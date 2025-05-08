@@ -4,7 +4,7 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 // import org.openqa.selenium.NoSuchElementException; //TODO: Sesuaikan rencana anda (Kenapa ada selenium?)
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
 
     @Override
-    public Campaign createCampaign(CampaignDto dto, User fundraiser) {
+    public Campaign createCampaign(CampaignDto dto, UserEntity fundraiser) {
         if (dto.getDeadline() != null && dto.getDeadline().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Deadline harus di masa depan");
         }
@@ -40,7 +40,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public List<Campaign> getCampaignsByUser(User user) {
+    public List<Campaign> getCampaignsByUser(UserEntity user) {
         return campaignRepository.findByFundraiser(user);
     }
 

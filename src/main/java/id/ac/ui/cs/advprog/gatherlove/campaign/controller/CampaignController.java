@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.campaign.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.service.CampaignService;
@@ -33,7 +33,7 @@ public class CampaignController {
     public String createCampaign(
             @Valid @ModelAttribute("campaignDto") CampaignDto campaignDto,
             BindingResult bindingResult,
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserEntity user,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
@@ -48,7 +48,7 @@ public class CampaignController {
     }
 
     @GetMapping("/my")
-    public String showMyCampaigns(@AuthenticationPrincipal User user, Model model) {
+    public String showMyCampaigns(@AuthenticationPrincipal UserEntity user, Model model) {
         model.addAttribute("campaignList", campaignService.getCampaignsByUser(user));
         return "campaign/my";
     }

@@ -1,18 +1,19 @@
 package id.ac.ui.cs.advprog.gatherlove.campaign.service;
 
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User; // TODO: Saya ubah menjadi User di authentication, sesuaikan dengan rencana anda
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity; // TODO: Saya ubah menjadi User di authentication, sesuaikan dengan rencana anda
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 public interface CampaignService {
-    Campaign createCampaign(CampaignDto dto, User fundraiser);
+    Campaign createCampaign(CampaignDto dto, UserEntity fundraiser);
 
-    List<Campaign> getCampaignsByUser(User user);
+    List<Campaign> getCampaignsByUser(UserEntity user);
 
     Campaign getCampaignById(String id);
 

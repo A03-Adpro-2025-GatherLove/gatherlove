@@ -1,7 +1,7 @@
 // File: src/main/java/id/ac/ui/cs/advprog/gatherlove/donation/controller/DonationController.java
 package id.ac.ui.cs.advprog.gatherlove.donation.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User; // TODO: Sesuaikan dengan model User (Tadi UserDetailsImpl)
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity; // TODO: Sesuaikan dengan model User (Tadi UserDetailsImpl)
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.CreateDonationRequest;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.DonationResponse;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
@@ -23,7 +23,7 @@ public class DonationController {
 
     @PostMapping("/api/donations")
     public ResponseEntity<DonationResponse> makeDonation(@RequestBody CreateDonationRequest req) {
-        UUID userId = ((User)
+        UUID userId = ((UserEntity)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();
@@ -48,7 +48,7 @@ public class DonationController {
 
     @DeleteMapping("/api/donations/{id}/message")
     public ResponseEntity<DonationResponse> removeMessage(@PathVariable UUID id) {
-        UUID userId = ((User)
+        UUID userId = ((UserEntity)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();
@@ -59,7 +59,7 @@ public class DonationController {
 
     @GetMapping("/api/donations/my-history")
     public ResponseEntity<List<DonationResponse>> getMyHistory() {
-        UUID userId = ((User)
+        UUID userId = ((UserEntity)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();

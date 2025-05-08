@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.campaign.model;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.User;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +30,7 @@ public class Campaign {
     private CampaignStatus status = CampaignStatus.PENDING_VERIFICATION;
 
     @ManyToOne
-    private User fundraiser;
+    private UserEntity fundraiser;
 
     @Column(nullable = false)
     @Builder.Default
