@@ -103,12 +103,12 @@ public class WalletServiceImpl implements WalletService {
             throw new RuntimeException("Insufficient balance");
         }
         wallet.setBalance(wallet.getBalance().subtract(amount));
-        Transaction tx = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
-        wallet.addTransaction(tx);
+        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
+        wallet.addTransaction(tr);
 
         walletRepository.save(wallet);
-        transactionRepository.save(tx);
-        walletEventPublisher.notifyBalanceChanged(wallet, tx);
+        transactionRepository.save(tr);
+        walletEventPublisher.notifyBalanceChanged(wallet, tr);
         return wallet;
     }
 
