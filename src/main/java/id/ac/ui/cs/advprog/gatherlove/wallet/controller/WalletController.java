@@ -1,12 +1,14 @@
 package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.wallet.model.*;
+import id.ac.ui.cs.advprog.gatherlove.wallet.dto.*;
+import id.ac.ui.cs.advprog.gatherlove.wallet.model.Transaction;
+import id.ac.ui.cs.advprog.gatherlove.wallet.model.Wallet;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
+import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/wallet")
@@ -19,64 +21,69 @@ public class WalletController {
     }
 
     @GetMapping("/balance")
-    public Map<String, BigDecimal> getBalance(@RequestParam Long userId) {
-        BigDecimal balance = walletService.getWalletBalance(userId);
-        return Collections.singletonMap("balance", balance);
+    public BalanceResponse getBalance(@RequestParam Long userId) {
+        return new BalanceResponse(walletService.getWalletBalance(userId));
     }
 
     @PostMapping("/topup")
-    public ResponseEntity<Map<String, Object>> topUp(
-            @RequestParam Long userId, @RequestBody Map<String, Object> body) {
-        String method = Objects.toString(body.get("method"), "");
-        String phoneNumber = Objects.toString(body.get("phone_number"), "");
-        BigDecimal amount = new BigDecimal(body.get("amount").toString());
+    public ResponseEntity<TopUpResponse> topUp(
+            @RequestParam Long userId,
+            @Valid @RequestBody TopUpRequest body) {
 
-        Wallet wallet = walletService.topUp(userId, amount, phoneNumber, method);
+        Wallet wallet = walletService.topUp(
+                userId,
+                body.amount(),
+                body.phone_number(),
+                body.method()
+        );
 
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("message", "Proses Top‑Up Saldo Berhasil!");
-        response.put("new_balance", wallet.getBalance());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        TopUpResponse res = new TopUpResponse(
+                "Proses Top-Up Saldo Berhasil!",
+                wallet.getBalance()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
     @GetMapping("/transactions")
-    public List<Map<String, Object>> getTransactions(@RequestParam Long userId) {
+    public TransactionListResponse getTransactions(@RequestParam Long userId) {
         Wallet wallet = walletService.getWalletWithTransactions(userId);
 
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (Transaction tr : wallet.getTransactions()) {
-            Map<String, Object> m = new LinkedHashMap<>();
-            m.put("transaction_id", tr.getId());
-            m.put("type", tr.getType());
-            m.put("amount", tr.getAmount());
-            m.put("timestamp", tr.getTransactionDateTime());
-            result.add(m);
-        }
+        var list = wallet.getTransactions().stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
 
-        return result;
+        return new TransactionListResponse(list);
+    }
+
+    private TransactionDto toDto(Transaction t) {
+        return new TransactionDto(
+                t.getId(),
+                t.getType(),
+                t.getAmount(),
+                t.getTransactionDateTime()
+        );
     }
 
     @DeleteMapping("/transactions/{transactionId}")
-    public Map<String, String> deleteTransaction(
-            @RequestParam Long userId, @PathVariable Long transactionId) {
+    public DeleteResponse deleteTransaction(
+            @RequestParam Long userId,
+            @PathVariable Long transactionId) {
 
         walletService.deleteTopUpTransaction(userId, transactionId);
-        return Collections.singletonMap("message", "Proses Penghapusan Riwayat Top‑Up Berhasil!");
+        return new DeleteResponse("Proses Penghapusan Riwayat Top-Up Berhasil!");
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<Map<String, Object>> withdraw(
-            @RequestParam Long userId, @RequestBody Map<String, Object> body) {
+    public ResponseEntity<WithdrawResponse> withdraw(
+            @RequestParam Long userId,
+            @Valid @RequestBody WithdrawRequest body) {
 
-        BigDecimal amount = new BigDecimal(body.get("amount").toString());
+        walletService.withdrawFunds(userId, body.amount());
 
-        walletService.withdrawFunds(userId, amount);
-
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("message", "Penarikan Dana sedang Diproses...");
-        response.put("status", "NEED_ADMINISTRATOR_APPROVAL");
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        WithdrawResponse res = new WithdrawResponse(
+                "Penarikan Dana sedang Diproses...",
+                "NEED_ADMINISTRATOR_APPROVAL"
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 }
