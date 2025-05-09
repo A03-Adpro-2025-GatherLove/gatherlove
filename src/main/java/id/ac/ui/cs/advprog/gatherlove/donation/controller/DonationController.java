@@ -1,7 +1,7 @@
 // File: src/main/java/id/ac/ui/cs/advprog/gatherlove/donation/controller/DonationController.java
 package id.ac.ui.cs.advprog.gatherlove.donation.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity; // TODO: Sesuaikan dengan model User (Tadi UserDetailsImpl)
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.CreateDonationRequest;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.DonationResponse;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
@@ -23,10 +23,7 @@ public class DonationController {
 
     @PostMapping("/api/donations")
     public ResponseEntity<DonationResponse> makeDonation(@RequestBody CreateDonationRequest req) {
-        UUID userId = ((UserEntity)
-                SecurityContextHolder.getContext()
-                        .getAuthentication().getPrincipal())
-                .getId();
+        UUID userId = UUID.fromString("01e108d3-349b-400b-a63e-b3b834e7fb21");
 
         Donation d = donationService.createDonation(
                 userId, req.getCampaignId(), req.getAmount(), req.getMessage());
