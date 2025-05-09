@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 class WalletObserverTest {
 
@@ -26,7 +27,7 @@ class WalletObserverTest {
 
     @Test
     void testBalanceChangeNotification() {
-        Wallet wallet = new Wallet(999L, BigDecimal.valueOf(75000));
+        Wallet wallet = new Wallet(UUID.randomUUID(), BigDecimal.valueOf(75000));
         Transaction transaction = new Transaction(TransactionType.TOP_UP, BigDecimal.valueOf(10000), "GOPAY");
         publisher.notifyBalanceChanged(wallet, transaction);
 
