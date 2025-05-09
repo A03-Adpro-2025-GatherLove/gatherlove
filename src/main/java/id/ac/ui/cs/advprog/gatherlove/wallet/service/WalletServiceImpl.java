@@ -33,14 +33,14 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet getOrCreateWallet(Long userId) {
+    public Wallet getOrCreateWallet(UUID userId) {
         return walletRepository.findByUserId(userId).orElseGet(
                 () -> walletRepository.save(new Wallet(userId, BigDecimal.ZERO))
         );
     }
 
     @Override
-    public Wallet topUp(Long userId, BigDecimal amount, String phoneNumber, String method) {
+    public Wallet topUp(UUID userId, BigDecimal amount, String phoneNumber, String method) {
         Wallet wallet = getOrCreateWallet(userId);
 
         PaymentStrategy strategy;
@@ -68,17 +68,17 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public BigDecimal getWalletBalance(Long userId) {
+    public BigDecimal getWalletBalance(UUID userId) {
         return getOrCreateWallet(userId).getBalance();
     }
 
     @Override
-    public Wallet getWalletWithTransactions(Long userId) {
+    public Wallet getWalletWithTransactions(UUID userId) {
         return getOrCreateWallet(userId);
     }
 
     @Override
-    public void deleteTopUpTransaction(Long userId, Long transactionId) {
+    public void deleteTopUpTransaction(UUID userId, Long transactionId) {
         Wallet wallet = getOrCreateWallet(userId);
         Transaction tx = transactionRepository.findById(transactionId).orElseThrow(
                 () -> new RuntimeException("Transaction not found")
@@ -97,7 +97,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet withdrawFunds(Long userId, BigDecimal amount) {
+    public Wallet withdrawFunds(UUID userId, BigDecimal amount) {
         Wallet wallet = getOrCreateWallet(userId);
         if (wallet.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient balance");
@@ -113,7 +113,21 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void debit(UUID donorId, BigDecimal amount) {
-        // TODO: Sesuaikan rencana dengan DonationService
+    public Wallet debit(UUID donorId, BigDecimal amount) {
+        Wallet wallet = getOrCreateWallet(donorId);
+
+        if (wallet.getBalance().compareTo(amount) < 0)
+            throw new RuntimeException("Saldo tidak mencukupi");
+
+        wallet.setBalance(wallet.getBalance().subtract(amount));
+
+        Transaction tx = new Transaction(TransactionType.DONATION, amount, "SYSTEM");
+        wallet.addTransaction(tx);
+
+        walletRepository.save(wallet);
+        transactionRepository.save(tx);
+        walletEventPublisher.notifyBalanceChanged(wallet, tx);
+
+        return wallet;
     }
 }

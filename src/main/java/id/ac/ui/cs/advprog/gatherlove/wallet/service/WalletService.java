@@ -6,17 +6,17 @@ import java.util.UUID;
 
 public interface WalletService {
 
-    Wallet getOrCreateWallet(Long userId);
+    Wallet getOrCreateWallet(UUID userId);
 
-    Wallet topUp(Long userId, BigDecimal amount, String phoneNumber, String method);
+    Wallet topUp(UUID userId, BigDecimal amount, String phoneNumber, String method);
 
-    BigDecimal getWalletBalance(Long userId);
+    BigDecimal getWalletBalance(UUID userId);
 
-    Wallet getWalletWithTransactions(Long userId);
+    Wallet getWalletWithTransactions(UUID userId);
 
-    void deleteTopUpTransaction(Long userId, Long transactionId);
+    void deleteTopUpTransaction(UUID userId, Long transactionId);
 
-    Wallet withdrawFunds(Long userId, BigDecimal amount);
+    Wallet withdrawFunds(UUID userId, BigDecimal amount);
 
-    void debit(UUID donorId, BigDecimal amount); // TODO: Sesuaikan rencana dengan DonationService
+    Wallet debit(UUID donorId, BigDecimal amount);
 }
