@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 public class WalletServiceImpl implements WalletService {
@@ -102,12 +103,17 @@ public class WalletServiceImpl implements WalletService {
             throw new RuntimeException("Insufficient balance");
         }
         wallet.setBalance(wallet.getBalance().subtract(amount));
-        Transaction tx = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
-        wallet.addTransaction(tx);
+        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
+        wallet.addTransaction(tr);
 
         walletRepository.save(wallet);
-        transactionRepository.save(tx);
-        walletEventPublisher.notifyBalanceChanged(wallet, tx);
+        transactionRepository.save(tr);
+        walletEventPublisher.notifyBalanceChanged(wallet, tr);
         return wallet;
+    }
+
+    @Override
+    public void debit(UUID donorId, BigDecimal amount) {
+        // TODO: Sesuaikan rencana dengan DonationService
     }
 }

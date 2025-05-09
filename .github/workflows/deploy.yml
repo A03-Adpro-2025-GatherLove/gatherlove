@@ -1,9 +1,10 @@
-name: CI/CD Deployment
+name: Continuous Deployment (CD)
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      - main
+      - deploy
 
 jobs:
   build:

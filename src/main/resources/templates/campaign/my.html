@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kampanye Saya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen px-6 py-10">
+<h1 class="text-3xl font-bold mb-6">Kampanye Saya</h1>
+
+<div th:if="${campaignList.empty}">
+    <p class="text-gray-600">Kamu belum memiliki kampanye apapun.</p>
+</div>
+
+<div class="grid gap-4" th:if="${!campaignList.empty}">
+    <div th:each="campaign : ${campaignList}" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold" th:text="${campaign.title}"></h2>
+        <p class="text-gray-600" th:text="${campaign.description}"></p>
+        <p class="text-sm text-gray-500">Target: Rp <span th:text="${campaign.targetAmount}"></span></p>
+        <p class="text-sm text-gray-500">Deadline: <span th:text="${campaign.deadline}"></span></p>
+        <p class="text-sm text-blue-600 font-semibold" th:text="${campaign.status}"></p>
+    </div>
+</div>
+</body>
+</html>
