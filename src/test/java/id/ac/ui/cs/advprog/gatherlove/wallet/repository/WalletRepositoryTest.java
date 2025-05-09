@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,17 +21,18 @@ class WalletRepositoryTest {
 
     @Test
     void testFindByUserIdFound() {
-        Wallet wallet = new Wallet(102L, BigDecimal.valueOf(100000));
+        UUID userID = UUID.randomUUID();
+        Wallet wallet = new Wallet(userID, BigDecimal.valueOf(100000));
         walletRepository.save(wallet);
 
-        Optional<Wallet> found = walletRepository.findByUserId(102L);
+        Optional<Wallet> found = walletRepository.findByUserId(userID);
         assertTrue(found.isPresent(), "Wallet should be found by user's ID");
         assertEquals(BigDecimal.valueOf(100000), found.get().getBalance());
     }
 
     @Test
     void testFindByUserIdNotFound() {
-        Optional<Wallet> found = walletRepository.findByUserId(111L);
+        Optional<Wallet> found = walletRepository.findByUserId(UUID.randomUUID());
         assertFalse(found.isPresent());
     }
 }
