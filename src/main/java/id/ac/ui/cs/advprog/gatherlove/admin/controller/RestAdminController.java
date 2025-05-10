@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.gatherlove.admin.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,5 +101,16 @@ public class RestAdminController {
         CampaignStatus status = request.getStatus().equals("APPROVED") ? CampaignStatus.APPROVED : CampaignStatus.REJECTED;
         campaignService.verifyCampaign(campaign.getId(), status);
         return ResponseEntity.ok().body("Campaign verified successfully");
+    }
+
+    @DeleteMapping("/api/admin/users/{user_id}")
+    public ResponseEntity<?> deleteUser(@PathVariable UUID user_id) {
+        try {
+            adminDashboardService.deleteUser(user_id);
+            return ResponseEntity.ok().body("User has been deleted");
+        } 
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error deleting user");
+        }
     }
 }
