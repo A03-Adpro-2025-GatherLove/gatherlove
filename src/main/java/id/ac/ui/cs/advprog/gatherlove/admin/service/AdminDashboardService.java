@@ -4,4 +4,5 @@ import id.ac.ui.cs.advprog.gatherlove.admin.dto.Stats;
 
 public interface AdminDashboardService {
     Stats getStats();
+    void deleteUser(Long user_id);
 }
