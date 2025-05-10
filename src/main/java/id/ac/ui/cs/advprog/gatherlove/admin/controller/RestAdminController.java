@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.CampaignResponse;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.Stats;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.TransactionResponse;
+import id.ac.ui.cs.advprog.gatherlove.admin.dto.VerifyCampaignRequest;
 import id.ac.ui.cs.advprog.gatherlove.admin.model.Announcement;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDashboardService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDonationService;
@@ -83,5 +84,21 @@ public class RestAdminController {
                 .map(CampaignResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responses);
+    }
+
+    @PutMapping("/campaigns/{campaign_id}/verify")
+    public ResponseEntity<?> verifyCampaign(@PathVariable Long campaign_id, @RequestBody VerifyCampaignRequest request) {
+        if (!request.getStatus().equals("APPROVED") && !request.getStatus().equals("REJECTED")) {
+            return ResponseEntity.badRequest().body("Status tidak valid");
+        }
+
+        Campaign campaign = campaignService.getCampaignById(campaign_id.toString());
+        if (campaign == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CampaignStatus status = request.getStatus().equals("APPROVED") ? CampaignStatus.APPROVED : CampaignStatus.REJECTED;
+        campaignService.verifyCampaign(campaign.getId(), status);
+        return ResponseEntity.ok().body("Campaign verified successfully");
     }
 }
