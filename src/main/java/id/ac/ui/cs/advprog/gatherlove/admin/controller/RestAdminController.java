@@ -40,6 +40,20 @@ public class RestAdminController {
 
     @GetMapping("/transactions")
     public ResponseEntity<List<TransactionResponse>> getTransactions() {
-        return null;
+        List<Donation> donations = adminDonationService.getDonationHistory();
+        List<TransactionResponse> responses = new ArrayList<>();
+
+        for (Donation donation : donations) {
+            TransactionResponse response = new TransactionResponse();
+            response.setId(donation.getId());
+            response.setCampaignId(donation.getCampaignId());
+            response.setDonorId(donation.getDonorId());
+            response.setAmount(donation.getAmount());
+            response.setMessage(donation.getMessage());
+            response.setDonationTimestamp(donation.getDonationTimestamp());
+            responses.add(response);
+        }
+
+        return ResponseEntity.ok(responses);
     }
 }
