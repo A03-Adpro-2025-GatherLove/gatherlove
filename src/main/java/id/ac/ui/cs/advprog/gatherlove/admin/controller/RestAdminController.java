@@ -64,6 +64,7 @@ public class RestAdminController {
 
     @GetMapping("/dashboard/stats")
     public ResponseEntity<Stats> getStats() {
-        return null;
+        Stats stats = adminDashboardService.getStats();
+        return ResponseEntity.ok(stats);
     }
 }
