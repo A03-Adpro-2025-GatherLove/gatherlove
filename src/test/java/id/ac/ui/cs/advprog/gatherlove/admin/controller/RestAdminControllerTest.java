@@ -1,11 +1,15 @@
 package id.ac.ui.cs.advprog.gatherlove.admin.controller;
 
+import id.ac.ui.cs.advprog.gatherlove.admin.dto.CampaignResponse;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.Stats;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.TransactionResponse;
 import id.ac.ui.cs.advprog.gatherlove.admin.model.Announcement;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDashboardService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDonationService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AnnouncementService;
+import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
+import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
+import id.ac.ui.cs.advprog.gatherlove.campaign.service.CampaignService;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
 
 import org.junit.jupiter.api.Test;
@@ -37,6 +41,9 @@ public class RestAdminControllerTest {
 
     @Mock
     private AdminDashboardService adminDashboardService;
+
+    @Mock
+    private CampaignService campaignService;
 
     @InjectMocks
     private RestAdminController restAdminController;
@@ -121,5 +128,59 @@ public class RestAdminControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(stats, result.getBody());
+    }
+
+    @Test
+    void testGetCampaigns() {
+        List<Campaign> campaigns = new ArrayList<>();
+        
+        Campaign campaign1 = new Campaign();
+        campaign1.setId("campaign1");
+        campaign1.setTitle("Campaign 1");
+        campaigns.add(campaign1);
+
+        Campaign campaign2 = new Campaign();
+        campaign2.setId("campaign2");
+        campaign2.setTitle("Campaign 2");
+        campaigns.add(campaign2);
+
+        when(campaignService.getCampaignsByStatus(null)).thenReturn(campaigns);
+
+        ResponseEntity<List<CampaignResponse>> result = restAdminController.getCampaigns(null);
+
+        assertEquals(org.springframework.http.HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody());
+        assertEquals(2, result.getBody().size());
+
+        CampaignResponse response1 = result.getBody().get(0);
+        assertEquals(campaign1.getId(), response1.getCampaignId());
+        assertEquals(campaign1.getTitle(), response1.getTitle());
+
+        CampaignResponse response2 = result.getBody().get(1);
+        assertEquals(campaign2.getId(), response2.getCampaignId());
+        assertEquals(campaign2.getTitle(), response2.getTitle());
+    }
+
+    @Test
+    void testGetCampaignsByStatus() {
+        List<Campaign> campaigns = new ArrayList<>();
+
+        Campaign campaign1 = new Campaign();
+        campaign1.setId("campaign1");
+        campaign1.setTitle("Campaign 1");
+        campaign1.setStatus(CampaignStatus.APPROVED);
+        campaigns.add(campaign1);
+
+        when(campaignService.getCampaignsByStatus(CampaignStatus.APPROVED)).thenReturn(campaigns);
+
+        ResponseEntity<List<CampaignResponse>> result = restAdminController.getCampaigns(CampaignStatus.APPROVED);
+
+        assertEquals(org.springframework.http.HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody());
+        assertEquals(1, result.getBody().size());
+
+        CampaignResponse response1 = result.getBody().get(0);
+        assertEquals(campaign1.getId(), response1.getCampaignId());
+        assertEquals(campaign1.getTitle(), response1.getTitle());
     }
 }
