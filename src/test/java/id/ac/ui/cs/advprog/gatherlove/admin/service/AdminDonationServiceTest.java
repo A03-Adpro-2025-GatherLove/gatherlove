@@ -1,28 +1,43 @@
 package id.ac.ui.cs.advprog.gatherlove.admin.service;
 
+import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
+import id.ac.ui.cs.advprog.gatherlove.donation.repository.DonationRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import id.ac.ui.cs.advprog.gatherlove.donation.model.DonationDummy;
-
-import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class AdminDonationServiceTest {
 
-    @Autowired
-    private AdminDonationService adminDonationService;
+    @Mock
+    private DonationRepository donationRepository;
+
+    @InjectMocks
+    private AdminDonationServiceImpl adminDonationService;
 
     @Test
     public void testGetDonationHistory() {
-        List<DonationDummy> donationHistory = adminDonationService.getDonationHistory();
-        assertNotNull(donationHistory);
-        assertEquals(3, donationHistory.size()); // dummy data dengan 3 transaksi
+        // Arrange
+        List<Donation> expectedDonations = new ArrayList<>();
+        expectedDonations.add(new Donation());
+        expectedDonations.add(new Donation());
+        expectedDonations.add(new Donation());
+
+        when(donationRepository.findAll()).thenReturn(expectedDonations);
+
+        // Act
+        List<Donation> actualDonations = adminDonationService.getDonationHistory();
+
+        // Assert
+        assertEquals(expectedDonations, actualDonations);
     }
 }

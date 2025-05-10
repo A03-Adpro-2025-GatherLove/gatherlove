@@ -31,7 +31,7 @@ public class AnnouncementTest {
     void testAnnouncementDefaultValues() {
         Announcement announcement = new Announcement();
 
-        assertNotNull(announcement.getId());
+        assertNull(announcement.getId());
         assertNull(announcement.getTitle());
         assertNull(announcement.getContent());
         assertNotNull(announcement.getDate());

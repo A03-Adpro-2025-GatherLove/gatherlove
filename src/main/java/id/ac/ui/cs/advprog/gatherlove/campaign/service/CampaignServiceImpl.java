@@ -88,4 +88,9 @@ public class CampaignServiceImpl implements CampaignService {
     public void addCollectedAmount(UUID campaignId, BigDecimal amount) {
         // TODO: Sesuaikan rencana dengan DonationService
     }
+
+    @Override
+    public List<Campaign> getCampaignsByStatus(CampaignStatus status) {
+        return campaignRepository.findByStatus(status);
+    }
 }
