@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.gatherlove.admin.controller;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.CampaignResponse;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.Stats;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.TransactionResponse;
+import id.ac.ui.cs.advprog.gatherlove.admin.dto.VerifyCampaignRequest;
 import id.ac.ui.cs.advprog.gatherlove.admin.model.Announcement;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDashboardService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDonationService;
@@ -182,5 +183,47 @@ public class RestAdminControllerTest {
         CampaignResponse response1 = result.getBody().get(0);
         assertEquals(campaign1.getId(), response1.getCampaignId());
         assertEquals(campaign1.getTitle(), response1.getTitle());
+    }
+
+    @Test
+    void testVerifyCampaign() {
+        Long campaignId = 1L;
+        VerifyCampaignRequest request = new VerifyCampaignRequest();
+        request.setStatus("APPROVED");
+
+        Campaign campaign = new Campaign();
+        campaign.setId(campaignId.toString());
+
+        when(campaignService.getCampaignById(campaignId.toString())).thenReturn(campaign);
+
+        ResponseEntity<?> response = restAdminController.verifyCampaign(campaignId, request);
+
+        assertEquals(org.springframework.http.HttpStatus.OK, response.getStatusCode());
+        assertEquals("Campaign verified successfully", response.getBody());
+    }
+
+    @Test
+    void testVerifyCampaignInvalidStatus() {
+        Long campaignId = 1L;
+        VerifyCampaignRequest request = new VerifyCampaignRequest();
+        request.setStatus("INVALID");
+
+        ResponseEntity<?> response = restAdminController.verifyCampaign(campaignId, request);
+
+        assertEquals(org.springframework.http.HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Status tidak valid", response.getBody());
+    }
+
+    @Test
+    void testVerifyCampaignNotFound() {
+        Long campaignId = 1L;
+        VerifyCampaignRequest request = new VerifyCampaignRequest();
+        request.setStatus("APPROVED");
+
+        when(campaignService.getCampaignById(campaignId.toString())).thenReturn(null);
+
+        ResponseEntity<?> response = restAdminController.verifyCampaign(campaignId, request);
+
+        assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
