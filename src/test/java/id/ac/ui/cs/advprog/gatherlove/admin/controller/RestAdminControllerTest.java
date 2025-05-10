@@ -23,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -198,7 +200,7 @@ public class RestAdminControllerTest {
 
         ResponseEntity<?> response = restAdminController.verifyCampaign(campaignId, request);
 
-        assertEquals(org.springframework.http.HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Campaign verified successfully", response.getBody());
     }
 
@@ -210,7 +212,7 @@ public class RestAdminControllerTest {
 
         ResponseEntity<?> response = restAdminController.verifyCampaign(campaignId, request);
 
-        assertEquals(org.springframework.http.HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Status tidak valid", response.getBody());
     }
 
@@ -224,6 +226,28 @@ public class RestAdminControllerTest {
 
         ResponseEntity<?> response = restAdminController.verifyCampaign(campaignId, request);
 
-        assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testDeleteUserSuccess() {
+        UUID userId = UUID.randomUUID();
+        doNothing().when(adminDashboardService).deleteUser(userId);
+
+        ResponseEntity<?> response = restAdminController.deleteUser(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User has been deleted", response.getBody());
+    }
+
+    @Test
+    void testDeleteUserFailure() {
+        UUID userId = UUID.randomUUID();
+        doThrow(new RuntimeException()).when(adminDashboardService).deleteUser(userId);
+
+        ResponseEntity<?> response = restAdminController.deleteUser(userId);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error deleting user", response.getBody());
     }
 }
