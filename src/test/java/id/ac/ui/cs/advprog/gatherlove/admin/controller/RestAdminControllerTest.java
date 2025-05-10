@@ -1,7 +1,9 @@
 package id.ac.ui.cs.advprog.gatherlove.admin.controller;
 
+import id.ac.ui.cs.advprog.gatherlove.admin.dto.Stats;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.TransactionResponse;
 import id.ac.ui.cs.advprog.gatherlove.admin.model.Announcement;
+import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDashboardService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDonationService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AnnouncementService;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
@@ -32,6 +34,9 @@ public class RestAdminControllerTest {
 
     @Mock
     private AdminDonationService adminDonationService;
+
+    @Mock
+    private AdminDashboardService adminDashboardService;
 
     @InjectMocks
     private RestAdminController restAdminController;
@@ -100,5 +105,21 @@ public class RestAdminControllerTest {
         assertEquals(donation2.getId(), response2.getId());
         assertEquals(donation2.getCampaignId(), response2.getCampaignId());
         assertEquals(donation2.getDonorId(), response2.getDonorId());
+    }
+
+    @Test
+    void testGetStats() {
+        Stats stats = new Stats();
+        stats.setTotalCampaigns(10L);
+        stats.setTotalDonations(20L);
+        stats.setTotalUsers(30L);
+        stats.setTotalFundRaised(BigDecimal.valueOf(1000.0));
+
+        when(adminDashboardService.getStats()).thenReturn(stats);
+
+        ResponseEntity<Stats> result = restAdminController.getStats();
+
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(stats, result.getBody());
     }
 }

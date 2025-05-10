@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import id.ac.ui.cs.advprog.gatherlove.admin.dto.Stats;
 import id.ac.ui.cs.advprog.gatherlove.admin.dto.TransactionResponse;
 import id.ac.ui.cs.advprog.gatherlove.admin.model.Announcement;
+import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDashboardService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDonationService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AnnouncementService;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
@@ -22,6 +24,9 @@ public class RestAdminController {
 
     @Autowired
     private AdminDonationService adminDonationService;
+
+    @Autowired
+    private AdminDashboardService adminDashboardService;
 
     @GetMapping("")
     public String admin() {
@@ -55,5 +60,10 @@ public class RestAdminController {
         }
 
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/dashboard/stats")
+    public ResponseEntity<Stats> getStats() {
+        return null;
     }
 }
