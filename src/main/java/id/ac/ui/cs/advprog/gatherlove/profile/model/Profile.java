@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.gatherlove.profile.model;
 
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +18,12 @@ public class Profile {
     @NotBlank
     private String name;
 
-    @Email
-    private String email;
-
     @NotBlank
     private String phoneNumber;
 
     private String bio;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserEntity user;
 }
