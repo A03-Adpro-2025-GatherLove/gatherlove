@@ -19,8 +19,8 @@ Copy the `.env.example` file to a new file `.env`.
 Edit the `.env` file to update the database connection properties:
 ```properties
 DB_URL=jdbc:postgresql://localhost:5432/gatherlove
-DB_USERNAME=postgres
-DB_PASSWORD="#Yasinbest23"
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 ```
 Replace `your_username` and `your_password` with the values you have.
 

@@ -1,48 +1,89 @@
 package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 
+import id.ac.ui.cs.advprog.gatherlove.wallet.dto.*;
+import id.ac.ui.cs.advprog.gatherlove.wallet.model.Transaction;
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.Wallet;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/wallet")
+@RequestMapping("/api/wallet")
 public class WalletController {
 
-    @Autowired
-    private WalletService walletService;
+    private final WalletService walletService;
 
-    @GetMapping("/{userId}/balance")
-    public BigDecimal getBalance(@PathVariable Long userId) {
-        return walletService.getWalletBalance(userId);
+    public WalletController(WalletService walletService) {
+        this.walletService = walletService;
     }
 
-    @PostMapping("/{userId}/topup")
-    public Wallet topUp(@PathVariable Long userId, @RequestParam BigDecimal amount,
-            @RequestParam String phoneNumber, @RequestParam String method) {
-        return walletService.topUp(userId, amount, phoneNumber, method);
+    @GetMapping("/balance")
+    public BalanceResponse getBalance(@RequestParam Long userId) {
+        return new BalanceResponse(walletService.getWalletBalance(userId));
     }
 
-    @GetMapping("/{userId}/transactions")
-    public Wallet getWalletWithTransactions(@PathVariable Long userId) {
-        return walletService.getWalletWithTransactions(userId);
+    @PostMapping("/topup")
+    public ResponseEntity<TopUpResponse> topUp(
+            @RequestParam Long userId,
+            @Valid @RequestBody TopUpRequest body) {
+
+        Wallet wallet = walletService.topUp(
+                userId,
+                body.amount(),
+                body.phone_number(),
+                body.method()
+        );
+
+        TopUpResponse res = new TopUpResponse(
+                "Proses Top-Up Saldo Berhasil!",
+                wallet.getBalance()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
-    @DeleteMapping("/{userId}/transactions/{transactionId}")
-    public void deleteTopUpTransaction(
-            @PathVariable Long userId,
-            @PathVariable Long transactionId
-    ) {
+    @GetMapping("/transactions")
+    public TransactionListResponse getTransactions(@RequestParam Long userId) {
+        Wallet wallet = walletService.getWalletWithTransactions(userId);
+
+        var list = wallet.getTransactions().stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+        return new TransactionListResponse(list);
+    }
+
+    private TransactionDto toDto(Transaction t) {
+        return new TransactionDto(
+                t.getId(),
+                t.getType(),
+                t.getAmount(),
+                t.getTransactionDateTime()
+        );
+    }
+
+    @DeleteMapping("/transactions/{transactionId}")
+    public DeleteResponse deleteTransaction(
+            @RequestParam Long userId,
+            @PathVariable Long transactionId) {
+
         walletService.deleteTopUpTransaction(userId, transactionId);
+        return new DeleteResponse("Proses Penghapusan Riwayat Top-Up Berhasil!");
     }
 
-    @PostMapping("/{userId}/withdraw")
-    public Wallet withdraw(
-            @PathVariable Long userId,
-            @RequestParam BigDecimal amount
-    ) {
-        return walletService.withdrawFunds(userId, amount);
+    @PostMapping("/withdraw")
+    public ResponseEntity<WithdrawResponse> withdraw(
+            @RequestParam Long userId,
+            @Valid @RequestBody WithdrawRequest body) {
+
+        walletService.withdrawFunds(userId, body.amount());
+
+        WithdrawResponse res = new WithdrawResponse(
+                "Penarikan Dana sedang Diproses...",
+                "NEED_ADMINISTRATOR_APPROVAL"
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 }

@@ -2,6 +2,8 @@ package id.ac.ui.cs.advprog.gatherlove.authentication.config;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.generation.validation.AuthTokenFilter;
 import id.ac.ui.cs.advprog.gatherlove.authentication.service.CustomUserDetailsService;
+import jakarta.servlet.Filter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,7 +51,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore((Filter) authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class); // TODO: Sesuaikan dengan rencana anda
 
         return http.build();
     }
