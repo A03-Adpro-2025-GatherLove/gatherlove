@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-@Component("danaStrategy")
+@Component("dana")
 public class DanaStrategy implements PaymentStrategy {
 
     @Override

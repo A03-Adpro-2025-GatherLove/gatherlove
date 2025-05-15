@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -17,19 +18,16 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
     private final WalletEventPublisher walletEventPublisher;
-    private final PaymentStrategy danaStrategy;
-    private final PaymentStrategy goPayStrategy;
+    private final Map<String, PaymentStrategy> strategies;
 
     public WalletServiceImpl(WalletRepository walletRepository,
                              TransactionRepository transactionRepository,
                              WalletEventPublisher walletEventPublisher,
-                             @Qualifier("danaStrategy") PaymentStrategy danaStrategy,
-                             @Qualifier("goPayStrategy") PaymentStrategy goPayStrategy) {
+                             Map<String, PaymentStrategy> strategies) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
         this.walletEventPublisher = walletEventPublisher;
-        this.danaStrategy = danaStrategy;
-        this.goPayStrategy = goPayStrategy;
+        this.strategies = strategies;
     }
 
     @Override
@@ -43,12 +41,8 @@ public class WalletServiceImpl implements WalletService {
     public Wallet topUp(UUID userId, BigDecimal amount, String phoneNumber, String method) {
         Wallet wallet = getOrCreateWallet(userId);
 
-        PaymentStrategy strategy;
-        if ("GOPAY".equalsIgnoreCase(method)) {
-            strategy = goPayStrategy;
-        } else if ("DANA".equalsIgnoreCase(method)) {
-            strategy = danaStrategy;
-        } else {
+        PaymentStrategy strategy = strategies.get(method.toLowerCase());
+        if (strategy == null) {
             throw new IllegalArgumentException("Unsupported Payment Method: " + method);
         }
 

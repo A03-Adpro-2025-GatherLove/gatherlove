@@ -16,6 +16,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,8 +49,11 @@ class WalletServiceTest {
         exampleWallet = new Wallet(userID, BigDecimal.valueOf(80000));
         when(walletRepository.findByUserId(userID)).thenReturn(Optional.of(exampleWallet));
 
-        walletService = new WalletServiceImpl(walletRepository, transactionRepository, walletEventPublisher,
-                danaStrategy, goPayStrategy);
+        Map<String, PaymentStrategy> strategyMap = Map.of(
+                "gopay", goPayStrategy, "dana", danaStrategy);
+
+        walletService = new WalletServiceImpl(walletRepository, transactionRepository,
+                walletEventPublisher, strategyMap);
     }
 
     @Test
