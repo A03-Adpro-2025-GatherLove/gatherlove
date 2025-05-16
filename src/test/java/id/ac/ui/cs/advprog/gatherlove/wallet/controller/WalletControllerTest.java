@@ -50,7 +50,7 @@ class WalletControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.new_balance").value(60000))
-                .andExpect(jsonPath("$.message").value("Proses Top‑Up Saldo Berhasil!"));
+                .andExpect(jsonPath("$.message").value("Proses Top-Up Saldo Berhasil!"));
     }
 
     @Test
@@ -69,10 +69,10 @@ class WalletControllerTest {
         mockMvc.perform(get("/api/wallet/transactions").param("userId", "123"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].transaction_id").value(1))
-                .andExpect(jsonPath("$[0].type").value("TOP_UP"))
-                .andExpect(jsonPath("$[0].amount").value(10000));
+                .andExpect(jsonPath("$.transactions.length()").value(1))
+                .andExpect(jsonPath("$.transactions[0].transaction_id").value(1))
+                .andExpect(jsonPath("$.transactions[0].type").value("TOP_UP"))
+                .andExpect(jsonPath("$.transactions[0].amount").value(10000));
     }
 
     @Test
@@ -81,7 +81,7 @@ class WalletControllerTest {
 
         mockMvc.perform(delete("/api/wallet/transactions/999").param("userId", "123"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.message")
-                        .value("Proses Penghapusan Riwayat Top‑Up Berhasil!"));
+                        .value("Proses Penghapusan Riwayat Top-Up Berhasil!"));
 
         then(walletService).should(times(1))
                 .deleteTopUpTransaction(123L, 999L);
