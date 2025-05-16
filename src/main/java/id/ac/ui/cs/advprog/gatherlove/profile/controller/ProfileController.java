@@ -1,39 +1,51 @@
 package id.ac.ui.cs.advprog.gatherlove.profile.controller;
 
+import id.ac.ui.cs.advprog.gatherlove.profile.dto.ProfileRequest;
+import id.ac.ui.cs.advprog.gatherlove.profile.dto.ProfileResponse;
 import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
 import id.ac.ui.cs.advprog.gatherlove.profile.service.ProfileService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/api/profiles")
 public class ProfileController {
 
-    private final ProfileService service;
+    private final ProfileService profileService;
 
-    public ProfileController(ProfileService service) {
-        this.service = service;
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
-    @PostMapping("/complete")
-    public ResponseEntity<Profile> completeProfile(@RequestBody Profile profile) {
-        return ResponseEntity.ok(service.completeProfile(profile));
+    @PostMapping("/users/{userId}")
+    public ResponseEntity<ProfileResponse> completeProfile(
+            @Valid @RequestBody ProfileRequest request,
+            @PathVariable UUID userId) {
+        ProfileResponse response = profileService.completeProfile(request, userId);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Profile> viewProfile(@PathVariable Long id) {
-        return service.viewProfile(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{profileId}")
+    public ResponseEntity<ProfileResponse> viewProfile(@PathVariable UUID profileId) {  // Changed from Long to UUID
+        ProfileResponse response = profileService.viewProfile(profileId);
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable Long id, @RequestBody Profile profile) {
-        return ResponseEntity.ok(service.updateProfile(id, profile));
+    @PutMapping("/{profileId}")
+    public ResponseEntity<ProfileResponse> updateProfile(
+            @PathVariable UUID profileId,  // Changed from Long to UUID
+            @Valid @RequestBody ProfileRequest request) {
+        ProfileResponse response = profileService.updateProfile(profileId, request);
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}/bio")
-    public ResponseEntity<Profile> deleteBio(@PathVariable Long id) {
-        return ResponseEntity.ok(service.deleteBio(id));
+    @DeleteMapping("/{profileId}/bio")
+    public ResponseEntity<Void> deleteBio(@PathVariable UUID profileId) {  // Changed from Long to UUID
+        profileService.deleteBio(profileId);
+        return ResponseEntity.noContent().build();
     }
 }
