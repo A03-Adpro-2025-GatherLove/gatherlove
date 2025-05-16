@@ -40,4 +40,6 @@ public interface CampaignService {
     void validateCampaignForDonation(UUID campaignId); // TODO: Sesuaikan rencana dengan DonationService
 
     void addCollectedAmount(UUID campaignId, BigDecimal amount); // TODO: Sesuaikan rencana dengan DonationService
+
+    List<Campaign> getCampaignsByStatus(CampaignStatus status); // Izin menambahkan - Yasin
 }
