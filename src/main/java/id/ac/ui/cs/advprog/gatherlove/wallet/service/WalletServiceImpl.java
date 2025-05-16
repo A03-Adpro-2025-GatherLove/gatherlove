@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -17,38 +18,31 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
     private final WalletEventPublisher walletEventPublisher;
-    private final PaymentStrategy danaStrategy;
-    private final PaymentStrategy goPayStrategy;
+    private final Map<String, PaymentStrategy> strategies;
 
     public WalletServiceImpl(WalletRepository walletRepository,
                              TransactionRepository transactionRepository,
                              WalletEventPublisher walletEventPublisher,
-                             @Qualifier("danaStrategy") PaymentStrategy danaStrategy,
-                             @Qualifier("goPayStrategy") PaymentStrategy goPayStrategy) {
+                             Map<String, PaymentStrategy> strategies) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
         this.walletEventPublisher = walletEventPublisher;
-        this.danaStrategy = danaStrategy;
-        this.goPayStrategy = goPayStrategy;
+        this.strategies = strategies;
     }
 
     @Override
-    public Wallet getOrCreateWallet(Long userId) {
+    public Wallet getOrCreateWallet(UUID userId) {
         return walletRepository.findByUserId(userId).orElseGet(
                 () -> walletRepository.save(new Wallet(userId, BigDecimal.ZERO))
         );
     }
 
     @Override
-    public Wallet topUp(Long userId, BigDecimal amount, String phoneNumber, String method) {
+    public Wallet topUp(UUID userId, BigDecimal amount, String phoneNumber, String method) {
         Wallet wallet = getOrCreateWallet(userId);
 
-        PaymentStrategy strategy;
-        if ("GOPAY".equalsIgnoreCase(method)) {
-            strategy = goPayStrategy;
-        } else if ("DANA".equalsIgnoreCase(method)) {
-            strategy = danaStrategy;
-        } else {
+        PaymentStrategy strategy = strategies.get(method.toLowerCase());
+        if (strategy == null) {
             throw new IllegalArgumentException("Unsupported Payment Method: " + method);
         }
 
@@ -68,17 +62,17 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public BigDecimal getWalletBalance(Long userId) {
+    public BigDecimal getWalletBalance(UUID userId) {
         return getOrCreateWallet(userId).getBalance();
     }
 
     @Override
-    public Wallet getWalletWithTransactions(Long userId) {
+    public Wallet getWalletWithTransactions(UUID userId) {
         return getOrCreateWallet(userId);
     }
 
     @Override
-    public void deleteTopUpTransaction(Long userId, Long transactionId) {
+    public void deleteTopUpTransaction(UUID userId, Long transactionId) {
         Wallet wallet = getOrCreateWallet(userId);
         Transaction tx = transactionRepository.findById(transactionId).orElseThrow(
                 () -> new RuntimeException("Transaction not found")
@@ -97,7 +91,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet withdrawFunds(Long userId, BigDecimal amount) {
+    public Wallet withdrawFunds(UUID userId, BigDecimal amount) {
         Wallet wallet = getOrCreateWallet(userId);
         if (wallet.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient balance");
@@ -113,7 +107,21 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void debit(UUID donorId, BigDecimal amount) {
-        // TODO: Sesuaikan rencana dengan DonationService
+    public Wallet debit(UUID donorId, BigDecimal amount) {
+        Wallet wallet = getOrCreateWallet(donorId);
+
+        if (wallet.getBalance().compareTo(amount) < 0)
+            throw new RuntimeException("Saldo tidak mencukupi");
+
+        wallet.setBalance(wallet.getBalance().subtract(amount));
+
+        Transaction tx = new Transaction(TransactionType.DONATION, amount, "SYSTEM");
+        wallet.addTransaction(tx);
+
+        walletRepository.save(wallet);
+        transactionRepository.save(tx);
+        walletEventPublisher.notifyBalanceChanged(wallet, tx);
+
+        return wallet;
     }
 }

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -21,21 +22,16 @@ public class WalletController {
     }
 
     @GetMapping("/balance")
-    public BalanceResponse getBalance(@RequestParam Long userId) {
+    public BalanceResponse getBalance(@RequestParam UUID userId) {
         return new BalanceResponse(walletService.getWalletBalance(userId));
     }
 
     @PostMapping("/topup")
     public ResponseEntity<TopUpResponse> topUp(
-            @RequestParam Long userId,
+            @RequestParam UUID userId,
             @Valid @RequestBody TopUpRequest body) {
 
-        Wallet wallet = walletService.topUp(
-                userId,
-                body.amount(),
-                body.phone_number(),
-                body.method()
-        );
+        Wallet wallet = walletService.topUp(userId, body.amount(), body.phone_number(), body.method());
 
         TopUpResponse res = new TopUpResponse(
                 "Proses Top-Up Saldo Berhasil!",
@@ -45,7 +41,7 @@ public class WalletController {
     }
 
     @GetMapping("/transactions")
-    public TransactionListResponse getTransactions(@RequestParam Long userId) {
+    public TransactionListResponse getTransactions(@RequestParam UUID userId) {
         Wallet wallet = walletService.getWalletWithTransactions(userId);
 
         var list = wallet.getTransactions().stream()
@@ -56,17 +52,12 @@ public class WalletController {
     }
 
     private TransactionDto toDto(Transaction t) {
-        return new TransactionDto(
-                t.getId(),
-                t.getType(),
-                t.getAmount(),
-                t.getTransactionDateTime()
-        );
+        return new TransactionDto(t.getId(), t.getType(), t.getAmount(), t.getTransactionDateTime());
     }
 
     @DeleteMapping("/transactions/{transactionId}")
     public DeleteResponse deleteTransaction(
-            @RequestParam Long userId,
+            @RequestParam UUID userId,
             @PathVariable Long transactionId) {
 
         walletService.deleteTopUpTransaction(userId, transactionId);
@@ -75,7 +66,7 @@ public class WalletController {
 
     @PostMapping("/withdraw")
     public ResponseEntity<WithdrawResponse> withdraw(
-            @RequestParam Long userId,
+            @RequestParam UUID userId,
             @Valid @RequestBody WithdrawRequest body) {
 
         walletService.withdrawFunds(userId, body.amount());
@@ -83,6 +74,20 @@ public class WalletController {
         WithdrawResponse res = new WithdrawResponse(
                 "Penarikan Dana sedang Diproses...",
                 "NEED_ADMINISTRATOR_APPROVAL"
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    @PostMapping("/donate")
+    public ResponseEntity<DonateResponse> donate(
+            @RequestParam UUID userId,
+            @Valid @RequestBody DonateRequest body) {
+
+        Wallet wallet = walletService.debit(userId, body.amount());
+
+        DonateResponse res = new DonateResponse(
+                "Nominal untuk Donasi Berhasil Dikurangi dari Saldo!",
+                wallet.getBalance()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }

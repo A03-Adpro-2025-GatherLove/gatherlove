@@ -14,9 +14,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import java.math.BigDecimal;
-import java.util.Collections;
+import java.util.UUID;
 
 @WebMvcTest(WalletController.class)
 class WalletControllerTest {
@@ -27,26 +28,31 @@ class WalletControllerTest {
     @MockBean
     private WalletService walletService;
 
+    private UUID userID = UUID.randomUUID();
+
     @Test
     void testGetBalance() throws Exception {
-        given(walletService.getWalletBalance(123L)).willReturn(BigDecimal.valueOf(40000));
+        given(walletService.getWalletBalance(userID)).willReturn(BigDecimal.valueOf(40000));
 
-        mockMvc.perform(get("/api/wallet/balance").param("userId", "123"))
+        mockMvc.perform(get("/api/wallet/balance").param("userId", String.valueOf(userID))
+                        .with(csrf()).with(user("testuser").roles("USER")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.balance").value(40000));
     }
 
     @Test
     void testTopUp() throws Exception {
-        Wallet walletPostTopUp = new Wallet(123L, BigDecimal.valueOf(60000));
-        given(walletService.topUp(eq(123L), eq(BigDecimal.valueOf(10000)),
+        UUID userID = UUID.randomUUID();
+        Wallet walletPostTopUp = new Wallet(userID, BigDecimal.valueOf(60000));
+        given(walletService.topUp(eq(userID), eq(BigDecimal.valueOf(10000)),
                 eq("081234"), eq("GOPAY"))).willReturn(walletPostTopUp);
 
         String json = """
             { "method":"GOPAY", "phone_number":"081234", "amount":10000 }
             """;
 
-        mockMvc.perform(post("/api/wallet/topup").param("userId", "123")
+        mockMvc.perform(post("/api/wallet/topup").param("userId", String.valueOf(userID))
+                        .with(csrf()).with(user("testuser").roles("USER"))
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.new_balance").value(60000))
@@ -55,7 +61,8 @@ class WalletControllerTest {
 
     @Test
     void testGetTransactions() throws Exception {
-        Wallet wallet = new Wallet(123L, BigDecimal.valueOf(50000));
+        UUID userID = UUID.randomUUID();
+        Wallet wallet = new Wallet(userID, BigDecimal.valueOf(50000));
 
         Transaction tx = new Transaction();
         tx.setId(1L);
@@ -64,9 +71,10 @@ class WalletControllerTest {
         tx.setPaymentMethod("GOPAY");
         wallet.addTransaction(tx);
 
-        given(walletService.getWalletWithTransactions(123L)).willReturn(wallet);
+        given(walletService.getWalletWithTransactions(userID)).willReturn(wallet);
 
-        mockMvc.perform(get("/api/wallet/transactions").param("userId", "123"))
+        mockMvc.perform(get("/api/wallet/transactions").param("userId", String.valueOf(userID))
+                        .with(csrf()).with(csrf()).with(user("testuser").roles("USER")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.transactions.length()").value(1))
@@ -77,29 +85,52 @@ class WalletControllerTest {
 
     @Test
     void testDeleteTopUpTransaction() throws Exception {
-        willDoNothing().given(walletService).deleteTopUpTransaction(123L, 999L);
+        UUID userID = UUID.randomUUID();
+        willDoNothing().given(walletService).deleteTopUpTransaction(userID, 999L);
 
-        mockMvc.perform(delete("/api/wallet/transactions/999").param("userId", "123"))
+        mockMvc.perform(delete("/api/wallet/transactions/999").param("userId", String.valueOf(userID))
+                        .with(csrf()).with(csrf()).with(user("testuser").roles("USER")))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.message")
                         .value("Proses Penghapusan Riwayat Top-Up Berhasil!"));
 
         then(walletService).should(times(1))
-                .deleteTopUpTransaction(123L, 999L);
+                .deleteTopUpTransaction(userID, 999L);
     }
 
     @Test
     void testWithdraw() throws Exception {
-        Wallet walletAfterWithdraw = new Wallet(123L, BigDecimal.valueOf(4000));
-        given(walletService.withdrawFunds(123L, BigDecimal.valueOf(1000))).willReturn(walletAfterWithdraw);
+        UUID userID = UUID.randomUUID();
+        Wallet walletAfterWithdraw = new Wallet(userID, BigDecimal.valueOf(4000));
+        given(walletService.withdrawFunds(userID, BigDecimal.valueOf(1000))).willReturn(walletAfterWithdraw);
 
         String json = """
             { "campaign_id": 7, "amount": 1000 }
             """;
 
-        mockMvc.perform(post("/api/wallet/withdraw").param("userId", "123")
+        mockMvc.perform(post("/api/wallet/withdraw").param("userId", String.valueOf(userID))
+                        .with(csrf()).with(csrf()).with(user("testuser").roles("USER"))
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("Penarikan Dana sedang Diproses..."))
                 .andExpect(jsonPath("$.status").value("NEED_ADMINISTRATOR_APPROVAL"));
+    }
+
+    @Test
+    void testDonate() throws Exception {
+        Wallet afterDonate = new Wallet(userID, BigDecimal.valueOf(10000));
+        given(walletService.debit(userID, BigDecimal.valueOf(20000)))
+                .willReturn(afterDonate);
+
+        String json = """
+        { "amount": 20000 }
+        """;
+
+        mockMvc.perform(post("/api/wallet/donate").param("userId", String.valueOf(userID))
+                        .with(csrf()).with(csrf()).with(user("testuser").roles("USER"))
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message")
+                        .value("Nominal untuk Donasi Berhasil Dikurangi dari Saldo!"))
+                .andExpect(jsonPath("$.remaining_balance").value(10000));
     }
 }

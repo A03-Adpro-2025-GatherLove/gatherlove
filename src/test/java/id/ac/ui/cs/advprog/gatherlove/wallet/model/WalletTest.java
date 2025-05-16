@@ -4,22 +4,25 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 class WalletTest {
 
     @Test
     void testWalletGettersAndSetters() {
         Wallet wallet = new Wallet();
-        wallet.setUserId(100L);
+        UUID userID = UUID.randomUUID();
+        wallet.setUserId(userID);
         wallet.setBalance(BigDecimal.valueOf(75000));
 
-        Assertions.assertEquals(100L, wallet.getUserId());
+        Assertions.assertEquals(userID, wallet.getUserId());
         Assertions.assertEquals(BigDecimal.valueOf(75000), wallet.getBalance());
     }
 
     @Test
     void testWalletAssociationWithTransaction() {
-        Wallet wallet = new Wallet(101L, BigDecimal.ZERO);
+        UUID userID = UUID.randomUUID();
+        Wallet wallet = new Wallet(userID, BigDecimal.ZERO);
         Transaction transaction = new Transaction();
         transaction.setAmount(BigDecimal.valueOf(25000));
 

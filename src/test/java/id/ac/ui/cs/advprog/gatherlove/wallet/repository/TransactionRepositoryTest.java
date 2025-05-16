@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +24,7 @@ class TransactionRepositoryTest {
 
     @Test
     void testTransactionPersistence() {
-        Wallet wallet = new Wallet(103L, BigDecimal.ZERO);
+        Wallet wallet = new Wallet(UUID.randomUUID(), BigDecimal.ZERO);
         walletRepository.save(wallet);
 
         Transaction transaction = new Transaction(TransactionType.TOP_UP, BigDecimal.valueOf(6000), "GOPAY");
