@@ -61,3 +61,9 @@ Ini adalah visualisasi dari arsitektur proyek ini
 
 ### Deployment Diagram
 ![Deployment Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Deployment%20Diagram.jpg)
+
+## Potential Future Architecture
+Meskipun saat ini arsitektur monolitik adalah pilihan paling langsung, seiring pertumbuhan jumlah pengguna dan kompleksitas fitur, beban sistem bisa meningkat secara signifikan. Jika kondisi tersebut terjadi, kami akan mempertimbangkan untuk memecah modul‑modul kunci menjadi microservices terpisah.
+
+### Potential Future Architecture using container diagram
+![Potential Future Architecture using container diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Container%20Diagram%20(Potential%20Future).jpg)
