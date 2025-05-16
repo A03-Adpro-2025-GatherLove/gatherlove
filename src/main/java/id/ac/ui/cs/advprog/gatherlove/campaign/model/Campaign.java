@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.gatherlove.campaign.model;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
+import id.ac.ui.cs.advprog.gatherlove.campaign.state.CampaignState;
+import id.ac.ui.cs.advprog.gatherlove.campaign.state.CampaignStateFactory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +39,28 @@ public class Campaign {
     private BigDecimal totalDonated = BigDecimal.ZERO;
 
     public void addDonation(BigDecimal amount) {
-        this.totalDonated = this.totalDonated.add(amount);
+        CampaignState state = CampaignStateFactory.getState(this.status);
+        state.donate(this, amount);
+    }
+    
+    @Transient
+    public CampaignState getState() {
+        return CampaignStateFactory.getState(this.status);
+    }
+    
+    public boolean canEdit() {
+        return getState().canEdit(this);
+    }
+    
+    public boolean canDelete() {
+        return getState().canDelete(this);
+    }
+    
+    public Campaign verify(boolean approve) {
+        return getState().verify(this, approve);
+    }
+    
+    public Campaign checkStatus() {
+        return getState().checkStatus(this);
     }
 }
