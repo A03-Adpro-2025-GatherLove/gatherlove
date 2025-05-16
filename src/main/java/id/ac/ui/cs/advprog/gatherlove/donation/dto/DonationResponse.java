@@ -19,8 +19,8 @@ public class DonationResponse {
     private LocalDateTime donationTimestamp;
     // Add more fields like donorName, campaignTitle if needed later by mapping
     public static DonationResponse from(Donation d) {
-        // TODO Auto-generated method stub
-        // TODO: Tolong sesuaikan - Yasin
-        throw new UnsupportedOperationException("Unimplemented method 'from'");
+        return new DonationResponse(
+                d.getId(),d.getCampaignId(),d.getDonorId(),d.getAmount(),d.getMessage(),d.getDonationTimestamp()
+        );
     }
 }
