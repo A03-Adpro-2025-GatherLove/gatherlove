@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +16,8 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @Column(name = "user_id", nullable = false, unique = true)
+    private UUID userId;
 
     private BigDecimal balance = BigDecimal.valueOf(0);
 
@@ -24,7 +27,7 @@ public class Wallet {
     public Wallet() {
     }
 
-    public Wallet(Long userId, BigDecimal balance) {
+    public Wallet(UUID userId, BigDecimal balance) {
         this.userId = userId;
         this.balance = balance;
     }

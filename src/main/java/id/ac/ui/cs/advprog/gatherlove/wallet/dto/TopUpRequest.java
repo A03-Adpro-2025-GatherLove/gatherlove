@@ -11,6 +11,6 @@ public record TopUpRequest(
         @NotBlank(message = "phone_number is required")
         String phone_number,
 
-        @DecimalMin(value = "10000", message = "Top-up value must be at least Rp. 10.000,-")
+        @DecimalMin(value = "5000", message = "Top-up value must be at least Rp. 5.000,-")
         BigDecimal amount
 ) {}
