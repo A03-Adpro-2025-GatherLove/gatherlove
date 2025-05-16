@@ -108,3 +108,11 @@ Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsi
 
 ### Risk Storming: Mitigation
 ![Potential Future Architecture using container diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Container%20Diagram%20(Potential%20Future).jpg)
+
+## Individual Component Diagrams and Code Diagrams
+
+### Wallet Module: Component Diagram
+![Wallet Module: Component Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Component%20Diagram%20-%20Janssen.png)
+
+### Wallet Module: Code Diagram
+![Wallet Module: Code Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Code%20Diagram%20-%20Janssen.png)
