@@ -150,3 +150,10 @@ Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsi
 
 #### Campaign
 ![Campaign Code Diagram](static/img/Code%20Diagram%20Campaign.png)
+
+
+### Campaign Module: Component Diagram (Kanda)
+![Campaign Module: Component Diagram](static/img/Campaign-Component-Diagram.png)
+
+### Campaign Module: Code Diagram (Kanda)
+![Campaign Module: Code Diagram](static/img/Campaign-Code-Diagram.png)
