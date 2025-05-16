@@ -67,3 +67,44 @@ Meskipun saat ini arsitektur monolitik adalah pilihan paling langsung, seiring p
 
 ### Potential Future Architecture using container diagram
 ![Potential Future Architecture using container diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Container%20Diagram%20(Potential%20Future).jpg)
+
+### Risk Storming Analysis for Transitioning Software Architecture
+Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsitektur monolitik, khususnya pada API Application dan Database, yang berpotensi menjadi bottleneck apabila skala pengguna dan kompleksitas fungsional bertambah. Untuk memitigasi risiko tersebut, kami mengusulkan pemecahan arsitektur sebagai berikut:
+
+### 1. API Gateway
+
+- Risiko awal: Semua permintaan klien terpusat pada satu entry point, rentan terhadap single point of failure dan kesulitan skala.
+
+- Mitigasi: Gateway bertugas autentikasi, routing, dan load balancing, sehingga beban dapat didistribusikan ke layanan internal.
+
+### 2. Auth/User Service
+
+- Risiko awal: Authentication dan manajemen pengguna monolitik menimbulkan overhead logika dan basis data yang padat.
+
+- Mitigasi: Menjadikannya layanan terpisah dengan database sendiri, memudahkan scaling independen saat trafik authentication melonjak.
+
+### 3. Main Service (Campaign, Wallet, Donation)
+
+- Risiko awal: Logika bisnis bercampur dengan Auth dan Admin, sulit di-debug dan dioptimasi per modul.
+
+- Mitigasi: Dipisah sehingga modul-modul dapat diuji, di‑deploy, dan didiskalakan secara mandiri sesuai kebutuhan.
+
+### 4. Admin Service
+
+- Risiko awal: Fitur administrasi lokal berpotensi mengganggu jalannya core flow jika terjadi error.
+
+- Mitigasi: Dikelola oleh layanan terpisah dengan database terisolasi, sehingga kegagalan administrasi tidak menjatuhkan sistem utama.
+
+### 5. Database Terpisah
+
+- Setiap layanan (Auth/User, Main, Admin) memiliki instance PostgreSQL sendiri, mengurangi kontensi I/O dan memudahkan replikasi atau sharding khusus modul.
+
+### Risk Storming: Identification
+![Risk Storming: Identification](static/img/DIAGRAM%20TUTORIAL%209%20B-Risk%20Storming_%20Identification.jpg)
+
+### Risk Storming: Consensus
+### Risk Storming: Consensus
+![Risk Storming: Consensus](static/img/DIAGRAM%20TUTORIAL%209%20B-Risk%20Storming_%20Consensus.jpg)
+
+### Risk Storming: Mitigation
+![Potential Future Architecture using container diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Container%20Diagram%20(Potential%20Future).jpg)
