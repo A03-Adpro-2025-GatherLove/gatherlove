@@ -7,6 +7,10 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.service.CampaignService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,6 +52,41 @@ public class CampaignController {
         redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil dibuat!");
 
         return "redirect:/campaign/my";
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewCampaignDetails(@PathVariable String id, Model model) {
+        try {
+            Campaign campaign = campaignService.getCampaignById(id);
+            
+            // Format the deadline date
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+            String formattedDeadline = campaign.getDeadline().format(formatter);
+            
+            // Calculate progress percentage
+            BigDecimal progress = BigDecimal.ZERO;
+            if (campaign.getTargetAmount().compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal donatedAmount = campaign.getTotalDonated();
+                progress = donatedAmount
+                        .multiply(new BigDecimal("100"))
+                        .divide(campaign.getTargetAmount(), 2, RoundingMode.HALF_UP);
+            }
+            
+            // Add data to model
+            model.addAttribute("campaign", campaign);
+            model.addAttribute("formattedDeadline", formattedDeadline);
+            model.addAttribute("progress", progress);
+            
+            // Check if deadline has passed
+            boolean deadlinePassed = campaign.getDeadline().isBefore(LocalDate.now());
+            model.addAttribute("deadlinePassed", deadlinePassed);
+            
+            return "campaign/view";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+        }
     }
 
     @GetMapping("/my")

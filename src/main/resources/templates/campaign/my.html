@@ -19,6 +19,18 @@
         <p class="text-sm text-gray-500">Target: Rp <span th:text="${campaign.targetAmount}"></span></p>
         <p class="text-sm text-gray-500">Deadline: <span th:text="${campaign.deadline}"></span></p>
         <p class="text-sm text-blue-600 font-semibold" th:text="${campaign.status}"></p>
+        <!-- Add this inside the campaign list item, just before the closing div -->
+        <div class="mt-2 flex space-x-2">
+            <a th:href="@{'/campaign/view/' + ${campaign.id}}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                View Details
+            </a>
+            <a th:if="${campaign.canEdit()}" th:href="@{'/campaign/edit/' + ${campaign.id}}" class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600">
+                Edit
+            </a>
+            <form th:if="${campaign.canDelete()}" th:action="@{'/campaign/delete/' + ${campaign.id}}" method="post" class="inline">
+                <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">Delete</button>
+            </form>
+        </div>
     </div>
 </div>
 </body>
