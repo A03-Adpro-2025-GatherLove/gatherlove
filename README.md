@@ -116,3 +116,9 @@ Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsi
 
 ### Wallet Module: Code Diagram
 ![Wallet Module: Code Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Code%20Diagram%20-%20Janssen.png)
+
+### Donation Module: Component Diagram
+![Donation Module: Component Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Component%20Diagram%20-%20Allan.jpg)
+
+### Donation Module: Code Diagram
+![Donation Module: Code Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Code%20Diagram%20-%20Allan.jpg)
