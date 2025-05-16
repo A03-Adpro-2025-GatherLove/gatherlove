@@ -68,7 +68,7 @@ Meskipun saat ini arsitektur monolitik adalah pilihan paling langsung, seiring p
 ### Potential Future Architecture using container diagram
 ![Potential Future Architecture using container diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Container%20Diagram%20(Potential%20Future).jpg)
 
-### Risk Storming Analysis for Transitioning Software Architecture
+## Risk Storming Analysis for Transitioning Software Architecture
 Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsitektur monolitik, khususnya pada API Application dan Database, yang berpotensi menjadi bottleneck apabila skala pengguna dan kompleksitas fungsional bertambah. Untuk memitigasi risiko tersebut, kami mengusulkan pemecahan arsitektur sebagai berikut:
 
 ### 1. API Gateway
@@ -103,7 +103,6 @@ Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsi
 ![Risk Storming: Identification](static/img/DIAGRAM%20TUTORIAL%209%20B-Risk%20Storming_%20Identification.jpg)
 
 ### Risk Storming: Consensus
-### Risk Storming: Consensus
 ![Risk Storming: Consensus](static/img/DIAGRAM%20TUTORIAL%209%20B-Risk%20Storming_%20Consensus.jpg)
 
 ### Risk Storming: Mitigation
@@ -122,3 +121,20 @@ Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsi
 
 ### Donation Module: Code Diagram
 ![Donation Module: Code Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Code%20Diagram%20-%20Allan.jpg)
+
+### Admin Dashboard Module: Component Diagram (Yasin)
+![Admin Dashboard Module: Component Diagram](static/img/DIAGRAM%20TUTORIAL%209%20B-Component%20Diagram%20-%20Yasin.jpg)
+
+
+### Admin Dashboard Module: Code Diagram (Yasin)
+#### Announcement
+![Announcement Code Diagram](static/img/Code%20Diagram%20Announcement.png)
+
+#### Admin Dashboard
+![Admin Dashboard Code Diagram](static/img/Code%20Diagram%20Admin%20Dashboard.png)
+
+#### Admin Donation
+![Admin Donation Code Diagram](static/img/Code%20Diagram%20Admin%20Donation.png)
+
+#### Campaign
+![Campaign Code Diagram](static/img/Code%20Diagram%20Campaign.png)
