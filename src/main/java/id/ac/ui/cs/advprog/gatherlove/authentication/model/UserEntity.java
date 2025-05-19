@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.authentication.model;
 
+import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,8 +14,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @Data
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -24,16 +27,16 @@ public class UserEntity {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @NotBlank(message = "Username cannot be blank")
+    @NotBlank
     @Column(unique = true)
     private String username;
 
-    @NotBlank(message = "Email cannot be blank")
-    @Email(message = "Email should be valid")
+    @NotBlank
+    @Email
     @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "Password cannot be blank")
+    @NotBlank
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -43,4 +46,7 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private List<Role> roles = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Profile profile;
 }
