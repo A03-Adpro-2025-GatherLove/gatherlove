@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.gatherlove.authentication.generation.validation;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.security.JwtUtils;
 import id.ac.ui.cs.advprog.gatherlove.authentication.service.CustomUserDetailsService;
+import id.ac.ui.cs.advprog.gatherlove.authentication.service.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
