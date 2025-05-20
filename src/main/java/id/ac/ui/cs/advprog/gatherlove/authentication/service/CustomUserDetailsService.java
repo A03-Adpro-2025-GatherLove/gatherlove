@@ -32,10 +32,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        return new User(
-                user.getUsername(),
-                user.getPassword(),
-                mapRolesToAuthorities(user.getRoles()));
+        return new UserDetailsImpl(
+            user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            user.getPassword(),
+            mapRolesToAuthorities(user.getRoles())
+        );
     }
 
     private Collection<GrantedAuthority> mapRolesToAuthorities(List<Role> roles) {
