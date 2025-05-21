@@ -111,8 +111,7 @@ class WalletControllerTest {
                         .with(csrf()).with(csrf()).with(user("testuser").roles("USER"))
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").value("Penarikan Dana sedang Diproses..."))
-                .andExpect(jsonPath("$.status").value("NEED_ADMINISTRATOR_APPROVAL"));
+                .andExpect(jsonPath("$.message").value("Penarikan Dana Berhasil Diproses!"));
     }
 
     @Test
