@@ -1,7 +1,7 @@
 // File: src/main/java/id/ac/ui/cs/advprog/gatherlove/donation/controller/DonationController.java
 package id.ac.ui.cs.advprog.gatherlove.donation.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
+import id.ac.ui.cs.advprog.gatherlove.authentication.service.UserDetailsImpl;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.CreateDonationRequest;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.DonationResponse;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
@@ -45,7 +45,7 @@ public class DonationController {
 
     @DeleteMapping("/api/donations/{id}/message")
     public ResponseEntity<DonationResponse> removeMessage(@PathVariable UUID id) {
-        UUID userId = ((UserEntity)
+        UUID userId = ((UserDetailsImpl)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();
@@ -56,7 +56,7 @@ public class DonationController {
 
     @GetMapping("/api/donations/my-history")
     public ResponseEntity<List<DonationResponse>> getMyHistory() {
-        UUID userId = ((UserEntity)
+        UUID userId = ((UserDetailsImpl)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getId();
