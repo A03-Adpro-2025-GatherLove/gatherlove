@@ -76,4 +76,28 @@ public class AuthController {
 
         return ResponseEntity.ok("User registered successfully!");
     }
+
+    @PostMapping("/register_admin")
+    public ResponseEntity<String> registerAdmin(@Valid @RequestBody RegisterDto registerDto) {
+        if (userRepository.existsByUsername(registerDto.getUsername())) {
+            return ResponseEntity.badRequest().body("Error: Username is already taken!");
+        }
+
+        if (userRepository.existsByEmail(registerDto.getEmail())) {
+            return ResponseEntity.badRequest().body("Error: Email is already in use!");
+        }
+
+        // Create new user's account
+        UserEntity user = new UserEntity();
+        user.setUsername(registerDto.getUsername());
+        user.setEmail(registerDto.getEmail());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+
+        Role roles = roleRepository.findByName("ADMIN").get();
+        user.setRoles(Collections.singletonList(roles));
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("User registered successfully!");
+    }
 }
