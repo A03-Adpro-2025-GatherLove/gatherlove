@@ -128,15 +128,15 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Async("walletExecutor")
+    public CompletableFuture<BigDecimal> getBalanceAsync(UUID userId) {
+        BigDecimal balance = this.getWalletBalance(userId);
+        return CompletableFuture.completedFuture(balance);
+    }
+
+    @Async("walletExecutor")
     public CompletableFuture<Wallet> topUpAsync(UUID userId, BigDecimal amount,
                                                 String phone, String method) {
         Wallet result = this.topUp(userId, amount, phone, method);
         return CompletableFuture.completedFuture(result);
-    }
-
-    @Async("walletExecutor")
-    public CompletableFuture<BigDecimal> getBalanceAsync(UUID userId) {
-        BigDecimal balance = this.getWalletBalance(userId);
-        return CompletableFuture.completedFuture(balance);
     }
 }

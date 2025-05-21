@@ -92,17 +92,17 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
-    @GetMapping("/balance-async")
-    public CompletableFuture<BalanceResponse> getBalanceAsync(@RequestParam UUID userId) {
-        return walletService.getBalanceAsync(userId)
-                .thenApply(BalanceResponse::new);
-    }
-
     @PostMapping("/topup-async")
     public CompletableFuture<TopUpResponse> topUpAsync(@RequestParam UUID userId,
                                                        @RequestBody TopUpRequest body) {
 
         return walletService.topUpAsync(userId, body.amount(), body.phone_number(), body.method())
                 .thenApply(w -> new TopUpResponse("OK", w.getBalance()));
+    }
+
+    @GetMapping("/balance-async")
+    public CompletableFuture<BalanceResponse> getBalanceAsync(@RequestParam UUID userId) {
+        return walletService.getBalanceAsync(userId)
+                .thenApply(BalanceResponse::new);
     }
 }

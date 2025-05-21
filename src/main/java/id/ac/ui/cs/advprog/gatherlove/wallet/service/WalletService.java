@@ -21,8 +21,7 @@ public interface WalletService {
 
     Wallet debit(UUID donorId, BigDecimal amount);
 
-    CompletableFuture<Wallet> topUpAsync(UUID userId, BigDecimal amount,
-                                         String phone, String method);
+    CompletableFuture<Wallet> topUpAsync(UUID userId, BigDecimal amount, String phone, String method);
 
     CompletableFuture<BigDecimal> getBalanceAsync(UUID userId);
 }
