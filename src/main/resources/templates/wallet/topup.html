@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <title>Top-Up Saldo</title>
+    <script>
+        async function doTopUp(event) {
+            event.preventDefault();
+            const amount = document.getElementById('amount').value;
+            const phone  = document.getElementById('phone').value;
+            const method = document.getElementById('method').value;
+            const res = await fetch(
+                `/api/wallet/topup-async`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: Number(amount), phone_number: phone, method: method
+                    })
+                }
+            );
+            const data = await res.json();
+            if (res.ok) {
+                alert(`${data.message}\nSaldo baru: ${data.new_balance}`);
+                window.location.href = `/wallet/balance`;
+            } else {
+                alert(`Error: ${data.message || res.statusText}`);
+            }
+        }
+    </script>
+</head>
+<body>
+<h2>Top-Up Saldo</h2>
+<form onsubmit="doTopUp(event)">
+    <label> Nominal:
+        <input type="number" id="amount" min="10000" step="1000" required />
+    </label><br/>
+    <label> Nomor HP:
+        <input type="text" id="phone" required />
+    </label><br/>
+    <label> Metode:
+        <select id="method">
+            <option value="gopay">GoPay</option>
+            <option value="dana">DANA</option>
+        </select>
+    </label><br/>
+    <button type="submit">Kirim Top-Up</button>
+</form>
+<button onclick="window.location.href=`/wallet/balance`">Kembali</button>
+</body>
+</html>
