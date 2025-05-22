@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.service.UserDetailsImpl;
+import id.ac.ui.cs.advprog.gatherlove.authentication.security.services.UserDetailsImpl;
 import id.ac.ui.cs.advprog.gatherlove.wallet.enums.TransactionType;
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.*;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
@@ -41,7 +41,7 @@ class WalletControllerTest {
     void setup() {
         userId = UUID.randomUUID();
         principal = new UserDetailsImpl(userId, "test", "test@test.com",
-                "test", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                "test", List.of(new SimpleGrantedAuthority("ROLE_USER")), null);
     }
 
     @Test

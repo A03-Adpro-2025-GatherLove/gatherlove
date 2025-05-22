@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.service.UserDetailsImpl;
+import id.ac.ui.cs.advprog.gatherlove.authentication.security.services.UserDetailsImpl;
 import id.ac.ui.cs.advprog.gatherlove.wallet.dto.*;
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.Transaction;
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.Wallet;

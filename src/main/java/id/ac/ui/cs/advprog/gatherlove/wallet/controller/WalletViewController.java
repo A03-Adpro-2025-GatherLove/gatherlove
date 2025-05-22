@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 
-import id.ac.ui.cs.advprog.gatherlove.authentication.service.UserDetailsImpl;
+import id.ac.ui.cs.advprog.gatherlove.authentication.security.services.UserDetailsImpl;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
