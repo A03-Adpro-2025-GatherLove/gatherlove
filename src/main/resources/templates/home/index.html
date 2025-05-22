@@ -104,6 +104,7 @@
     </footer>
 
     <script th:src="@{/js/utils.js}"></script>
+    <script th:src="@{/js/handleLogout.js}"></script>
     <script>
         const jwtToken = localStorage.getItem('jwtToken');
         if (jwtToken) {
@@ -111,22 +112,7 @@
             document.getElementById('logout-link').style.display = 'flex';
         }
 
-        document.getElementById('logout-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            fetchWithAuthToken('/api/auth/logout', {
-                method: 'POST'
-            })
-            .then((response) => {
-                if (response.ok) {
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '/';
-                }
-                else {
-                    console.error('Logout failed');
-                }
-            })
-            .catch((error) => console.error('Error:', error));
-        });
+        document.getElementById('logout-btn').addEventListener('click', handleLogout);
     </script>
 </body>
 </html>
