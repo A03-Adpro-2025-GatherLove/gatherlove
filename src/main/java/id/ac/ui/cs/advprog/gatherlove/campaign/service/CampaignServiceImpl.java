@@ -6,6 +6,8 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CampaignServiceImpl implements CampaignService {
@@ -66,17 +69,19 @@ public class CampaignServiceImpl implements CampaignService {
         return campaignRepository.save(campaign);
     }
 
+    @Async("campaignTaskExecutor")
     @Override
     public void deleteCampaign(String id) {
+        log.info("Asynchronously deleting campaign with ID: {}", id);
+        // This can be async since deletion can happen in background
         Campaign campaign = getCampaignById(id);
-        
-        if (!campaign.canDelete()) {
-            throw new IllegalStateException("Kampanye tidak dapat dihapus dalam status " + campaign.getStatus());
+        if (!canDeleteCampaign(id)) {
+            throw new RuntimeException("Campaign cannot be deleted");
         }
-        
-        campaignRepository.deleteById(id);
+        campaignRepository.delete(campaign);
     }
 
+    @Async("campaignTaskExecutor")
     @Override
     public Campaign verifyCampaign(String id, boolean approve) {
         Campaign campaign = getCampaignById(id);
@@ -84,6 +89,7 @@ public class CampaignServiceImpl implements CampaignService {
         return campaignRepository.save(campaign);
     }
 
+    @Async("campaignTaskExecutor")
     @Override
     public Campaign addDonationToCampaign(String campaignId, BigDecimal amount) {
         Campaign campaign = getCampaignById(campaignId);
@@ -125,10 +131,11 @@ public class CampaignServiceImpl implements CampaignService {
         }
     }
 
+    @Async("campaignTaskExecutor")
     @Override
     public void addCollectedAmount(UUID campaignId, BigDecimal amount) {
         Campaign campaign = getCampaignById(campaignId.toString());
-        campaign.addDonation(amount); // This will use your State pattern
+        campaign.addDonation(amount);
         campaignRepository.save(campaign);
     }
 }
