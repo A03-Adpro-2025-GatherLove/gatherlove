@@ -1,19 +1,25 @@
 package id.ac.ui.cs.advprog.gatherlove.authentication.model;
 
-//import id.ac.ui.cs.advprog.gatherlove.authentication.enums.RoleEnum;
 import jakarta.persistence.*;
-import lombok.Setter;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Setter
-@Getter
 @Entity
 @Table(name = "roles")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private String name;
+    private ERole name;
+
+    public Role(ERole name) {
+        this.name = name;
+    }
 }
