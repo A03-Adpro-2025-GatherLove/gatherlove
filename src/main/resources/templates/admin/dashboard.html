@@ -1,0 +1,57 @@
+<!-- src/main/resources/templates/admin/dashboard.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between">
+            <div class="logo">Logo</div>
+            <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+            <a href="#" class="bg-red-600 text-white px-4 py-2 rounded hover:shadow-lg" id="logout-btn">Logout</a>
+        </div>
+    </header>
+    <div class="container mx-auto p-4 mt-4">
+        <aside class="w-64 bg-gray-100 p-4 rounded-lg">
+            <ul>
+                <li class="py-2"><a href="/admin" class="text-gray-600 hover:text-gray-900">Dashboard</a></li>
+                <li class="py-2"><a href="/admin/campaigns" class="text-gray-600 hover:text-gray-900">Campaigns</a></li>
+                <li class="py-2"><a href="/admin/transactions" class="text-gray-600 hover:text-gray-900">Transactions</a></li>
+                <li class="py-2"><a href="/admin/users" class="text-gray-600 hover:text-gray-900">Users</a></li>
+            </ul>
+        </aside>
+        <main class="ml-64 p-4">
+            <h2 class="text-2xl font-bold mb-4">Statistik Platform</h2>
+            <ul>
+                <li class="py-2">Total Kampanye: <span id="total-campaigns" th:text="${stats.totalCampaigns}"></span></li>
+                <li class="py-2">Total Donasi: <span id="total-donations" th:text="${stats.totalDonations}"></span></li>
+                <li class="py-2">Total Pengguna: <span id="total-users" th:text="${stats.totalUsers}"></span></li>
+                <li class="py-2">Total Dana Terkumpul: <span id="total-fund-raised" th:text="${stats.totalFundRaised}"></span></li>
+                <li class="py-2" id="loading-indicator" style="display: none;">
+                    <svg class="mr-3 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Loading...
+                </li>
+            </ul>
+            <button id="refresh-stats-btn" class="bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-900">Refresh Stats</button>
+        </main>
+    </div>
+    <script src="/js/utils.js"></script>
+    <script th:src="@{/js/handleLogout.js}"></script>
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', handleLogout);
+        const refreshStatsBtn = document.getElementById('refresh-stats-btn');
+        const totalCampaignsElement = document.getElementById('total-campaigns');
+        const totalDonationsElement = document.getElementById('total-donations');
+        const totalUsersElement = document.getElementById('total-users');
+        const totalFundRaisedElement = document.getElementById('total-fund-raised');
+        const loadingIndicator = document.getElementById('loading-indicator');
+    </script>
+    <script src="/js/admin_dashboard.js"></script>
+</body>
+</html>
