@@ -7,9 +7,11 @@ import id.ac.ui.cs.advprog.gatherlove.profile.dto.ProfileResponse;
 import id.ac.ui.cs.advprog.gatherlove.profile.exception.ResourceNotFoundException;
 import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
 import id.ac.ui.cs.advprog.gatherlove.profile.repository.ProfileRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ProfileService {
@@ -80,5 +82,24 @@ public class ProfileService {
         profile.setBio(null);
 
         profileRepository.save(profile);
+    }
+
+    // Add these new methods to your ProfileService class
+    @Async
+    public CompletableFuture<ProfileResponse> completeProfileAsync(ProfileRequest request, UUID userId) {
+        ProfileResponse response = completeProfile(request, userId);
+        return CompletableFuture.completedFuture(response);
+    }
+
+    @Async
+    public CompletableFuture<ProfileResponse> updateProfileAsync(UUID profileId, ProfileRequest request) {
+        ProfileResponse response = updateProfile(profileId, request);
+        return CompletableFuture.completedFuture(response);
+    }
+
+    @Async
+    public CompletableFuture<Void> deleteBioAsync(UUID profileId) {
+        deleteBio(profileId);
+        return CompletableFuture.completedFuture(null);
     }
 }
