@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <title>Riwayat Transaksi</title>
+    <script>
+        async function loadTransactions() {
+            const res = await fetch(`/api/wallet/transactions`);
+            const data = await res.json();
+            const tbody = document.getElementById('txBody');
+            tbody.innerHTML = '';
+            data.transactions.forEach(tx => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td>${tx.id}</td>
+                  <td>${tx.type}</td>
+                  <td>${tx.amount}</td>
+                  <td>${new Date(tx.transactionDateTime).toLocaleString()}</td>
+                  <td>
+                    ${tx.type === 'TOP_UP' ? `<button onclick="deleteTx(${tx.id})">Hapus</button>` : ''}
+                  </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function deleteTx(txId) {
+            if (!confirm('Apakah Anda yakin terhadap penghapusan?')) return;
+            const res = await fetch(
+                `/api/wallet/transactions/${txId}`,
+                { method: 'DELETE' }
+            );
+            if (res.ok) {
+                alert('Transaksi telah dihapus');
+                loadTransactions();
+            } else {
+                alert('Transaksi gagal dihapus');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTransactions);
+    </script>
+</head>
+<body>
+<h2>Riwayat Transaksi</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th><th>Type</th><th>Amount</th><th>Waktu</th><th>Aksi</th>
+    </tr>
+    </thead>
+    <tbody id="txBody">
+    </tbody>
+</table>
+<button onclick="window.location.href=`/wallet/balance`">Kembali</button>
+</body>
+</html>

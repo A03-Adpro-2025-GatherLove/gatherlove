@@ -16,7 +16,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class WalletServiceTest {
@@ -40,19 +42,24 @@ class WalletServiceTest {
 
     private Wallet exampleWallet;
 
+    private final UUID userID = UUID.randomUUID();
+
     @BeforeEach
     void setup() {
-        exampleWallet = new Wallet(123L, BigDecimal.valueOf(80000));
-        when(walletRepository.findByUserId(123L)).thenReturn(Optional.of(exampleWallet));
+        exampleWallet = new Wallet(userID, BigDecimal.valueOf(80000));
+        when(walletRepository.findByUserId(userID)).thenReturn(Optional.of(exampleWallet));
 
-        walletService = new WalletServiceImpl(walletRepository, transactionRepository, walletEventPublisher,
-                danaStrategy, goPayStrategy);
+        Map<String, PaymentStrategy> strategyMap = Map.of(
+                "gopay", goPayStrategy, "dana", danaStrategy);
+
+        walletService = new WalletServiceImpl(walletRepository, transactionRepository,
+                walletEventPublisher, strategyMap);
     }
 
     @Test
     void testTopUpSuccess() {
         when(goPayStrategy.pay(eq(BigDecimal.valueOf(10000)), eq("080808080808"))).thenReturn(true);
-        Wallet updatedWallet = walletService.topUp(123L, BigDecimal.valueOf(10000), "080808080808", "GOPAY");
+        Wallet updatedWallet = walletService.topUp(userID, BigDecimal.valueOf(10000), "080808080808", "GOPAY");
         assertEquals(BigDecimal.valueOf(90000), updatedWallet.getBalance());
         verify(goPayStrategy).pay(BigDecimal.valueOf(10000), "080808080808");
         verify(walletEventPublisher).notifyBalanceChanged(any(Wallet.class), any(Transaction.class));
@@ -62,16 +69,16 @@ class WalletServiceTest {
     void testTopUpFailure() {
         when(danaStrategy.pay(eq(BigDecimal.valueOf(10000)), eq("080808080808"))).thenReturn(false);
         assertThrows(RuntimeException.class, () -> {
-            walletService.topUp(123L, BigDecimal.valueOf(10000), "080808080808", "DANA");
+            walletService.topUp(userID, BigDecimal.valueOf(10000), "080808080808", "DANA");
         });
         verify(walletEventPublisher, never()).notifyBalanceChanged(any(), any());
     }
 
     @Test
     void testGetWalletBalance() {
-        BigDecimal balance = walletService.getWalletBalance(123L);
+        BigDecimal balance = walletService.getWalletBalance(userID);
         assertEquals(BigDecimal.valueOf(80000), balance);
-        verify(walletRepository).findByUserId(123L);
+        verify(walletRepository).findByUserId(userID);
     }
 
     @Test
@@ -80,7 +87,7 @@ class WalletServiceTest {
         tr.setId(998L);
         tr.setWallet(exampleWallet);
         when(transactionRepository.findById(998L)).thenReturn(Optional.of(tr));
-        walletService.deleteTopUpTransaction(123L, 998L);
+        walletService.deleteTopUpTransaction(userID, 998L);
         assertEquals(BigDecimal.valueOf(79000), exampleWallet.getBalance());
         verify(transactionRepository).delete(tr);
         verify(walletEventPublisher).notifyBalanceChanged(exampleWallet, tr);
@@ -93,7 +100,7 @@ class WalletServiceTest {
         tr.setWallet(exampleWallet);
         when(transactionRepository.findById(999L)).thenReturn(Optional.of(tr));
         assertThrows(RuntimeException.class, () -> {
-            walletService.deleteTopUpTransaction(123L, 999L);
+            walletService.deleteTopUpTransaction(userID, 999L);
         });
         verify(transactionRepository, never()).delete(any());
         verify(walletEventPublisher, never()).notifyBalanceChanged(any(), any());
@@ -102,15 +109,36 @@ class WalletServiceTest {
     @Test
     void testWithdrawFundsInsufficientBalance() {
         assertThrows(RuntimeException.class, () -> {
-            walletService.withdrawFunds(123L, BigDecimal.valueOf(99999999));
+            walletService.withdrawFunds(userID, BigDecimal.valueOf(99999999));
         });
         verify(walletEventPublisher, never()).notifyBalanceChanged(any(), any());
     }
 
     @Test
     void testWithdrawFundsSuccess() {
-        Wallet updated = walletService.withdrawFunds(123L, BigDecimal.valueOf(10000));
+        Wallet updated = walletService.withdrawFunds(userID, BigDecimal.valueOf(10000));
         assertEquals(BigDecimal.valueOf(70000), updated.getBalance());
         verify(walletEventPublisher).notifyBalanceChanged(any(Wallet.class), any(Transaction.class));
+    }
+
+    @Test
+    void testDonateSuccess() {
+        Wallet updatedWallet = walletService.debit(userID, BigDecimal.valueOf(15000));
+        assertEquals(BigDecimal.valueOf(65000), updatedWallet.getBalance());
+        assertTrue(updatedWallet.getTransactions().stream().anyMatch(
+                t -> t.getType() == TransactionType.DONATION &&
+                        t.getAmount().compareTo(BigDecimal.valueOf(15000)) == 0));
+
+        verify(transactionRepository).save(any(Transaction.class));
+        verify(walletRepository).save(updatedWallet);
+        verify(walletEventPublisher).notifyBalanceChanged(updatedWallet,
+                updatedWallet.getTransactions().getLast());
+    }
+
+    @Test
+    void testDonateInsufficientBalance() {
+        assertThrows(RuntimeException.class, () -> walletService.debit(userID, BigDecimal.valueOf(1000000)));
+        assertEquals(BigDecimal.valueOf(80000), exampleWallet.getBalance());
+        verify(walletEventPublisher, never()).notifyBalanceChanged(any(), any());
     }
 }
