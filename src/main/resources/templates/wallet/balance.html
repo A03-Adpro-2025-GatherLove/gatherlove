@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <title>Saldo Wallet</title>
+    <script>
+        async function loadBalance() {
+            const res = await fetch(`/api/wallet/balance-async`);
+            if (!res.ok) {
+                document.getElementById('saldo').innerText = 'Error';
+                return;
+            }
+            const data = await res.json();
+            document.getElementById('saldo').innerText = data.balance;
+        }
+        document.addEventListener('DOMContentLoaded', loadBalance);
+    </script>
+</head>
+<body>
+<h2>Saldo Anda:</h2>
+<p id="saldo">Memuat...</p>
+
+<button onclick="window.location.href=`/wallet/topup`">Top-Up Saldo</button>
+<button onclick="window.location.href=`/wallet/transactions`">Lihat Riwayat</button>
+
+<div th:if="${success}" th:text="${success}" style="color:green"></div>
+</body>
+</html>

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-@Component("goPayStrategy")
+@Component("gopay")
 public class GoPayStrategy implements PaymentStrategy {
 
     @Override
