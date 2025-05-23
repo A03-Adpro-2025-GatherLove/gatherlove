@@ -29,7 +29,7 @@ public class ProfileController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/users/{userId}")
+    @PostMapping("/users/{userId}/async")
     public CompletableFuture<ResponseEntity<ProfileResponse>> completeProfileAsync(
             @Valid @RequestBody ProfileRequest request,
             @PathVariable UUID userId) {
@@ -51,7 +51,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{profileId}")
+    @PutMapping("/{profileId}/async")
     public CompletableFuture<ResponseEntity<ProfileResponse>> updateProfileAsync(
             @PathVariable UUID profileId,
             @Valid @RequestBody ProfileRequest request) {
@@ -65,7 +65,7 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{profileId}/bio")
+    @DeleteMapping("/{profileId}/bio/async")
     public CompletableFuture<ResponseEntity<Void>> deleteBioAsync(@PathVariable UUID profileId) {
         return profileService.deleteBioAsync(profileId)
                 .thenApply(result -> ResponseEntity.noContent().build());
