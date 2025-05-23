@@ -4,6 +4,7 @@ import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
 import id.ac.ui.cs.advprog.gatherlove.donation.service.DonationService;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class RemoveDonationMessageCommand implements Command<Donation> {
 
@@ -18,7 +19,7 @@ public class RemoveDonationMessageCommand implements Command<Donation> {
     }
 
     @Override
-    public Donation execute() {
+    public CompletableFuture<Donation> execute() { // Ubah return type
         return donationService.removeDonationMessage(donationId, requestingUserId);
     }
 }

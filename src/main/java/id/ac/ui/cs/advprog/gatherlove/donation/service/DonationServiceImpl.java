@@ -7,6 +7,7 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.service.CampaignService;
 import id.ac.ui.cs.advprog.gatherlove.donation.exception.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class DonationServiceImpl implements DonationService {
@@ -33,31 +35,42 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
-    @Transactional
-    public Donation createDonation(UUID donorId, UUID campaignId, BigDecimal amount, String message) {
-        campaignService.validateCampaignForDonation(campaignId); // Placeholder call
+    @Transactional // Transaksi tetap berlaku untuk operasi dalam method ini
+    @Async("asyncTaskExecutor") // Menjalankan method ini di thread pool yang didefinisikan
+    public CompletableFuture<Donation> createDonation(UUID donorId, UUID campaignId, BigDecimal amount, String message) {
+        // Simulasi delay untuk menunjukkan sifat async (opsional, hapus untuk produksi)
+        // try {
+        //     Thread.sleep(5000); // Delay 5 detik
+        // } catch (InterruptedException e) {
+        //     Thread.currentThread().interrupt();
+        // }
+
+        campaignService.validateCampaignForDonation(campaignId);
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Donation amount must be positive.");
         }
-        walletService.debit(donorId, amount); // Placeholder call
+        walletService.debit(donorId, amount);
         Donation donation = Donation.builder()
                 .donorId(donorId).campaignId(campaignId).amount(amount).message(message)
                 .donationTimestamp(LocalDateTime.now()).build();
         Donation savedDonation = donationRepository.save(donation);
-        campaignService.addCollectedAmount(campaignId, amount); // Placeholder call
-        return savedDonation;
+        campaignService.addCollectedAmount(campaignId, amount);
+
+        return CompletableFuture.completedFuture(savedDonation); // Wrap hasil dalam CompletableFuture
     }
 
     @Override
     @Transactional
-    public Donation removeDonationMessage(UUID donationId, UUID requestingUserId)
+    @Async("asyncTaskExecutor") // Menjalankan method ini di thread pool
+    public CompletableFuture<Donation> removeDonationMessage(UUID donationId, UUID requestingUserId)
     {
-        Donation donation = findDonationByIdInternal(donationId); // Use helper
+        Donation donation = findDonationByIdInternal(donationId);
         if (!donation.getDonorId().equals(requestingUserId)) {
             throw new UnauthorizedException("User not authorized to modify this donation message.");
         }
         donation.setMessage(null);
-        return donationRepository.save(donation);
+        Donation updatedDonation = donationRepository.save(donation);
+        return CompletableFuture.completedFuture(updatedDonation); // Wrap hasil
     }
 
     @Override
