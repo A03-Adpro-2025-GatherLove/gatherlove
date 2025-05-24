@@ -29,7 +29,7 @@ public class ProfileService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Profile profile = Profile.builder()
-                .name(request.getName())
+                .fullName(request.getFullName())
                 .phoneNumber(request.getPhoneNumber())
                 .bio(request.getBio())
                 .user(user)
@@ -39,7 +39,7 @@ public class ProfileService {
 
         return ProfileResponse.builder()
                 .id(savedProfile.getId())
-                .name(savedProfile.getName())
+                .fullName(savedProfile.getFullName())
                 .phoneNumber(savedProfile.getPhoneNumber())
                 .bio(savedProfile.getBio())
                 .build();
@@ -51,7 +51,7 @@ public class ProfileService {
 
         return ProfileResponse.builder()
                 .id(profile.getId())
-                .name(profile.getName())
+                .fullName(profile.getFullName())
                 .phoneNumber(profile.getPhoneNumber())
                 .bio(profile.getBio())
                 .build();
@@ -61,7 +61,7 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
-        profile.setName(request.getName());
+        profile.setFullName(request.getFullName());
         profile.setPhoneNumber(request.getPhoneNumber());
         profile.setBio(request.getBio());
 
@@ -69,7 +69,7 @@ public class ProfileService {
 
         return ProfileResponse.builder()
                 .id(updatedProfile.getId())
-                .name(updatedProfile.getName())
+                .fullName(updatedProfile.getFullName())
                 .phoneNumber(updatedProfile.getPhoneNumber())
                 .bio(updatedProfile.getBio())
                 .build();

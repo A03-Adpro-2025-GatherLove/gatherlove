@@ -16,19 +16,16 @@ import java.util.UUID;
 public class Profile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private UUID id;  // Same type as UserEntity.id
 
-    @NotBlank
-    private String name;
+    private String fullName;
 
-    @NotBlank
     private String phoneNumber;
 
     private String bio;
 
     @OneToOne
-    @MapsId  // This annotation indicates that the ID is shared with the parent
-    @JoinColumn(name = "id")  // The column name is the same as the ID
+    @MapsId  // This will use the user's ID as the profile ID
+    @JoinColumn(name = "id")  // The column name in profile table
     private UserEntity user;
 }
