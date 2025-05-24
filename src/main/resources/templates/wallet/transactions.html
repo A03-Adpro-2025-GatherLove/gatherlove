@@ -14,16 +14,14 @@
             data.transactions.forEach(tx => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-          <td class="px-4 py-2">${new Date(tx.timestamp).toLocaleString()}</td>
-          <td class="px-4 py-2">${tx.type}</td>
-          <td class="px-4 py-2">${tx.amount}</td>
-          <td class="px-4 py-2">
-            ${tx.type === 'TOP_UP'
-                    ? `<button onclick="deleteTx(${tx.transaction_id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Hapus</button>`
-                    : ''
-                }
-          </td>
-        `;
+                  <td class="px-4 py-2">${new Date(tx.timestamp).toLocaleString()}</td>
+                  <td class="px-4 py-2">${tx.type}</td>
+                  <td class="px-4 py-2">${tx.amount}</td>
+                  <td class="px-4 py-2">
+                    ${tx.type === 'TOP_UP' ? `<button onclick="deleteTx(${tx.transaction_id})"
+                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Hapus</button>` : ''}
+                  </td>
+                `;
                 tbody.appendChild(tr);
             });
         }
@@ -61,10 +59,8 @@
             </table>
         </div>
         <div class="p-4 border-t">
-            <button
-                    onclick="window.location.href=`/wallet/balance`"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded transition"
-            >
+            <button onclick="window.location.href=`/wallet/balance`"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded transition">
                 Kembali
             </button>
         </div>

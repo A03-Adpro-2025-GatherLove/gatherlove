@@ -6,9 +6,7 @@ import id.ac.ui.cs.advprog.gatherlove.wallet.observer.WalletEventPublisher;
 import id.ac.ui.cs.advprog.gatherlove.wallet.repository.*;
 import id.ac.ui.cs.advprog.gatherlove.wallet.strategy.PaymentStrategy;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.Map;
