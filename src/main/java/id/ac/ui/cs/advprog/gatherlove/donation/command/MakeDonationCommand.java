@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.gatherlove.donation.service.DonationService;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class MakeDonationCommand implements Command<Donation> {
 
@@ -23,7 +24,7 @@ public class MakeDonationCommand implements Command<Donation> {
     }
 
     @Override
-    public Donation execute() {
+    public CompletableFuture<Donation> execute() { // Ubah return type
         return donationService.createDonation(donorId, campaignId, amount, message);
     }
 }

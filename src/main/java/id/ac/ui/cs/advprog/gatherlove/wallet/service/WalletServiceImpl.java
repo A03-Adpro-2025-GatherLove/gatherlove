@@ -6,11 +6,13 @@ import id.ac.ui.cs.advprog.gatherlove.wallet.observer.WalletEventPublisher;
 import id.ac.ui.cs.advprog.gatherlove.wallet.repository.*;
 import id.ac.ui.cs.advprog.gatherlove.wallet.strategy.PaymentStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class WalletServiceImpl implements WalletService {
@@ -123,5 +125,18 @@ public class WalletServiceImpl implements WalletService {
         walletEventPublisher.notifyBalanceChanged(wallet, tx);
 
         return wallet;
+    }
+
+    @Async("walletExecutor")
+    public CompletableFuture<BigDecimal> getBalanceAsync(UUID userId) {
+        BigDecimal balance = this.getWalletBalance(userId);
+        return CompletableFuture.completedFuture(balance);
+    }
+
+    @Async("walletExecutor")
+    public CompletableFuture<Wallet> topUpAsync(UUID userId, BigDecimal amount,
+                                                String phone, String method) {
+        Wallet result = this.topUp(userId, amount, phone, method);
+        return CompletableFuture.completedFuture(result);
     }
 }
