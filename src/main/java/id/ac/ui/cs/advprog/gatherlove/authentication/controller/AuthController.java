@@ -56,7 +56,7 @@ public class AuthController {
 
     @Autowired
     ProfileRepository profileRepository;
-    
+
     @Autowired
     SessionRepository sessionRepository;
 
@@ -94,7 +94,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletResponse response) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()

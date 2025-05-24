@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProfileRequest {
     @NotBlank(message = "Name is required")
-    private String name;
+    private String fullName;
 
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
