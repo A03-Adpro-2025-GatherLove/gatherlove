@@ -124,10 +124,10 @@
 
                     // The cookie is already set by the server, but we also store the token
                     // in case it's needed for API calls before page navigation
-                    localStorage.setItem('jwtToken', data.token);
+                    localStorage.setItem('jwtToken', data.accessToken || data.token);
 
                     // Redirect to profile completion page with the user's ID
-                    window.location.href = `/api/profiles/users/${data.id}`;
+                    window.location.href = `profile/complete/${data.id}`;
                 } else {
                     const errorMessage = await response.json();
                     document.getElementById('error-message').innerHTML = errorMessage.message;
