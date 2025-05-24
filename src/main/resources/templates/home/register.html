@@ -105,26 +105,36 @@
         if (errors.length > 0) {
             document.getElementById('error-message').innerHTML = errors.join('<br>');
         } else {
-            // Submit the form
-            const response = await fetch('api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username,
-                    email,
-                    password,
-                    confirmPassword
-                })
-            });
+            try {
+                const response = await fetch('api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        confirmPassword
+                    })
+                });
 
-            if (response.ok) {
-                console.log('Registration successful!');
-                document.getElementById('success-modal').classList.remove('hidden');
-            } else {
-                const errorMessage = await response.json();
-                document.getElementById('error-message').innerHTML = errorMessage.message;
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // The cookie is already set by the server, but we also store the token
+                    // in case it's needed for API calls before page navigation
+                    localStorage.setItem('jwtToken', data.token);
+
+                    // Redirect to profile completion page with the user's ID
+                    window.location.href = `/api/profiles/users/${data.id}`;
+                } else {
+                    const errorMessage = await response.json();
+                    document.getElementById('error-message').innerHTML = errorMessage.message;
+                }
+            } catch (error) {
+                document.getElementById('error-message').innerHTML = 'An error occurred during registration';
+                console.error(error);
             }
         }
     });
