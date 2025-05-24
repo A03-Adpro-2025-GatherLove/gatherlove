@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="'Donate to ' + ${campaign.title} + ' - GatherLove'">Donate - GatherLove</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .form-input {
+      transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .form-input:focus {
+      border-color: #4CAF50;
+      box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, .25);
+    }
+    .error-message {
+      color: #e53e3e;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+<nav class="bg-white shadow sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center">
+        <a th:href="@{/}" class="text-2xl font-bold text-green-600">GatherLove</a>
+      </div>
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-4">
+          <a th:href="@{/}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+          <a th:href="@{/donate/browse}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">Browse Campaigns</a>
+          <a th:href="@{/campaign/my}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="my-campaigns-link-nav" style="display:none;">My Campaigns</a>
+          <a th:href="@{/campaign/create}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="create-campaign-link-nav" style="display:none;">Create Campaign</a>
+          <a th:href="@{/wallet/balance}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="wallet-link-nav" style="display:none;">My Wallet</a>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center ml-4 md:ml-6">
+        <div class="space-x-4" id="auth-links-desktop">
+          <!-- DIUBAH DI SINI -->
+          <a th:href="@{/login}" class="bg-green-600 text-white px-4 py-2 rounded hover:shadow-lg" id="login-link-desktop">Login</a>
+          <a th:href="@{/register}" class="bg-blue-600 text-white px-4 py-2 rounded hover:shadow-lg" id="signup-link-desktop">Sign Up</a>
+        </div>
+        <div class="space-x-4 items-center" id="user-info-desktop" style="display: none;">
+          <span id="username-display-desktop" class="text-gray-700 text-sm font-medium"></span>
+          <a href="#" class="bg-red-600 text-white px-4 py-2 rounded hover:shadow-lg" id="logout-btn-desktop">Logout</a>
+        </div>
+      </div>
+      <div class="-mr-2 flex md:hidden">
+        <button type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+          <span class="sr-only">Open main menu</span>
+          <svg class="block h-6 w-6" id="icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <svg class="hidden h-6 w-6" id="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="md:hidden hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      <a th:href="@{/}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+      <a th:href="@{/donate/browse}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Browse Campaigns</a>
+      <a th:href="@{/campaign/my}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium" id="my-campaigns-link-mobile" style="display:none;">My Campaigns</a>
+      <a th:href="@{/campaign/create}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium" id="create-campaign-link-mobile" style="display:none;">Create Campaign</a>
+      <a th:href="@{/wallet/balance}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium" id="wallet-link-mobile" style="display:none;">My Wallet</a>
+    </div>
+    <div class="pt-4 pb-3 border-t border-gray-200">
+      <div id="auth-links-mobile" class="px-2 space-y-2">
+        <!-- DIUBAH DI SINI -->
+        <a th:href="@{/login}" class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-md text-base font-medium hover:bg-green-700">Login</a>
+        <a th:href="@{/register}" class="block w-full bg-blue-600 text-white text-center px-4 py-2 rounded-md text-base font-medium hover:bg-blue-700">Sign Up</a>
+      </div>
+      <div id="user-info-mobile" style="display: none;" class="px-5 py-3">
+        <div class="text-base font-medium text-gray-800 mb-1" id="username-display-mobile"></div>
+        <a href="#" id="logout-btn-mobile" class="mt-1 block w-full text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ... sisa konten body ... -->
+<div class="container mx-auto px-4 py-12">
+  <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <div th:if="${campaign}" class="mb-6 pb-6 border-b border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2" th:text="${campaign.title}"></h1>
+      <p class="text-gray-600" th:text="${campaign.description}"></p>
+      <div class="mt-4">
+        <span class="text-sm text-gray-500">Target: </span>
+        <span class="font-semibold text-gray-700" th:text="'Rp ' + ${#numbers.formatDecimal(campaign.targetAmount, 0, 'POINT', 0, 'COMMA')}"></span>
+      </div>
+      <div>
+        <span class="text-sm text-gray-500">Raised: </span>
+        <span class="font-semibold text-green-600" th:text="'Rp ' + ${#numbers.formatDecimal(campaign.totalDonated, 0, 'POINT', 0, 'COMMA')}"></span>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-700 mb-6">Make Your Donation</h2>
+
+    <div th:if="${errorMessage}" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+      <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="@{/donate/create}" th:object="${createDonationRequest}" method="post">
+      <input type="hidden" th:field="*{campaignId}" />
+      <div class="mb-6">
+        <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Donation Amount (IDR)</label>
+        <input type="number" id="amount" th:field="*{amount}" class="form-input mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="Enter amount (e.g., 50000)" min="1000"/>
+        <div th:if="${#fields.hasErrors('amount')}" class="mt-1">
+          <p th:each="err : ${#fields.errors('amount')}" th:text="${err}" class="error-message"></p>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">Minimum donation: Rp 1,000. No decimals.</div>
+      </div>
+      <div class="mb-8">
+        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
+        <textarea id="message" th:field="*{message}" rows="4" class="form-input mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="Your words of encouragement..."></textarea>
+        <div th:if="${#fields.hasErrors('message')}" class="mt-1">
+          <p th:each="err : ${#fields.errors('message')}" th:text="${err}" class="error-message"></p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end space-x-4">
+        <a th:href="@{/donate/browse}" class="px-6 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Cancel</a>
+        <button type="submit" class="px-8 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Donate Now</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="bg-white py-10 mt-16 border-t">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-gray-500 text-sm">© <span id="currentYear"></span> GatherLove. All rights reserved.</p>
+    <script>document.getElementById('currentYear').textContent = new Date().getFullYear();</script>
+  </div>
+</footer>
+
+<script th:inline="javascript">
+  // DIUBAH DI SINI
+  const loginPath = /*[[@{/login}]]*/ '/login';
+
+  function handleLogout() {
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('username');
+    window.location.href = loginPath; // Arahkan ke halaman login setelah logout
+  }
+
+  function getUsernameFromToken(token) {
+    if (!token) return null;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      if (!payloadBase64) return null;
+      const payload = JSON.parse(atob(payloadBase64));
+      return payload.sub;
+    } catch (e) {
+      console.error("Error decoding token:", e);
+      localStorage.removeItem('jwtToken');
+      return null;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const jwtToken = localStorage.getItem('jwtToken');
+    const username = getUsernameFromToken(jwtToken);
+
+    const authLinksDesktop = document.getElementById('auth-links-desktop');
+    const userInfoDesktop = document.getElementById('user-info-desktop');
+    const usernameDisplayDesktop = document.getElementById('username-display-desktop');
+    const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
+    const myCampaignsLinkNav = document.getElementById('my-campaigns-link-nav');
+    const createCampaignLinkNav = document.getElementById('create-campaign-link-nav');
+    const walletLinkNav = document.getElementById('wallet-link-nav');
+
+    const authLinksMobile = document.getElementById('auth-links-mobile');
+    const userInfoMobile = document.getElementById('user-info-mobile');
+    const usernameDisplayMobile = document.getElementById('username-display-mobile');
+    const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+    const myCampaignsLinkMobile = document.getElementById('my-campaigns-link-mobile');
+    const createCampaignLinkMobile = document.getElementById('create-campaign-link-mobile');
+    const walletLinkMobile = document.getElementById('wallet-link-mobile');
+
+
+    if (username && jwtToken) {
+      if (authLinksDesktop) authLinksDesktop.style.display = 'none';
+      if (userInfoDesktop) userInfoDesktop.style.display = 'flex';
+      if (usernameDisplayDesktop) usernameDisplayDesktop.textContent = 'Hi, ' + username;
+      if (myCampaignsLinkNav) myCampaignsLinkNav.style.display = 'inline-block';
+      if (createCampaignLinkNav) createCampaignLinkNav.style.display = 'inline-block';
+      if (walletLinkNav) walletLinkNav.style.display = 'inline-block';
+      if (logoutBtnDesktop) logoutBtnDesktop.addEventListener('click', handleLogout);
+
+      if (authLinksMobile) authLinksMobile.style.display = 'none';
+      if (userInfoMobile) userInfoMobile.style.display = 'block';
+      if (usernameDisplayMobile) usernameDisplayMobile.textContent = 'Hi, ' + username;
+      if (myCampaignsLinkMobile) myCampaignsLinkMobile.style.display = 'block';
+      if (createCampaignLinkMobile) createCampaignLinkMobile.style.display = 'block';
+      if (walletLinkMobile) walletLinkMobile.style.display = 'block';
+      if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
+    } else {
+      if (authLinksDesktop) authLinksDesktop.style.display = 'flex';
+      if (userInfoDesktop) userInfoDesktop.style.display = 'none';
+      if (myCampaignsLinkNav) myCampaignsLinkNav.style.display = 'none';
+      if (createCampaignLinkNav) createCampaignLinkNav.style.display = 'none';
+      if (walletLinkNav) walletLinkNav.style.display = 'none';
+
+      if (authLinksMobile) authLinksMobile.style.display = 'block';
+      if (userInfoMobile) userInfoMobile.style.display = 'none';
+      if (myCampaignsLinkMobile) myCampaignsLinkMobile.style.display = 'none';
+      if (createCampaignLinkMobile) createCampaignLinkMobile.style.display = 'none';
+      if (walletLinkMobile) walletLinkMobile.style.display = 'none';
+    }
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconOpen = document.getElementById('icon-open');
+    const iconClose = document.getElementById('icon-close');
+
+    if (mobileMenuButton && mobileMenu && iconOpen && iconClose) {
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true' || false;
+        mobileMenuButton.setAttribute('aria-expanded', String(!isExpanded));
+        mobileMenu.classList.toggle('hidden');
+        iconOpen.classList.toggle('hidden');
+        iconClose.classList.toggle('hidden');
+      });
+    }
+  });
+</script>
+</body>
+</html>

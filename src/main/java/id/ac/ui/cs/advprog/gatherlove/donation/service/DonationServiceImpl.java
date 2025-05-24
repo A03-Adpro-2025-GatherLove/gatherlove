@@ -34,10 +34,10 @@ public class DonationServiceImpl implements DonationService {
                 .orElseThrow(() -> new DonationNotFoundException("Donation not found with ID: " + donationId));
     }
 
-    @Override
+
     @Transactional // Transaksi tetap berlaku untuk operasi dalam method ini
     @Async("asyncTaskExecutor") // Menjalankan method ini di thread pool yang didefinisikan
-    public CompletableFuture<Donation> createDonation(UUID donorId, UUID campaignId, BigDecimal amount, String message) {
+    public CompletableFuture<Donation> createDonation(UUID donorId, String campaignId, BigDecimal amount, String message) {
         // Simulasi delay untuk menunjukkan sifat async (opsional, hapus untuk produksi)
         // try {
         //     Thread.sleep(5000); // Delay 5 detik
@@ -49,12 +49,13 @@ public class DonationServiceImpl implements DonationService {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Donation amount must be positive.");
         }
+        walletService.getOrCreateWallet(donorId);
         walletService.debit(donorId, amount);
         Donation donation = Donation.builder()
                 .donorId(donorId).campaignId(campaignId).amount(amount).message(message)
                 .donationTimestamp(LocalDateTime.now()).build();
         Donation savedDonation = donationRepository.save(donation);
-        campaignService.addCollectedAmount(campaignId, amount);
+        campaignService.addDonationToCampaign(campaignId, amount);
 
         return CompletableFuture.completedFuture(savedDonation); // Wrap hasil dalam CompletableFuture
     }
@@ -79,6 +80,6 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override public List<Donation> findDonationsByDonor(UUID donorId) { return donationRepository.findByDonorIdOrderByDonationTimestampDesc(donorId); }
-    @Override public List<Donation> findDonationsByCampaign(UUID campaignId) { return donationRepository.findByCampaignIdOrderByDonationTimestampDesc(campaignId); }
+    @Override public List<Donation> findDonationsByCampaign(String campaignId) { return donationRepository.findByCampaignIdOrderByDonationTimestampDesc(campaignId); }
     @Override public List<Donation> findAllDonations() { return donationRepository.findAll(); }
 }

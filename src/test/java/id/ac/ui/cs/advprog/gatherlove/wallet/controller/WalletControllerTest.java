@@ -56,12 +56,15 @@ class WalletControllerTest {
     @Test
     void testTopUp() throws Exception {
         Wallet after = new Wallet(userId, BigDecimal.valueOf(60000));
+        UUID requestId = UUID.randomUUID();
         given(walletService.topUp(eq(userId), eq(BigDecimal.valueOf(10000)),
-                eq("081234"), eq("GOPAY"))).willReturn(after);
+                eq("081234"), eq("GOPAY"), eq(requestId))).willReturn(after);
 
-        String body = """
-            { "method":"GOPAY", "phone_number":"081234", "amount":10000 }
-            """;
+        String body = String.format("""
+        {
+            "method": "GOPAY", "phone_number": "081234", "amount": 10000, "requestId": "%s"
+        }
+        """, requestId);
 
         mockMvc.perform(post("/api/wallet/topup")
                         .with(csrf()).with(user(principal))

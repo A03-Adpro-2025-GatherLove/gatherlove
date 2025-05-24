@@ -1,7 +1,7 @@
-// File: src/main/java/id/ac/ui/cs/advprog/gatherlove/donation/controller/DonationController.java
 package id.ac.ui.cs.advprog.gatherlove.donation.controller;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
+import id.ac.ui.cs.advprog.gatherlove.authentication.security.services.UserDetailsImpl;
 import id.ac.ui.cs.advprog.gatherlove.donation.command.MakeDonationCommand;
 import id.ac.ui.cs.advprog.gatherlove.donation.command.RemoveDonationMessageCommand;
 import id.ac.ui.cs.advprog.gatherlove.donation.dto.CreateDonationRequest;
@@ -27,6 +27,12 @@ public class DonationController {
     @Autowired
     private DonationService donationService;
 
+    private UUID getCurrentUserId() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (UserDetailsImpl) auth.getPrincipal();
+        return principal.getId();
+    }
+
     @PostMapping("/api/donations")
     public CompletableFuture<ResponseEntity<DonationResponse>> makeDonation(@RequestBody CreateDonationRequest req) {
         UUID userId = UUID.fromString("01e108d3-349b-400b-a63e-b3b834e7fb21");
@@ -48,7 +54,7 @@ public class DonationController {
     }
 
     @GetMapping("/api/donations/campaign/{campaignId}")
-    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable UUID campaignId) {
+    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable String campaignId) {
         List<Donation> list = donationService.findDonationsByCampaign(campaignId); // Metode ini masih sinkronus
         List<DonationResponse> resp = list.stream()
                 .map(DonationResponse::from)
@@ -84,7 +90,7 @@ public class DonationController {
                         .getAuthentication().getPrincipal())
                 .getId();
 
-        List<Donation> list = donationService.findDonationsByDonor(userId);
+        List<Donation> list = donationService.findDonationsByDonor(getCurrentUserId());
         List<DonationResponse> resp = list.stream()
                 .map(DonationResponse::from)
                 .collect(Collectors.toList());

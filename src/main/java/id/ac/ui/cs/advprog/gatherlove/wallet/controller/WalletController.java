@@ -34,11 +34,11 @@ public class WalletController {
     public ResponseEntity<TopUpResponse> topUp(@Valid @RequestBody TopUpRequest body) {
         UUID userId = getCurrentUserId();
 
-        Wallet wallet = walletService.topUp(userId, body.amount(), body.phone_number(), body.method());
+        Wallet wallet = walletService.topUp(userId, body.amount(), body.phone_number(),
+                                            body.method(), body.requestId());
 
         TopUpResponse res = new TopUpResponse(
-                "Proses Top-Up Saldo Berhasil!",
-                wallet.getBalance()
+                "Proses Top-Up Saldo Berhasil!", wallet.getBalance()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
@@ -77,7 +77,7 @@ public class WalletController {
     public ResponseEntity<WithdrawResponse> withdraw(@Valid @RequestBody WithdrawRequest body) {
         UUID userId = getCurrentUserId();
 
-        walletService.withdrawFunds(userId, body.amount());
+        walletService.withdrawFunds(userId, body.amount(), body.requestId());
 
         WithdrawResponse res = new WithdrawResponse(
                 "Penarikan Dana Berhasil Diproses!"
@@ -89,27 +89,12 @@ public class WalletController {
     public ResponseEntity<DonateResponse> donate(@Valid @RequestBody DonateRequest body) {
         UUID userId = getCurrentUserId();
 
-        Wallet wallet = walletService.debit(userId, body.amount());
+        Wallet wallet = walletService.debit(userId, body.amount(), body.requestId());
 
         DonateResponse res = new DonateResponse(
                 "Nominal untuk Donasi Berhasil Dikurangi dari Saldo!",
                 wallet.getBalance()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
-    }
-
-    @PostMapping("/topup-async")
-    public CompletableFuture<TopUpResponse> topUpAsync(@RequestBody TopUpRequest body) {
-        UUID userId = getCurrentUserId();
-
-        return walletService.topUpAsync(userId, body.amount(), body.phone_number(), body.method())
-                .thenApply(w -> new TopUpResponse("OK", w.getBalance()));
-    }
-
-    @GetMapping("/balance-async")
-    public CompletableFuture<BalanceResponse> getBalanceAsync() {
-        UUID userId = getCurrentUserId();
-        return walletService.getBalanceAsync(userId)
-                .thenApply(BalanceResponse::new);
     }
 }

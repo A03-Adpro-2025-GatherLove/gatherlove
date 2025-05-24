@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CreateDonationRequest {
 
     @NotNull(message = "Campaign ID cannot be null")
-    private UUID campaignId;
+    private String campaignId;
 
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount must be positive")

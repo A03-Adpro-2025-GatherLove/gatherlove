@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 public class TransactionResponse {
     private UUID id;
-    private UUID campaignId;
+    private String campaignId;
     private UUID donorId;
     private BigDecimal amount;
     private String message;

@@ -12,7 +12,7 @@ import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
 @Builder // Allows building the response object easily
 public class DonationResponse {
     private UUID id;
-    private UUID campaignId;
+    private String campaignId;
     private UUID donorId;
     private BigDecimal amount;
     private String message;
