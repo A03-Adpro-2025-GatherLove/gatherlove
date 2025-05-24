@@ -117,16 +117,37 @@
                 
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
-                    <!-- Only show donate button for approved campaigns -->
-                    <a th:if="${campaign.status.name() == 'APPROVED'}" 
+                    <!-- Only show donate button for approved campaigns AND NOT the fundraiser -->
+                    <a th:if="${campaign.status.name() == 'APPROVED' && 
+                            !(campaign.fundraiser != null && #authentication != null && 
+                                #authentication.name == campaign.fundraiser.username)}" 
                         th:href="@{/donate/create/{campaignId}(campaignId=${campaign.id})}" 
-                       class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md text-center">
+                        class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md text-center">
                         Donate Now
                     </a>
                     
-                    <!-- Back to campaigns -->
-                    <a href="/campaign/my" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-6 rounded-md text-center">
+                    <!-- Only show edit button if current user is the fundraiser and campaign can be edited -->
+                    <a th:if="${campaign.fundraiser != null && #authentication != null && 
+                            #authentication.name == campaign.fundraiser.username && campaign.canEdit()}" 
+                        th:href="@{/campaign/edit/{id}(id=${campaign.id})}"
+                        class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md text-center">
+                        Edit Campaign
+                    </a>
+                    
+                    <!-- Back to "My Campaigns" only for the fundraiser -->
+                    <a th:if="${campaign.fundraiser != null && #authentication != null && 
+                            #authentication.name == campaign.fundraiser.username}"
+                        href="/campaign/my" 
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-6 rounded-md text-center">
                         Back to My Campaigns
+                    </a>
+                    
+                    <!-- Back to Home for non-fundraisers -->
+                    <a th:unless="${campaign.fundraiser != null && #authentication != null && 
+                                #authentication.name == campaign.fundraiser.username}"
+                        href="/" 
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-6 rounded-md text-center">
+                        Back to Home
                     </a>
                 </div>
             </div>
