@@ -49,6 +49,7 @@ public class DonationServiceImpl implements DonationService {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Donation amount must be positive.");
         }
+        walletService.getOrCreateWallet(donorId);
         walletService.debit(donorId, amount);
         Donation donation = Donation.builder()
                 .donorId(donorId).campaignId(campaignId).amount(amount).message(message)
