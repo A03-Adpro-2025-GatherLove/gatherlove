@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
+import id.ac.ui.cs.advprog.gatherlove.profile.repository.ProfileRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,6 +53,9 @@ public class AuthController {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
     
     @Autowired
     SessionRepository sessionRepository;
@@ -124,6 +129,13 @@ public class AuthController {
 
         user.setRoles(roles);
         userRepository.save(user);
+
+        // Create and save the profile
+        Profile profile = Profile.builder()
+                .user(user)
+                .build();
+
+        profileRepository.save(profile);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
