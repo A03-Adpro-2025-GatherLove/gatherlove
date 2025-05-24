@@ -47,7 +47,7 @@ public class DonationPageController {
     }
 
     @GetMapping("/create/{campaignId}")
-    public String showCreateDonationForm(@PathVariable String campaignId, Model model, @AuthenticationPrincipal UserEntity currentUser) {
+    public String showCreateDonationForm(@PathVariable("campaignId") String campaignId, Model model, @AuthenticationPrincipal UserEntity currentUser) {
 //        out.println(currentUser.getId());
 //        if (currentUser == null) {
 //            return "redirect:/login?redirect=/donate/create/" + campaignId;

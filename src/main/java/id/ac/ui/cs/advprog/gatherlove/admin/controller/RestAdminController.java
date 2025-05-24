@@ -99,7 +99,7 @@ public class RestAdminController {
         }
 
         CampaignStatus status = request.getStatus().equals("APPROVED") ? CampaignStatus.APPROVED : CampaignStatus.REJECTED;
-        campaignService.verifyCampaign(campaign.getId(), status);
+        campaignService.verifyCampaign(campaign.getId(), true);
         return ResponseEntity.ok().body("Campaign verified successfully");
     }
 

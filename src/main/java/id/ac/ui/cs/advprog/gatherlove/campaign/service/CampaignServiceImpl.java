@@ -1,12 +1,13 @@
 package id.ac.ui.cs.advprog.gatherlove.campaign.service;
 
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
-import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import lombok.RequiredArgsConstructor;
-// import org.openqa.selenium.NoSuchElementException; //TODO: Sesuaikan rencana anda (Kenapa ada selenium?)
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CampaignServiceImpl implements CampaignService {
@@ -46,51 +48,94 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Campaign getCampaignById(String id) {
-        return campaignRepository.findById(id).orElseThrow(); //TODO: Sesuaikan dengan rencana
+        return campaignRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Campaign tidak ditemukan dengan ID: " + id));
     }
 
     @Override
     public Campaign updateCampaign(String id, CampaignDto dto) {
         Campaign campaign = getCampaignById(id);
+        
+        if (!campaign.canEdit()) {
+            throw new IllegalStateException("Kampanye tidak dapat diubah dalam status " + campaign.getStatus());
+        }
+        
         campaign.setTitle(dto.getTitle());
         campaign.setDescription(dto.getDescription());
         campaign.setTargetAmount(dto.getTargetAmount());
         campaign.setDeadline(dto.getDeadline());
         campaign.setImageUrl(dto.getImageUrl());
+        
         return campaignRepository.save(campaign);
     }
 
+    @Async("campaignTaskExecutor")
     @Override
     public void deleteCampaign(String id) {
-        campaignRepository.deleteById(id);
+        log.info("Asynchronously deleting campaign with ID: {}", id);
+        // This can be async since deletion can happen in background
+        Campaign campaign = getCampaignById(id);
+        if (!canDeleteCampaign(id)) {
+            throw new RuntimeException("Campaign cannot be deleted");
+        }
+        campaignRepository.delete(campaign);
     }
 
+    @Async("campaignTaskExecutor")
     @Override
-    public Campaign verifyCampaign(String id, CampaignStatus status) {
+    public Campaign verifyCampaign(String id, boolean approve) {
         Campaign campaign = getCampaignById(id);
-        campaign.setStatus(status);
+        campaign.verify(approve);
         return campaignRepository.save(campaign);
     }
 
+    @Async("campaignTaskExecutor")
     @Override
     public Campaign addDonationToCampaign(String campaignId, BigDecimal amount) {
         Campaign campaign = getCampaignById(campaignId);
         campaign.addDonation(amount);
+        // Check if the donation changed the campaign status (e.g., reached the target)
+        campaign.checkStatus();
         return campaignRepository.save(campaign);
-    }
-
-    @Override
-    public void validateCampaignForDonation(String campaignId) {
-        // TODO: Sesuaikan rencana dengan DonationService
-    }
-
-    @Override
-    public void addCollectedAmount(UUID campaignId, BigDecimal amount) {
-        // TODO: Sesuaikan rencana dengan DonationService
     }
 
     @Override
     public List<Campaign> getCampaignsByStatus(CampaignStatus status) {
         return campaignRepository.findByStatus(status);
+    }
+    
+    @Override
+    public boolean canEditCampaign(String id) {
+        Campaign campaign = getCampaignById(id);
+        return campaign.canEdit();
+    }
+    
+    @Override
+    public boolean canDeleteCampaign(String id) {
+        Campaign campaign = getCampaignById(id);
+        return campaign.canDelete();
+    }
+    
+    @Override
+    public Campaign updateCampaignStatus(String id) {
+        Campaign campaign = getCampaignById(id);
+        campaign.checkStatus();
+        return campaignRepository.save(campaign);
+    }
+
+    @Override
+    public void validateCampaignForDonation(UUID campaignId) {
+        Campaign campaign = getCampaignById(campaignId.toString());
+        if (campaign.getStatus() != CampaignStatus.APPROVED) {
+            throw new IllegalStateException("Cannot donate to campaign with status: " + campaign.getStatus());
+        }
+    }
+
+    @Async("campaignTaskExecutor")
+    @Override
+    public void addCollectedAmount(UUID campaignId, BigDecimal amount) {
+        Campaign campaign = getCampaignById(campaignId.toString());
+        campaign.addDonation(amount);
+        campaignRepository.save(campaign);
     }
 }

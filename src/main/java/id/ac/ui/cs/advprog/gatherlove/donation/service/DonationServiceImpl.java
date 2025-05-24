@@ -45,7 +45,7 @@ public class DonationServiceImpl implements DonationService {
         //     Thread.currentThread().interrupt();
         // }
 
-        campaignService.validateCampaignForDonation(campaignId);
+        campaignService.validateCampaignForDonation(UUID.fromString(campaignId));
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Donation amount must be positive.");
         }
