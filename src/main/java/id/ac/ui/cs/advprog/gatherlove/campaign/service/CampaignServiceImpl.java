@@ -80,7 +80,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public void validateCampaignForDonation(UUID campaignId) {
+    public void validateCampaignForDonation(String campaignId) {
         // TODO: Sesuaikan rencana dengan DonationService
     }
 

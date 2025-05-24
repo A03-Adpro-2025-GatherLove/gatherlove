@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository // Added
 public interface DonationRepository extends JpaRepository<Donation, UUID> {
     List<Donation> findByDonorIdOrderByDonationTimestampDesc(UUID donorId);
-    List<Donation> findByCampaignIdOrderByDonationTimestampDesc(UUID campaignId);
+    List<Donation> findByCampaignIdOrderByDonationTimestampDesc(String campaignId);
 
     @Query("SELECT SUM(d.amount) FROM Donation d")
     BigDecimal getTotalFundRaised();

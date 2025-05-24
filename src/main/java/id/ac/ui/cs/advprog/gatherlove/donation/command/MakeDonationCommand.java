@@ -11,11 +11,11 @@ public class MakeDonationCommand implements Command<Donation> {
 
     private final DonationService donationService; // Receiver
     private final UUID donorId;
-    private final UUID campaignId;
+    private final String campaignId;
     private final BigDecimal amount;
     private final String message;
 
-    public MakeDonationCommand(DonationService donationService, UUID donorId, UUID campaignId, BigDecimal amount, String message) {
+    public MakeDonationCommand(DonationService donationService, UUID donorId, String campaignId, BigDecimal amount, String message) {
         this.donationService = donationService;
         this.donorId = donorId;
         this.campaignId = campaignId;

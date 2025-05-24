@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Campaigns - GatherLove</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Custom styles jika diperlukan */
+    .campaign-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .campaign-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .progress-bar-bg {
+      background-color: #e9ecef; /* Light gray for progress bar background */
+    }
+    .progress-bar-fill { /* Untuk campaign aktif */
+      background-color: #28a745; /* Green for progress fill */
+      transition: width 0.5s ease-in-out;
+    }
+    .progress-bar-fill-completed { /* Untuk campaign selesai */
+      background-color: #3b82f6; /* Tailwind blue-500 */
+      transition: width 0.5s ease-in-out;
+    }
+    .campaign-image {
+      height: 200px; /* Fixed height for campaign images */
+      object-fit: cover; /* Ensures image covers the area, might crop */
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navigation Bar -->
+<nav class="bg-white shadow sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center">
+        <a th:href="@{/}" class="text-2xl font-bold text-green-600">GatherLove</a>
+      </div>
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-4">
+          <a th:href="@{/}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+          <a th:href="@{/donate/browse}" class="text-green-600 hover:text-green-700 px-3 py-2 rounded-md text-sm font-medium font-semibold">Browse Campaigns</a>
+          <a th:href="@{/campaign/my}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="my-campaigns-link" style="display:none;">My Campaigns</a>
+          <a th:href="@{/campaign/create}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="create-campaign-link" style="display:none;">Create Campaign</a>
+          <a th:href="@{/wallet/balance}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="wallet-link" style="display:none;">My Wallet</a>
+        </div>
+      </div>
+      <div class="hidden md:block">
+        <div class="ml-4 flex items-center md:ml-6">
+          <div id="auth-links" class="space-x-4">
+            <a th:href="@{/auth/login}" class="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700">Login</a>
+            <a th:href="@{/auth/register}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Sign Up</a>
+          </div>
+          <div id="user-actions" style="display: none;" class="space-x-4 flex items-center">
+            <span id="username-display" class="text-gray-700 text-sm font-medium"></span>
+            <a href="#" id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-600">Logout</a>
+          </div>
+        </div>
+      </div>
+      <div class="-mr-2 flex md:hidden">
+        <button type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+          <span class="sr-only">Open main menu</span>
+          <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+          <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="md:hidden hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      <a th:href="@{/}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+      <a th:href="@{/donate/browse}" class="text-white bg-gray-900 block px-3 py-2 rounded-md text-base font-medium">Browse Campaigns</a>
+      <a th:href="@{/campaign/my}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" id="mobile-my-campaigns-link" style="display:none;">My Campaigns</a>
+      <a th:href="@{/campaign/create}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" id="mobile-create-campaign-link" style="display:none;">Create Campaign</a>
+      <a th:href="@{/wallet/balance}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" id="mobile-wallet-link" style="display:none;">My Wallet</a>
+    </div>
+    <div class="pt-4 pb-3 border-t border-gray-700">
+      <div id="mobile-auth-links" class="px-2 space-y-1">
+        <a th:href="@{/auth/login}" class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-md text-base font-medium hover:bg-green-700">Login</a>
+        <a th:href="@{/auth/register}" class="block w-full mt-2 bg-blue-600 text-white text-center px-4 py-2 rounded-md text-base font-medium hover:bg-blue-700">Sign Up</a>
+      </div>
+      <div id="mobile-user-actions" style="display: none;" class="px-2 space-y-1">
+        <span id="mobile-username-display" class="text-gray-400 block px-3 py-2 text-base font-medium"></span>
+        <a href="#" id="mobile-logout-btn" class="block w-full mt-2 bg-red-500 text-white text-center px-4 py-2 rounded-md text-base font-medium hover:bg-red-600">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container mx-auto px-4 py-8">
+  <header class="mb-12 text-center">
+    <h1 class="text-4xl font-bold text-gray-800">Support a Cause</h1>
+    <p class="mt-2 text-lg text-gray-600">Find campaigns that resonate with you and make a difference.</p>
+  </header>
+
+  <!-- Approved Campaigns Section -->
+  <section id="approved-campaigns">
+    <h2 class="text-3xl font-semibold text-gray-700 mb-6">Active Campaigns</h2>
+    <div th:if="${#lists.isEmpty(approvedCampaigns)}" class="text-center text-gray-500 py-10">
+      <p class="text-xl">No active campaigns available at the moment.</p>
+      <p>Check back soon or consider starting your own!</p>
+    </div>
+    <div th:unless="${#lists.isEmpty(approvedCampaigns)}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div th:each="campaign : ${approvedCampaigns}" class="bg-white rounded-lg shadow-md overflow-hidden campaign-card flex flex-col">
+        <img th:if="${campaign.imageUrl != null && !campaign.imageUrl.isEmpty()}" th:src="${campaign.imageUrl}" th:alt="${campaign.title}" class="w-full campaign-image"/>
+        <div th:unless="${campaign.imageUrl != null && !campaign.imageUrl.isEmpty()}" class="w-full campaign-image bg-gray-200 flex items-center justify-center">
+          <span class="text-gray-400 text-lg">No Image</span>
+        </div>
+
+        <div class="p-6 flex flex-col flex-grow">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${campaign.title}"></h3>
+          <p class="text-gray-600 text-sm mb-3 flex-grow" th:text="${#strings.abbreviate(campaign.description, 120)}"></p>
+
+          <div class="mb-3">
+            <div class="flex justify-between text-sm mb-1">
+                                <span class="font-medium text-gray-700">Raised:
+                                    <span class="text-green-600" th:text="'Rp ' + ${#numbers.formatDecimal(campaign.totalDonated, 0, 'POINT', 0, 'COMMA')}"></span>
+                                </span>
+              <span class="text-gray-500">Target:
+                                    <span th:text="'Rp ' + ${#numbers.formatDecimal(campaign.targetAmount, 0, 'POINT', 0, 'COMMA')}"></span>
+                                </span>
+            </div>
+            <div class="w-full progress-bar-bg rounded-full h-2.5">
+              <div class="progress-bar-fill h-2.5 rounded-full"
+                   th:style="'width:' + (${campaign.targetAmount.doubleValue() > 0 ? T(java.lang.Math).min(100.0, (campaign.totalDonated.doubleValue() / campaign.targetAmount.doubleValue() * 100.0)) : 0.0}) + '%;'">
+              </div>
+            </div>
+            <div class="text-xs text-gray-500 mt-1 text-right">
+              <span th:text="${#numbers.formatDecimal( (campaign.targetAmount.doubleValue() > 0 ? T(java.lang.Math).min(100.0, (campaign.totalDonated.doubleValue() / campaign.targetAmount.doubleValue() * 100.0)) : 0.0) , 1, 1)} + '%'"></span>
+            </div>
+          </div>
+
+          <div class="text-sm text-gray-500 mb-4">
+            Deadline: <span th:text="${#temporals.format(campaign.deadline, 'dd MMMM yyyy')}"></span>
+          </div>
+
+          <a th:href="@{/donation/create/{campaignId}(campaignId=${campaign.id})}" class="mt-auto w-full bg-green-600 text-white text-center px-6 py-3 rounded-md hover:bg-green-700 transition duration-300 font-semibold">
+            Donate Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Completed Campaigns Section -->
+  <section id="completed-campaigns" class="mt-16">
+    <h2 class="text-3xl font-semibold text-gray-700 mb-6">Completed Campaigns</h2>
+    <div th:if="${#lists.isEmpty(completedCampaigns)}" class="text-center text-gray-500 py-10">
+      <p class="text-xl">No campaigns have been completed yet.</p>
+    </div>
+    <div th:unless="${#lists.isEmpty(completedCampaigns)}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div th:each="campaign : ${completedCampaigns}" class="bg-white rounded-lg shadow-md overflow-hidden campaign-card flex flex-col">
+        <img th:if="${campaign.imageUrl != null && !campaign.imageUrl.isEmpty()}" th:src="${campaign.imageUrl}" th:alt="${campaign.title}" class="w-full campaign-image"/>
+        <div th:unless="${campaign.imageUrl != null && !campaign.imageUrl.isEmpty()}" class="w-full campaign-image bg-gray-200 flex items-center justify-center">
+          <span class="text-gray-400 text-lg">No Image</span>
+        </div>
+
+        <div class="p-6 flex flex-col flex-grow">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${campaign.title}"></h3>
+          <p class="text-gray-600 text-sm mb-3 flex-grow" th:text="${#strings.abbreviate(campaign.description, 120)}"></p>
+
+          <div class="mb-3">
+            <div class="flex justify-between text-sm mb-1">
+                                <span class="font-medium text-gray-700">Raised:
+                                    <span class="text-green-600" th:text="'Rp ' + ${#numbers.formatDecimal(campaign.totalDonated, 0, 'POINT', 0, 'COMMA')}"></span>
+                                </span>
+              <span class="text-gray-500">Target:
+                                    <span th:text="'Rp ' + ${#numbers.formatDecimal(campaign.targetAmount, 0, 'POINT', 0, 'COMMA')}"></span>
+                                </span>
+            </div>
+            <div class="w-full progress-bar-bg rounded-full h-2.5">
+              <div class="progress-bar-fill-completed h-2.5 rounded-full"
+                   th:style="'width:' + (${campaign.targetAmount.doubleValue() > 0 ? T(java.lang.Math).min(100.0, (campaign.totalDonated.doubleValue() / campaign.targetAmount.doubleValue() * 100.0)) : 0.0}) + '%;'">
+              </div>
+            </div>
+            <div class="text-xs text-gray-500 mt-1 text-right">
+              <span th:text="${#numbers.formatDecimal( (campaign.targetAmount.doubleValue() > 0 ? T(java.lang.Math).min(100.0, (campaign.totalDonated.doubleValue() / campaign.targetAmount.doubleValue() * 100.0)) : 0.0) , 1, 1)} + '%'"></span>
+            </div>
+          </div>
+
+          <div class="text-sm text-gray-500 mb-4">
+            Status: <span class="font-semibold text-blue-600" th:text="${campaign.status}"></span>
+          </div>
+
+          <button disabled class="mt-auto w-full bg-gray-400 text-white text-center px-6 py-3 rounded-md cursor-not-allowed font-semibold">
+            Campaign Ended
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Footer -->
+<footer class="bg-white py-10 mt-16 border-t">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="flex justify-center space-x-6 mb-4">
+      <a href="#" class="text-gray-500 hover:text-green-600">Facebook</a>
+      <a href="#" class="text-gray-500 hover:text-green-600">Twitter</a>
+      <a href="#" class="text-gray-500 hover:text-green-600">Instagram</a>
+    </div>
+    <p class="text-gray-500 text-sm">© <span id="currentYear"></span> GatherLove. All rights reserved.</p>
+    <script>document.getElementById('currentYear').textContent = new Date().getFullYear();</script>
+  </div>
+</footer>
+
+<!-- Script untuk handle login/logout status -->
+<script>
+  function getUsernameFromToken(token) {
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub; // 'sub' biasanya berisi username
+    } catch (e) {
+      console.error("Error decoding token:", e);
+      return null;
+    }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('username');
+    window.location.href = '/auth/login';
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const jwtToken = localStorage.getItem('jwtToken');
+    const authLinks = document.getElementById('auth-links');
+    const userActions = document.getElementById('user-actions');
+    const usernameDisplay = document.getElementById('username-display');
+    const myCampaignsLink = document.getElementById('my-campaigns-link');
+    const createCampaignLink = document.getElementById('create-campaign-link');
+    const walletLink = document.getElementById('wallet-link');
+
+    const mobileAuthLinks = document.getElementById('mobile-auth-links');
+    const mobileUserActions = document.getElementById('mobile-user-actions');
+    const mobileUsernameDisplay = document.getElementById('mobile-username-display');
+    const mobileMyCampaignsLink = document.getElementById('mobile-my-campaigns-link');
+    const mobileCreateCampaignLink = document.getElementById('mobile-create-campaign-link');
+    const mobileWalletLink = document.getElementById('mobile-wallet-link');
+
+    if (jwtToken) {
+      const username = getUsernameFromToken(jwtToken) || localStorage.getItem('username') || "User";
+      if (authLinks) authLinks.style.display = 'none';
+      if (userActions) userActions.style.display = 'flex';
+      if (usernameDisplay && username) usernameDisplay.textContent = 'Hi, ' + username;
+
+      if (myCampaignsLink) myCampaignsLink.style.display = 'inline-block';
+      if (createCampaignLink) createCampaignLink.style.display = 'inline-block';
+      if (walletLink) walletLink.style.display = 'inline-block';
+
+      if (mobileAuthLinks) mobileAuthLinks.style.display = 'none';
+      if (mobileUserActions) mobileUserActions.style.display = 'block';
+      if (mobileUsernameDisplay && username) mobileUsernameDisplay.textContent = 'Hi, ' + username;
+
+      if (mobileMyCampaignsLink) mobileMyCampaignsLink.style.display = 'block';
+      if (mobileCreateCampaignLink) mobileCreateCampaignLink.style.display = 'block';
+      if (mobileWalletLink) mobileWalletLink.style.display = 'block';
+
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+      const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+      if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
+
+    } else {
+      if (authLinks) authLinks.style.display = 'flex';
+      if (userActions) userActions.style.display = 'none';
+      if (myCampaignsLink) myCampaignsLink.style.display = 'none';
+      if (createCampaignLink) createCampaignLink.style.display = 'none';
+      if (walletLink) walletLink.style.display = 'none';
+
+      if (mobileAuthLinks) mobileAuthLinks.style.display = 'block';
+      if (mobileUserActions) mobileUserActions.style.display = 'none';
+      if (mobileMyCampaignsLink) mobileMyCampaignsLink.style.display = 'none';
+      if (mobileCreateCampaignLink) mobileCreateCampaignLink.style.display = 'none';
+      if (mobileWalletLink) mobileWalletLink.style.display = 'none';
+    }
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true' || false;
+        mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.querySelectorAll('svg').forEach(icon => icon.classList.toggle('hidden'));
+      });
+    }
+  });
+</script>
+</body>
+</html>

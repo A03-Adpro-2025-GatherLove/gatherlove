@@ -15,7 +15,7 @@ import java.util.UUID;
 @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
 public class Donation {
     @Id @GeneratedValue(strategy = GenerationType.UUID) private UUID id;
-    @Column(nullable = false) private UUID campaignId;
+    @Column(nullable = false) private String campaignId;
     @Column(nullable = false) private UUID donorId;
     @Column(nullable = false, precision = 19, scale = 2) private BigDecimal amount;
     @Column(nullable = true) private String message;

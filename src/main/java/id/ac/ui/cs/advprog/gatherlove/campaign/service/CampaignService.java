@@ -37,7 +37,7 @@ public interface CampaignService {
      */
     Campaign addDonationToCampaign(String campaignId, BigDecimal amount);
 
-    void validateCampaignForDonation(UUID campaignId); // TODO: Sesuaikan rencana dengan DonationService
+    void validateCampaignForDonation(String campaignId); // TODO: Sesuaikan rencana dengan DonationService
 
     void addCollectedAmount(UUID campaignId, BigDecimal amount); // TODO: Sesuaikan rencana dengan DonationService
 

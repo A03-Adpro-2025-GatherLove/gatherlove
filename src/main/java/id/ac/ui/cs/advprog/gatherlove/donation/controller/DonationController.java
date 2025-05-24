@@ -48,7 +48,7 @@ public class DonationController {
     }
 
     @GetMapping("/api/donations/campaign/{campaignId}")
-    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable UUID campaignId) {
+    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable String campaignId) {
         List<Donation> list = donationService.findDonationsByCampaign(campaignId); // Metode ini masih sinkronus
         List<DonationResponse> resp = list.stream()
                 .map(DonationResponse::from)
