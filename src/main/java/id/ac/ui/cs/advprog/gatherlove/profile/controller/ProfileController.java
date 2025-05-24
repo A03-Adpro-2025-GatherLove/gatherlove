@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.profile.controller;
 
+import id.ac.ui.cs.advprog.gatherlove.authentication.dto.MessageResponse;
 import id.ac.ui.cs.advprog.gatherlove.profile.dto.ProfileRequest;
 import id.ac.ui.cs.advprog.gatherlove.profile.dto.ProfileResponse;
 import id.ac.ui.cs.advprog.gatherlove.profile.service.ProfileService;
@@ -22,17 +23,42 @@ public class ProfileController {
     }
 
     @PostMapping("/users/{userId}")
-    public ResponseEntity<ProfileResponse> completeProfile(
+    public ResponseEntity<?> completeProfile(
             @Valid @RequestBody ProfileRequest request,
             @PathVariable UUID userId) {
+
+        if (request.getPhoneNumber() == null ||
+                request.getPhoneNumber().trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Phone number is required"));
+        }
+
+        if (request.getFullName() == null ||
+                request.getFullName().trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Full name is required"));
+        }
         ProfileResponse response = profileService.completeProfile(request, userId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/users/{userId}/async")
-    public CompletableFuture<ResponseEntity<ProfileResponse>> completeProfileAsync(
+    public CompletableFuture<ResponseEntity<?>> completeProfileAsync(
             @Valid @RequestBody ProfileRequest request,
             @PathVariable UUID userId) {
+
+        if (request.getPhoneNumber() == null ||
+                request.getPhoneNumber().trim().isEmpty()) {
+            return CompletableFuture.completedFuture(ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Phone number is required")));
+        }
+
+        if (request.getFullName() == null ||
+                request.getFullName().trim().isEmpty()) {
+            return CompletableFuture.completedFuture(ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Full name is required")));
+        }
+
         return profileService.completeProfileAsync(request, userId)
                 .thenApply(response -> new ResponseEntity<>(response, HttpStatus.CREATED));
     }
