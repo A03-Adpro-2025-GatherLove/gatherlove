@@ -69,7 +69,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{profileId}")
+    @PutMapping("/users/edit/{profileId}")
     public ResponseEntity<?> updateProfile(
             @PathVariable UUID profileId,
             @Valid @RequestBody ProfileRequest request) {
@@ -90,7 +90,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{profileId}/async")
+    @PutMapping("/users/edit/{profileId}/async")
     public CompletableFuture<ResponseEntity<?>> updateProfileAsync(
             @PathVariable UUID profileId,
             @Valid @RequestBody ProfileRequest request) {
