@@ -96,37 +96,48 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet withdrawFunds(UUID userId, BigDecimal amount) {
+    public Wallet withdrawFunds(UUID userId, BigDecimal amount, UUID requestId) {
         Wallet wallet = getOrCreateWallet(userId);
-        if (wallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
-        }
-        wallet.setBalance(wallet.getBalance().subtract(amount));
-        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
-        wallet.addTransaction(tr);
 
+        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
+        tr.setRequestId(requestId);
+        tr.setWallet(wallet);
+
+        try {
+            transactionRepository.save(tr);
+        } catch (DataIntegrityViolationException e) {
+            return walletRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
+        }
+
+        wallet.setBalance(wallet.getBalance().add(amount));
+        wallet.addTransaction(tr);
         walletRepository.save(wallet);
-        transactionRepository.save(tr);
         walletEventPublisher.notifyBalanceChanged(wallet, tr);
         return wallet;
     }
 
     @Override
-    public Wallet debit(UUID donorId, BigDecimal amount) {
+    public Wallet debit(UUID donorId, BigDecimal amount, UUID requestId) {
         Wallet wallet = getOrCreateWallet(donorId);
 
-        if (wallet.getBalance().compareTo(amount) < 0)
+        if (wallet.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Saldo tidak mencukupi");
-
-        wallet.setBalance(wallet.getBalance().subtract(amount));
+        }
 
         Transaction tx = new Transaction(TransactionType.DONATION, amount, "SYSTEM");
+        tx.setRequestId(requestId);
+        tx.setWallet(wallet);
+
+        try {
+            transactionRepository.save(tx);
+        } catch (DataIntegrityViolationException e) {
+            return walletRepository.findByUserId(donorId).orElseThrow(RuntimeException::new);
+        }
+
+        wallet.setBalance(wallet.getBalance().subtract(amount));
         wallet.addTransaction(tx);
-
         walletRepository.save(wallet);
-        transactionRepository.save(tx);
         walletEventPublisher.notifyBalanceChanged(wallet, tx);
-
         return wallet;
     }
 }

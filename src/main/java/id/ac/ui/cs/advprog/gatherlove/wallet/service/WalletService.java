@@ -16,7 +16,7 @@ public interface WalletService {
 
     void deleteTopUpTransaction(UUID userId, Long transactionId);
 
-    Wallet withdrawFunds(UUID userId, BigDecimal amount);
+    Wallet withdrawFunds(UUID userId, BigDecimal amount, UUID requestId);
 
-    Wallet debit(UUID donorId, BigDecimal amount);
+    Wallet debit(UUID donorId, BigDecimal amount, UUID requestId);
 }
