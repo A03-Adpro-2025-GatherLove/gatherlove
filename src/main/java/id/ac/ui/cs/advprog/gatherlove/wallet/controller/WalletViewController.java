@@ -36,16 +36,6 @@ public class WalletViewController {
         return "wallet/topup";
     }
 
-    @PostMapping("/topup")
-    public String topUpSubmit(@RequestParam BigDecimal amount, @RequestParam String phone,
-                              @RequestParam String method, RedirectAttributes ra) {
-        UUID userId = getCurrentUserId();
-        walletService.topUp(userId, amount, phone, method);
-        ra.addFlashAttribute("success",
-                "Top-up berhasil menambah saldo " + amount);
-        return "redirect:/wallet/balance?userId=" + userId;
-    }
-
     @GetMapping("/transactions")
     public String transactionPage(Model model) {
         UUID userId = getCurrentUserId();
@@ -53,14 +43,6 @@ public class WalletViewController {
                 walletService.getWalletWithTransactions(userId).getTransactions());
         model.addAttribute("userId", userId);
         return "wallet/transactions";
-    }
-
-    @GetMapping("/transactions/{id}/delete")
-    public String deleteTopUp(@PathVariable Long id, RedirectAttributes r) {
-        UUID userId = getCurrentUserId();
-        walletService.deleteTopUpTransaction(userId, id);
-        r.addFlashAttribute("success", "Riwayat top-up dihapus");
-        return "redirect:/wallet/transactions?userId=" + userId;
     }
 
     private UUID getCurrentUserId() {
