@@ -59,7 +59,7 @@ class WalletServiceTest {
     @Test
     void testTopUpSuccess() {
         when(goPayStrategy.pay(eq(BigDecimal.valueOf(10000)), eq("080808080808"))).thenReturn(true);
-        Wallet updatedWallet = walletService.topUp(userID, BigDecimal.valueOf(10000), "080808080808", "GOPAY");
+        Wallet updatedWallet = walletService.topUp(userID, BigDecimal.valueOf(10000), "080808080808", "GOPAY", UUID.randomUUID());
         assertEquals(BigDecimal.valueOf(90000), updatedWallet.getBalance());
         verify(goPayStrategy).pay(BigDecimal.valueOf(10000), "080808080808");
         verify(walletEventPublisher).notifyBalanceChanged(any(Wallet.class), any(Transaction.class));
@@ -69,7 +69,7 @@ class WalletServiceTest {
     void testTopUpFailure() {
         when(danaStrategy.pay(eq(BigDecimal.valueOf(10000)), eq("080808080808"))).thenReturn(false);
         assertThrows(RuntimeException.class, () -> {
-            walletService.topUp(userID, BigDecimal.valueOf(10000), "080808080808", "DANA");
+            walletService.topUp(userID, BigDecimal.valueOf(10000), "080808080808", "DANA", UUID.randomUUID());
         });
         verify(walletEventPublisher, never()).notifyBalanceChanged(any(), any());
     }
