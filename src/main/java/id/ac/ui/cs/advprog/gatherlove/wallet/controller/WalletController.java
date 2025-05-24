@@ -77,7 +77,7 @@ public class WalletController {
     public ResponseEntity<WithdrawResponse> withdraw(@Valid @RequestBody WithdrawRequest body) {
         UUID userId = getCurrentUserId();
 
-        walletService.withdrawFunds(userId, body.amount());
+        walletService.withdrawFunds(userId, body.amount(), body.requestId());
 
         WithdrawResponse res = new WithdrawResponse(
                 "Penarikan Dana Berhasil Diproses!"
@@ -89,7 +89,7 @@ public class WalletController {
     public ResponseEntity<DonateResponse> donate(@Valid @RequestBody DonateRequest body) {
         UUID userId = getCurrentUserId();
 
-        Wallet wallet = walletService.debit(userId, body.amount());
+        Wallet wallet = walletService.debit(userId, body.amount(), body.requestId());
 
         DonateResponse res = new DonateResponse(
                 "Nominal untuk Donasi Berhasil Dikurangi dari Saldo!",
