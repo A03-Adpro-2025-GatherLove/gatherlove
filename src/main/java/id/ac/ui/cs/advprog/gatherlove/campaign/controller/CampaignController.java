@@ -55,7 +55,7 @@ public class CampaignController {
     }
 
     @GetMapping("/view/{id}")
-    public String viewCampaignDetails(@PathVariable String id, Model model) {
+    public String viewCampaignDetails(@PathVariable("id") String id, Model model) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
             
@@ -72,6 +72,10 @@ public class CampaignController {
                         .divide(campaign.getTargetAmount(), 2, RoundingMode.HALF_UP);
             }
             
+            // TODO: Fetch fundraiser name from the campaign
+            String fundraiserName = campaign.getFundraiser() != null ? campaign.getFundraiser().getUsername() : "Unknown";
+            model.addAttribute("fundraiserName", fundraiserName);
+
             // Add data to model
             model.addAttribute("campaign", campaign);
             model.addAttribute("formattedDeadline", formattedDeadline);
@@ -102,7 +106,7 @@ public class CampaignController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
+    public String showEditForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
             
@@ -128,7 +132,7 @@ public class CampaignController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateCampaign(@PathVariable String id,
+    public String updateCampaign(@PathVariable("id") String id,
                                  @Valid @ModelAttribute("campaignDto") CampaignDto dto,
                                  BindingResult result,
                                  RedirectAttributes redirectAttributes) {
@@ -147,7 +151,7 @@ public class CampaignController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteCampaign(@PathVariable String id, RedirectAttributes redirectAttributes) {
+    public String deleteCampaign(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
         try {
             campaignService.deleteCampaign(id);
             redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil dihapus!");

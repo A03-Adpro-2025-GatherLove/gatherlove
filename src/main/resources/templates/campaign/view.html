@@ -18,106 +18,117 @@
     </div>
 </nav>
 
-<div class="max-w-4xl mx-auto py-8 px-4">
+<div class="max-w-6xl mx-auto py-8 px-4">
     <div th:if="${errorMessage}" class="mb-4 p-3 bg-red-100 text-red-800 rounded">
         <p th:text="${errorMessage}"></p>
     </div>
     
     <!-- Campaign Details Card -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <!-- Campaign Image -->
-        <div class="h-64 overflow-hidden bg-gray-200 flex items-center justify-center">
-            <img th:if="${campaign.imageUrl}" th:src="${campaign.imageUrl}" alt="Campaign Image" 
-                 class="w-full h-full object-cover">
-            <div th:unless="${campaign.imageUrl}" class="text-gray-400 text-xl">No Image Available</div>
-        </div>
-        
-        <!-- Campaign Info -->
-        <div class="p-6">
-            <!-- Status Badge -->
-            <div class="flex justify-between items-center mb-2">
-                <span th:if="${campaign.status.name() == 'PENDING_VERIFICATION'}" 
-                      class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                    Pending Verification
-                </span>
-                <span th:if="${campaign.status.name() == 'APPROVED'}" 
-                      class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Approved
-                </span>
-                <span th:if="${campaign.status.name() == 'REJECTED'}" 
-                      class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    Rejected
-                </span>
-                <span th:if="${campaign.status.name() == 'COMPLETED'}" 
-                      class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Completed
-                </span>
-                
-                <!-- Deadline Badge -->
-                <span th:if="${deadlinePassed}" class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    Deadline Passed
-                </span>
-                <span th:unless="${deadlinePassed}" class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Active
-                </span>
-            </div>
-            
-            <h1 class="text-2xl font-bold mb-4" th:text="${campaign.title}"></h1>
-            
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold mb-2">Description</h2>
-                <p class="text-gray-700 whitespace-pre-line" th:text="${campaign.description}"></p>
-            </div>
-            
-            <!-- Fundraiser Info -->
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold mb-2">Fundraiser</h2>
-                <p class="text-gray-700">
-                    <span th:text="${campaign.fundraiser.getUsername() != null ? campaign.fundraiser.getUsername() : campaign.fundraiser.getUsername()}"></span>
-                    <span th:unless="${campaign.fundraiser.getUsername()}" th:text="${campaign.fundraiser.getUsername()}"></span>
-                </p>
-            </div>
-            
-            <!-- Funding Progress -->
-            <div class="mb-6">
-                <div class="flex justify-between mb-1">
-                    <span class="text-base font-medium">Progress</span>
-                    <span class="text-sm font-medium text-gray-500" th:text="${progress + '%'}"></span>
+        <!-- Responsive Layout Container -->
+        <div class="flex flex-col lg:flex-row">
+            <!-- Campaign Image -->
+            <div class="lg:w-1/2 lg:min-h-[600px]">
+                <div class="h-64 lg:h-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                    <img th:if="${campaign.imageUrl}" th:src="${campaign.imageUrl}" alt="Campaign Image" 
+                         class="w-full h-full object-cover">
+                    <div th:unless="${campaign.imageUrl}" class="text-gray-400 text-xl">No Image Available</div>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div class="bg-green-600 h-2.5 rounded-full" th:style="'width: ' + ${progress <= 100 ? progress : 100} + '%'"></div>
-                </div>
-                <div class="flex justify-between mt-2">
+            </div>
+            
+            <!-- Campaign Info -->
+            <div class="lg:w-1/2 p-6 lg:overflow-y-auto lg:max-h-[600px]">
+                <!-- Status Badge -->
+                <div class="flex flex-wrap justify-between items-center mb-2 gap-2">
+                    <div class="flex flex-wrap gap-2">
+                        <span th:if="${campaign.status.name() == 'PENDING_VERIFICATION'}" 
+                              class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            Pending Verification
+                        </span>
+                        <span th:if="${campaign.status.name() == 'APPROVED'}" 
+                              class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Approved
+                        </span>
+                        <span th:if="${campaign.status.name() == 'REJECTED'}" 
+                              class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Rejected
+                        </span>
+                        <span th:if="${campaign.status.name() == 'COMPLETED'}" 
+                              class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            Completed
+                        </span>
+                    </div>
+                    
+                    <!-- Deadline Badge -->
                     <div>
-                        <p class="text-sm text-gray-500">Raised</p>
-                        <p class="text-lg font-bold">Rp <span th:text="${#numbers.formatDecimal(campaign.totalDonated, 0, 'COMMA', 0, 'POINT')}"></span></p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm text-gray-500">Goal</p>
-                        <p class="text-lg font-bold">Rp <span th:text="${#numbers.formatDecimal(campaign.targetAmount, 0, 'COMMA', 0, 'POINT')}"></span></p>
+                        <span th:if="${deadlinePassed}" class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Deadline Passed
+                        </span>
+                        <span th:unless="${deadlinePassed}" class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Active
+                        </span>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Campaign Details -->
-            <div class="border border-gray-200 rounded-lg p-4">
-                <h3 class="text-sm text-gray-500">Deadline</h3>
-                <p class="text-lg font-bold" th:text="${formattedDeadline}"></p>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
-                <!-- Only show donate button for approved campaigns -->
-                <a th:if="${campaign.status.name() == 'APPROVED'}" 
-                   href="#" 
-                   class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md text-center">
-                    Donate Now
-                </a>
                 
-                <!-- Back to campaigns -->
-                <a href="/campaign/my" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-6 rounded-md text-center">
-                    Back to My Campaigns
-                </a>
+                <h1 class="text-2xl font-bold mb-4" th:text="${campaign.title}"></h1>
+                
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold mb-2">Description</h2>
+                    <p class="text-gray-700 whitespace-pre-line" th:text="${campaign.description}"></p>
+                </div>
+                
+                <!-- Fundraiser Info -->
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold mb-2">Fundraiser</h2>
+                    <p class="text-gray-700" th:text="${fundraiserName}">Username</p>
+                </div>
+                
+                <!-- Funding Progress -->
+                <div class="mb-6">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-base font-medium">Progress</span>
+                        <span class="text-sm font-medium text-gray-500" th:text="${progress + '%'}"></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-green-600 h-2.5 rounded-full" th:style="'width: ' + ${progress <= 100 ? progress : 100} + '%'"></div>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                        <div>
+                            <p class="text-sm text-gray-500">Raised</p>
+                            <p class="text-lg font-bold">Rp <span th:text="${#numbers.formatDecimal(campaign.totalDonated, 0, 'COMMA', 0, 'POINT')}"></span></p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">Goal</p>
+                            <p class="text-lg font-bold">Rp <span th:text="${#numbers.formatDecimal(campaign.targetAmount, 0, 'COMMA', 0, 'POINT')}"></span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Campaign Details -->
+                <div class="border-2 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-4 mb-6 shadow-sm">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg class="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        <h3 class="text-sm font-semibold text-orange-700">Deadline</h3>
+                    </div>
+                    <p class="text-lg font-bold text-orange-800" th:text="${formattedDeadline}"></p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
+                    <!-- Only show donate button for approved campaigns -->
+                    <a th:if="${campaign.status.name() == 'APPROVED'}" 
+                       href="#" 
+                       class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md text-center">
+                        Donate Now
+                    </a>
+                    
+                    <!-- Back to campaigns -->
+                    <a href="/campaign/my" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-6 rounded-md text-center">
+                        Back to My Campaigns
+                    </a>
+                </div>
             </div>
         </div>
     </div>
