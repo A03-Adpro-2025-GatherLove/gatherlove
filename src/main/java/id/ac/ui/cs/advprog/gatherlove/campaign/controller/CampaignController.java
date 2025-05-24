@@ -104,11 +104,20 @@ public class CampaignController {
         model.addAttribute("campaignList", campaignService.getCampaignsByUser(user));
         return "campaign/my";
     }
-
+    
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
+    public String showEditForm(@PathVariable("id") String id, 
+                              @AuthenticationPrincipal UserEntity user,
+                              Model model, 
+                              RedirectAttributes redirectAttributes) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
+            
+            // Check if the current user is the fundraiser
+            if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Anda tidak memiliki izin untuk mengedit kampanye ini");
+                return "redirect:/campaign/view/" + id;
+            }
             
             if (!campaign.canEdit()) {
                 redirectAttributes.addFlashAttribute("errorMessage", 
@@ -130,17 +139,26 @@ public class CampaignController {
             return "redirect:/campaign/my";
         }
     }
-
+    
     @PostMapping("/edit/{id}")
     public String updateCampaign(@PathVariable("id") String id,
-                                 @Valid @ModelAttribute("campaignDto") CampaignDto dto,
-                                 BindingResult result,
-                                 RedirectAttributes redirectAttributes) {
+                                @Valid @ModelAttribute("campaignDto") CampaignDto dto,
+                                BindingResult result,
+                                @AuthenticationPrincipal UserEntity user,
+                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "campaign/edit";
         }
-
+    
         try {
+            Campaign campaign = campaignService.getCampaignById(id);
+            
+            // Check if the current user is the fundraiser
+            if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Anda tidak memiliki izin untuk mengedit kampanye ini");
+                return "redirect:/campaign/view/" + id;
+            }
+            
             campaignService.updateCampaign(id, dto);
             redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil diperbarui!");
         } catch (IllegalStateException e) {
@@ -149,10 +167,20 @@ public class CampaignController {
         
         return "redirect:/campaign/my";
     }
-
+    
     @PostMapping("/delete/{id}")
-    public String deleteCampaign(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
+    public String deleteCampaign(@PathVariable("id") String id, 
+                                @AuthenticationPrincipal UserEntity user,
+                                RedirectAttributes redirectAttributes) {
         try {
+            Campaign campaign = campaignService.getCampaignById(id);
+            
+            // Check if the current user is the fundraiser
+            if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Anda tidak memiliki izin untuk menghapus kampanye ini");
+                return "redirect:/campaign/view/" + id;
+            }
+            
             campaignService.deleteCampaign(id);
             redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil dihapus!");
         } catch (IllegalStateException e) {
