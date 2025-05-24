@@ -24,16 +24,13 @@ public class ProfileService {
         this.userRepository = userRepository;
     }
 
-    public ProfileResponse completeProfile(ProfileRequest request, UUID userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public ProfileResponse completeProfile(ProfileRequest request, UUID profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
-        Profile profile = Profile.builder()
-                .fullName(request.getFullName())
-                .phoneNumber(request.getPhoneNumber())
-                .bio(request.getBio())
-                .user(user)
-                .build();
+        profile.setFullName(request.getFullName());
+        profile.setPhoneNumber(request.getPhoneNumber());
+        profile.setBio(request.getBio());
 
         Profile savedProfile = profileRepository.save(profile);
 
