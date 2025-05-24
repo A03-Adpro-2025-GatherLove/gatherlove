@@ -5,14 +5,12 @@ import id.ac.ui.cs.advprog.gatherlove.wallet.model.*;
 import id.ac.ui.cs.advprog.gatherlove.wallet.observer.WalletEventPublisher;
 import id.ac.ui.cs.advprog.gatherlove.wallet.repository.*;
 import id.ac.ui.cs.advprog.gatherlove.wallet.strategy.PaymentStrategy;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class WalletServiceImpl implements WalletService {
@@ -40,10 +38,10 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet topUp(UUID userId, BigDecimal amount, String phoneNumber, String method) {
+    public Wallet topUp(UUID userId, BigDecimal amount, String phoneNumber, String method, UUID requestId) {
         Wallet wallet = getOrCreateWallet(userId);
-
         PaymentStrategy strategy = strategies.get(method.toLowerCase());
+
         if (strategy == null) {
             throw new IllegalArgumentException("Unsupported Payment Method: " + method);
         }
@@ -52,16 +50,23 @@ public class WalletServiceImpl implements WalletService {
             throw new RuntimeException("Payment failed. Please try again.");
         }
 
-        wallet.setBalance(wallet.getBalance().add(amount));
         Transaction tx = new Transaction(TransactionType.TOP_UP, amount, method);
+        tx.setRequestId(requestId);
+        tx.setWallet(wallet);
+
+        try {
+            transactionRepository.save(tx);
+        } catch (DataIntegrityViolationException e) {
+            return walletRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
+        }
+
+        wallet.setBalance(wallet.getBalance().add(amount));
         wallet.addTransaction(tx);
-
         walletRepository.save(wallet);
-        transactionRepository.save(tx);
         walletEventPublisher.notifyBalanceChanged(wallet, tx);
-
         return wallet;
     }
+
 
     @Override
     public BigDecimal getWalletBalance(UUID userId) {
@@ -84,59 +89,55 @@ public class WalletServiceImpl implements WalletService {
             throw new RuntimeException("Cannot delete non top-up transactions");
         }
 
-        wallet.setBalance(wallet.getBalance().subtract(tx.getAmount()));
         wallet.getTransactions().remove(tx);
 
         transactionRepository.delete(tx);
         walletRepository.save(wallet);
-        walletEventPublisher.notifyBalanceChanged(wallet, tx);
     }
 
     @Override
-    public Wallet withdrawFunds(UUID userId, BigDecimal amount) {
+    public Wallet withdrawFunds(UUID userId, BigDecimal amount, UUID requestId) {
         Wallet wallet = getOrCreateWallet(userId);
-        if (wallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
-        }
-        wallet.setBalance(wallet.getBalance().subtract(amount));
-        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
-        wallet.addTransaction(tr);
 
+        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
+        tr.setRequestId(requestId);
+        tr.setWallet(wallet);
+
+        try {
+            transactionRepository.save(tr);
+        } catch (DataIntegrityViolationException e) {
+            return walletRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
+        }
+
+        wallet.setBalance(wallet.getBalance().add(amount));
+        wallet.addTransaction(tr);
         walletRepository.save(wallet);
-        transactionRepository.save(tr);
         walletEventPublisher.notifyBalanceChanged(wallet, tr);
         return wallet;
     }
 
     @Override
-    public Wallet debit(UUID donorId, BigDecimal amount) {
+    public Wallet debit(UUID donorId, BigDecimal amount, UUID requestId) {
         Wallet wallet = getOrCreateWallet(donorId);
 
-        if (wallet.getBalance().compareTo(amount) < 0)
+        if (wallet.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Saldo tidak mencukupi");
-
-        wallet.setBalance(wallet.getBalance().subtract(amount));
+        }
 
         Transaction tx = new Transaction(TransactionType.DONATION, amount, "SYSTEM");
+        tx.setRequestId(requestId);
+        tx.setWallet(wallet);
+
+        try {
+            transactionRepository.save(tx);
+        } catch (DataIntegrityViolationException e) {
+            return walletRepository.findByUserId(donorId).orElseThrow(RuntimeException::new);
+        }
+
+        wallet.setBalance(wallet.getBalance().subtract(amount));
         wallet.addTransaction(tx);
-
         walletRepository.save(wallet);
-        transactionRepository.save(tx);
         walletEventPublisher.notifyBalanceChanged(wallet, tx);
-
         return wallet;
-    }
-
-    @Async("walletExecutor")
-    public CompletableFuture<BigDecimal> getBalanceAsync(UUID userId) {
-        BigDecimal balance = this.getWalletBalance(userId);
-        return CompletableFuture.completedFuture(balance);
-    }
-
-    @Async("walletExecutor")
-    public CompletableFuture<Wallet> topUpAsync(UUID userId, BigDecimal amount,
-                                                String phone, String method) {
-        Wallet result = this.topUp(userId, amount, phone, method);
-        return CompletableFuture.completedFuture(result);
     }
 }

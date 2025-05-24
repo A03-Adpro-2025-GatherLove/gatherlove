@@ -4,6 +4,7 @@ import id.ac.ui.cs.advprog.gatherlove.wallet.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.UUID;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,6 +20,9 @@ public class Transaction {
     private TransactionType type;
 
     private BigDecimal amount;
+
+    @Column(name = "request_id", nullable = false, unique = true)
+    private UUID requestId;
 
     private String paymentMethod;
     private LocalDateTime transactionDateTime;
