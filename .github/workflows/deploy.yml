@@ -1,6 +1,9 @@
 name: Continuous Deployment (CD)
 
 on:
+  push:
+    branches:
+      - deploy
   pull_request:
     types: [closed]
     branches:
