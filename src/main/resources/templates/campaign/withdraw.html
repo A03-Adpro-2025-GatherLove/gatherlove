@@ -110,6 +110,12 @@
                          class="mt-2 p-3 bg-yellow-100 text-yellow-800 rounded">
                         <p>There are no funds available to withdraw.</p>
                     </div>
+                    
+                    <!-- Warning if already withdrawn -->
+                    <div th:if="${campaign.withdrawn}" 
+                         class="mt-2 p-3 bg-yellow-100 text-yellow-800 rounded">
+                        <p>Funds have already been withdrawn from this campaign.</p>
+                    </div>
                 </div>
                 
                 <!-- Information about the withdrawal process -->
@@ -123,7 +129,7 @@
                 </div>
                 
                 <!-- Withdrawal form -->
-                <form th:if="${campaign.status.name() == 'COMPLETED' && campaign.totalDonated != null && campaign.totalDonated > 0}"
+                <form th:if="${campaign.status.name() == 'COMPLETED' && campaign.totalDonated != null && campaign.totalDonated > 0 && !campaign.withdrawn}"
                       th:action="@{/campaign/withdraw/{id}/confirm(id=${campaign.id})}" 
                       method="post" 
                       class="mt-8 pt-4 border-t border-gray-200">

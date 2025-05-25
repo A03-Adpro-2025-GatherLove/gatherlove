@@ -165,6 +165,11 @@ public class CampaignServiceImpl implements CampaignService {
             throw new IllegalStateException("No funds available to withdraw");
         }
         
+        // Check if funds have already been withdrawn
+        if (campaign.isWithdrawn()) {
+            throw new IllegalStateException("Funds have already been withdrawn from this campaign");
+        }
+        
         BigDecimal amountToWithdraw = campaign.getTotalDonated();
         
         // Generate a request ID for this withdrawal
@@ -173,8 +178,8 @@ public class CampaignServiceImpl implements CampaignService {
         // Use WalletService to add funds to the fundraiser's wallet
         walletService.withdrawFunds(userId, amountToWithdraw, requestId, campaign.getTitle());
         
-        // Set the campaign's total donated to zero to prevent multiple withdrawals
-        campaign.setTotalDonated(BigDecimal.ZERO);
+        // Mark the campaign as withdrawn instead of zeroing the amount
+        campaign.setWithdrawn(true);
         campaignRepository.save(campaign);
         
         log.info("Withdrawal of {} processed for campaign {} by user {}", 

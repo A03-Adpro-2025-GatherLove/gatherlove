@@ -37,6 +37,10 @@ public class Campaign {
     @Column(nullable = false)
     @Builder.Default
     private BigDecimal totalDonated = BigDecimal.ZERO;
+    
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean withdrawn = false;
 
     public void addDonation(BigDecimal amount) {
         CampaignState state = CampaignStateFactory.getState(this.status);
