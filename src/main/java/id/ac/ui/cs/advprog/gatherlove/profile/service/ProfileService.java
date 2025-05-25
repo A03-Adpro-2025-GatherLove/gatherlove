@@ -42,7 +42,7 @@ public class ProfileService {
                 .build();
     }
 
-    public ProfileResponse viewProfile(UUID profileId) {  // Changed from Long to UUID
+    public ProfileResponse viewProfile(UUID profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
@@ -81,7 +81,6 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
-    // Add these new methods to your ProfileService class
     @Async
     public CompletableFuture<ProfileResponse> completeProfileAsync(ProfileRequest request, UUID userId) {
         ProfileResponse response = completeProfile(request, userId);
