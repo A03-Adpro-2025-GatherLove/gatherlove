@@ -28,4 +28,10 @@ public class AdminController {
     public String campaigns(Model model) {
         return "admin/campaigns";
     }
+
+    @GetMapping("/transactions")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String transactions(Model model) {
+        return "admin/transactions";
+    }
 }
