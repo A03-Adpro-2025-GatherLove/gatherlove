@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Saldo Wallet</title>
+    <title>Wallet Balance</title>
 
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
 
@@ -31,7 +31,7 @@
 
                 if (transactions.length === 0) {
                     list.innerHTML =
-                        '<li class="text-gray-500">Belum ada transaksi</li>';
+                        '<li class="text-gray-500">No transactions have been made yet.</li>';
                     return;
                 }
 
@@ -54,27 +54,27 @@
 <body class="bg-gray-100 min-h-screen flex flex-col">
 <div class="container mx-auto flex-grow px-4 py-8">
     <div class="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Saldo Anda</h2>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Balance</h2>
 
         <p id="saldo" class="text-4xl font-bold text-green-600 mb-6">
-            Memuat…
+            Loading…
         </p>
 
         <div class="flex space-x-4 mb-8">
             <button onclick="location.href='/wallet/topup'"
                     class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded transition">
-                Top-Up Saldo
+                Top-Up
             </button>
         </div>
 
-        <h3 class="font-semibold mb-2">Transaksi Terakhir</h3>
+        <h3 class="font-semibold mb-2">Recent Transactions</h3>
         <ul id="recentTx" class="space-y-2">
-            <li class="text-gray-500">Memuat…</li>
+            <li class="text-gray-500">Loading…</li>
         </ul>
         <div class="flex space-x-4 mb-8">
             <button onclick="location.href='/wallet/transactions'"
                     class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition">
-                Lihat Riwayat Lengkap
+                View Full Transaction History
             </button>
         </div>
     </div>

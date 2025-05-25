@@ -96,10 +96,10 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet withdrawFunds(UUID userId, BigDecimal amount, UUID requestId) {
+    public Wallet withdrawFunds(UUID userId, BigDecimal amount, UUID requestId, String campaignName) {
         Wallet wallet = getOrCreateWallet(userId);
 
-        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, "SYSTEM");
+        Transaction tr = new Transaction(TransactionType.WITHDRAW, amount, campaignName);
         tr.setRequestId(requestId);
         tr.setWallet(wallet);
 
@@ -117,14 +117,14 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet debit(UUID donorId, BigDecimal amount, UUID requestId) {
+    public Wallet debit(UUID donorId, BigDecimal amount, UUID requestId, String campaignName) {
         Wallet wallet = getOrCreateWallet(donorId);
 
         if (wallet.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Saldo tidak mencukupi");
         }
 
-        Transaction tx = new Transaction(TransactionType.DONATION, amount, "SYSTEM");
+        Transaction tx = new Transaction(TransactionType.DONATION, amount, campaignName);
         tx.setRequestId(requestId);
         tx.setWallet(wallet);
 
@@ -140,4 +140,18 @@ public class WalletServiceImpl implements WalletService {
         walletEventPublisher.notifyBalanceChanged(wallet, tx);
         return wallet;
     }
+
+    @Override
+    public Transaction getTransactionById(UUID userId, Long transactionId) {
+        Wallet wallet = getOrCreateWallet(userId);
+
+        Transaction tx = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaksi tidak ditemukan"));
+
+        if (!tx.getWallet().getUserId().equals(userId)) {
+            throw new RuntimeException("Akses ditolak.");
+        }
+        return tx;
+    }
+
 }

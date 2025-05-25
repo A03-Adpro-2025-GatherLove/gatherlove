@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.security.services.UserDetailsImpl;
+import id.ac.ui.cs.advprog.gatherlove.wallet.model.Transaction;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -44,6 +45,24 @@ public class WalletViewController {
         model.addAttribute("userId", userId);
         return "wallet/transactions";
     }
+
+    @GetMapping("/transactions/{id}")
+    public String transactionDetail(
+            @PathVariable("id") Long txId,
+            Model model,
+            RedirectAttributes redirect
+    ) {
+        UUID userId = getCurrentUserId();
+        try {
+            Transaction tx = walletService.getTransactionById(userId, txId);
+            model.addAttribute("tx", tx);
+            return "wallet/transaction-detail";
+        } catch (RuntimeException e) {
+            redirect.addFlashAttribute("error", e.getMessage());
+            return "redirect:/wallet/transactions";
+        }
+    }
+
 
     private UUID getCurrentUserId() {
         var auth = SecurityContextHolder.getContext().getAuthentication();

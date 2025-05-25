@@ -85,29 +85,4 @@ public class WalletController {
         walletService.deleteTopUpTransaction(userId, transactionId);
         return new DeleteResponse("Proses Penghapusan Riwayat Top-Up Berhasil!");
     }
-
-    @PostMapping("/withdraw")
-    public ResponseEntity<WithdrawResponse> withdraw(@Valid @RequestBody WithdrawRequest body) {
-        UUID userId = getCurrentUserId();
-
-        walletService.withdrawFunds(userId, body.amount(), body.requestId());
-
-        WithdrawResponse res = new WithdrawResponse(
-                "Penarikan Dana Berhasil Diproses!"
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(res);
-    }
-
-    @PostMapping("/donate")
-    public ResponseEntity<DonateResponse> donate(@Valid @RequestBody DonateRequest body) {
-        UUID userId = getCurrentUserId();
-
-        Wallet wallet = walletService.debit(userId, body.amount(), body.requestId());
-
-        DonateResponse res = new DonateResponse(
-                "Nominal untuk Donasi Berhasil Dikurangi dari Saldo!",
-                wallet.getBalance()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(res);
-    }
 }
