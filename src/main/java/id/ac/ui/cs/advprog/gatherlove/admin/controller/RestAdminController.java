@@ -80,7 +80,13 @@ public class RestAdminController {
 
     @GetMapping("/campaigns")
     public ResponseEntity<List<CampaignResponse>> getCampaigns(@RequestParam(required = false) CampaignStatus status) {
-        List<Campaign> campaigns = campaignService.getCampaignsByStatus(status);
+        List<Campaign> campaigns = null;
+        if (status == null) {
+            campaigns = campaignService.getAllCampaigns();
+        }
+        else {
+            campaigns = campaignService.getCampaignsByStatus(status);
+        }
         List<CampaignResponse> responses = campaigns.stream()
                 .map(CampaignResponse::from)
                 .collect(Collectors.toList());
