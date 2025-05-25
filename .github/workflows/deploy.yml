@@ -86,5 +86,10 @@ jobs:
               -e DB_URL=${{ secrets.DB_URL_PROD }} \
               -e DB_USERNAME=${{ secrets.DB_USERNAME_PROD }} \
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD_PROD }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              -e JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }} \
+              -e ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }} \
+              -e ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }} \
+              -e ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} \
               ${{ secrets.DOCKERHUB_USERNAME }}/gatherlove:latest
               
