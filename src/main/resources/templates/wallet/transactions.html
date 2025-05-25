@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Riwayat Transaksi</title>
+    <title>Transaction History</title>
 
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
           rel="stylesheet"/>
@@ -31,6 +31,11 @@
                     </td>
                     <td class="px-4 py-2">${tx.displayType}</td>
                     <td class="px-4 py-2">${rupiah(tx.amount)}</td>
+                    <td class="px-4 py-2">
+                        <a href="/wallet/transactions/${tx.transaction_id}" class="text-blue-600 hover:underline">
+                          View
+                        </a>
+                    </td>
                     <td class="px-4 py-2">
                         ${tx.type === 'TOP_UP'
                     ? `<button onclick="deleteTx(${tx.transaction_id})"
@@ -64,17 +69,18 @@
 <div class="container mx-auto flex-grow px-4 py-8">
     <div class="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl mx-auto">
         <div class="px-6 py-4 border-b">
-            <h2 class="text-2xl font-semibold text-gray-800">Riwayat Transaksi</h2>
+            <h2 class="text-2xl font-semibold text-gray-800">Transaction History</h2>
         </div>
 
         <div class="p-4 overflow-x-auto">
             <table class="min-w-full">
                 <thead>
                 <tr class="bg-gray-100 text-left">
-                    <th class="px-4 py-2">Waktu</th>
-                    <th class="px-4 py-2">Tipe</th>
-                    <th class="px-4 py-2">Nominal</th>
-                    <th class="px-4 py-2">Aksi</th>
+                    <th class="px-4 py-2">Timestamp</th>
+                    <th class="px-4 py-2">Type</th>
+                    <th class="px-4 py-2">Amount</th>
+                    <th class="px-4 py-2">Details</th>
+                    <th class="px-4 py-2"></th>
                 </tr>
                 </thead>
                 <tbody id="txBody" class="divide-y"></tbody>
@@ -84,17 +90,17 @@
         <div class="px-6 py-4 flex justify-between items-center border-t">
             <button onclick="location.href='/wallet/balance'"
                     class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded transition">
-                Kembali
+                Back
             </button>
-            <span class="text-gray-600">Halaman <span id="pageNum">1</span></span>
+            <span class="text-gray-600">Page <span id="pageNum">1</span></span>
             <div>
                 <button id="prevBtn" onclick="prevPage()"
                         class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded transition">
-                    &larr; Sebelumnya
+                    Previous Page
                 </button>
                 <button id="nextBtn" onclick="nextPage()"
                         class="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded transition">
-                    Selanjutnya &rarr;
+                    Next Page
                 </button>
             </div>
         </div>
