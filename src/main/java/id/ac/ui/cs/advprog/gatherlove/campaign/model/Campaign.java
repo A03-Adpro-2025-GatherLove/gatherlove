@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -41,6 +42,10 @@ public class Campaign {
     @Column(nullable = false)
     @Builder.Default
     private boolean withdrawn = false;
+
+    @Column(nullable = false, updatable = false)
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public void addDonation(BigDecimal amount) {
         CampaignState state = CampaignStateFactory.getState(this.status);

@@ -52,7 +52,7 @@ public class CampaignController {
     public String createCampaign(
             @Valid @ModelAttribute("campaignDto") CampaignDto campaignDto,
             BindingResult bindingResult,
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
@@ -60,6 +60,9 @@ public class CampaignController {
             return CREATE_VIEW;
         }
 
+        // Extract UserEntity from UserDetailsImpl
+        UserEntity user = userDetails.getUser();
+        
         campaignService.createCampaign(campaignDto, user);
         redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil dibuat!");
 
@@ -84,14 +87,19 @@ public class CampaignController {
                         .divide(campaign.getTargetAmount(), 2, RoundingMode.HALF_UP);
             }
             
-            // TODO: Fetch fundraiser name from the campaign
+            // Get fundraiser name
             String fundraiserName = campaign.getFundraiser() != null ? campaign.getFundraiser().getUsername() : "Unknown";
+            
             model.addAttribute("fundraiserName", fundraiserName);
 
             // Add data to model
             model.addAttribute("campaign", campaign);
             model.addAttribute("formattedDeadline", formattedDeadline);
             model.addAttribute("progress", progress);
+            model.addAttribute("formattedCreatedAt", 
+                campaign.getCreatedAt() != null ? 
+                campaign.getCreatedAt().format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm")) : 
+                "Unknown");
 
             List<Donation> donations = donationService.findDonationsByCampaign(id);
             model.addAttribute("donations", donations);
@@ -110,8 +118,8 @@ public class CampaignController {
     }
 
     @GetMapping("/my")
-    public String showMyCampaigns(@AuthenticationPrincipal UserDetailsImpl user, Model model) {
-        UserEntity userEntity = user.getUser();
+    public String showMyCampaigns(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        UserEntity userEntity = userDetails.getUser();
         List<Campaign> campaigns = campaignService.getCampaignsByUser(userEntity);
         
         // Update status of campaigns if needed
@@ -124,11 +132,12 @@ public class CampaignController {
     
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") String id, 
-                              @AuthenticationPrincipal UserEntity user,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails,
                               Model model, 
                               RedirectAttributes redirectAttributes) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
+            UserEntity user = userDetails.getUser();
             
             // Check if the current user is the fundraiser
             if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
@@ -161,7 +170,7 @@ public class CampaignController {
     public String updateCampaign(@PathVariable("id") String id,
                                 @Valid @ModelAttribute("campaignDto") CampaignDto dto,
                                 BindingResult result,
-                                @AuthenticationPrincipal UserEntity user,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails,
                                 RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "campaign/edit";
@@ -169,6 +178,7 @@ public class CampaignController {
     
         try {
             Campaign campaign = campaignService.getCampaignById(id);
+            UserEntity user = userDetails.getUser();
             
             // Check if the current user is the fundraiser
             if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
@@ -187,10 +197,11 @@ public class CampaignController {
     
     @PostMapping("/delete/{id}")
     public String deleteCampaign(@PathVariable("id") String id, 
-                                @AuthenticationPrincipal UserEntity user,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails,
                                 RedirectAttributes redirectAttributes) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
+            UserEntity user = userDetails.getUser();
             
             // Check if the current user is the fundraiser
             if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
