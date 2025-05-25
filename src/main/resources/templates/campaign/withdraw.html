@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Campaign Funds - GatherLove</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .whitespace-pre-line { white-space: pre-line; }
+
+        .loading-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.9);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          display: none;
+        }
+        
+        .spinner {
+          width: 50px;
+          height: 50px;
+          border: 5px solid #f3f3f3;
+          border-top: 5px solid #3498db;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold text-green-600">GatherLove</a>
+        <div class="flex space-x-4">
+            <!-- Navbar content -->
+        </div>
+    </div>
+</nav>
+
+<div class="max-w-3xl mx-auto py-8 px-4">
+    <div th:if="${errorMessage}" class="mb-4 p-3 bg-red-100 text-red-800 rounded">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <div th:if="${successMessage}" class="mb-4 p-3 bg-green-100 text-green-700 rounded">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold mb-6 border-b pb-2">Withdraw Campaign Funds</h1>
+            
+            <div th:if="${campaign != null}" class="space-y-6">
+                <!-- Campaign Information -->
+                <div>
+                    <h2 class="font-medium text-gray-500">Campaign</h2>
+                    <p class="text-xl font-semibold" th:text="${campaign.title}"></p>
+                </div>
+                
+                <!-- Status -->
+                <div>
+                    <h2 class="font-medium text-gray-500">Status</h2>
+                    <p class="text-lg" th:text="${campaign.status}"></p>
+                    
+                    <!-- Warning if not completed -->
+                    <div th:if="${campaign.status.name() != 'COMPLETED'}" 
+                         class="mt-2 p-3 bg-yellow-100 text-yellow-800 rounded">
+                        <p>This campaign is not yet completed. Funds can only be withdrawn from completed campaigns.</p>
+                    </div>
+                </div>
+                
+                <!-- Deadline -->
+                <div>
+                    <h2 class="font-medium text-gray-500">Deadline</h2>
+                    <p class="text-lg" th:text="${campaign.deadline}"></p>
+                    
+                    <!-- Warning if deadline not passed -->
+                    <div th:if="${!deadlinePassed}" 
+                         class="mt-2 p-3 bg-yellow-100 text-yellow-800 rounded">
+                        <p>Campaign deadline has not been reached yet.</p>
+                    </div>
+                </div>
+                
+                <!-- Amount to withdraw -->
+                <div>
+                    <h2 class="font-medium text-gray-500">Amount to withdraw</h2>
+                    <p class="text-3xl font-bold text-green-600">
+                        Rp <span th:text="${#numbers.formatDecimal(campaign.totalDonated, 0, 'POINT', 0, 'COMMA')}"></span>
+                    </p>
+                    
+                    <!-- Warning if no funds -->
+                    <div th:if="${campaign.totalDonated == null || campaign.totalDonated <= 0}" 
+                         class="mt-2 p-3 bg-yellow-100 text-yellow-800 rounded">
+                        <p>There are no funds available to withdraw.</p>
+                    </div>
+                </div>
+                
+                <!-- Information about the withdrawal process -->
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 class="font-semibold text-blue-800">About Withdrawal</h3>
+                    <ul class="list-disc pl-5 mt-2 text-sm text-blue-700 space-y-1">
+                        <li>Funds will be transferred to your GatherLove wallet</li>
+                        <li>After withdrawal, you can transfer funds from your wallet to your bank account</li>
+                        <li>This action cannot be undone</li>
+                    </ul>
+                </div>
+                
+                <!-- Withdrawal form -->
+                <form th:if="${campaign.status.name() == 'COMPLETED' && campaign.totalDonated != null && campaign.totalDonated > 0}"
+                      th:action="@{/campaign/withdraw/{id}/confirm(id=${campaign.id})}" 
+                      method="post" 
+                      class="mt-8 pt-4 border-t border-gray-200">
+                      
+                    <div class="flex justify-between items-center">
+                        <a th:href="@{/campaign/view/{id}(id=${campaign.id})}" 
+                           class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded">
+                            Cancel
+                        </a>
+                        
+                        <button type="submit" 
+                                class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded">
+                            Confirm Withdrawal
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Back button if cannot withdraw -->
+                <div th:unless="${campaign.status.name() == 'COMPLETED' && campaign.totalDonated != null && campaign.totalDonated > 0}"
+                     class="mt-8 pt-4 border-t border-gray-200">
+                    <a th:href="@{/campaign/view/{id}(id=${campaign.id})}" 
+                       class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded inline-block">
+                        Back to Campaign
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Campaign not found -->
+            <div th:unless="${campaign != null}" class="text-center py-20">
+                <h1 class="text-2xl font-semibold text-gray-700">Campaign Not Found</h1>
+                <p class="text-gray-500 mt-2">The campaign you are looking for does not exist or could not be loaded.</p>
+                <a th:href="@{/}" class="mt-6 inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md">
+                    Go to Homepage
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <h3>Processing your withdrawal...</h3>
+    <p>Please wait while we transfer the funds to your wallet.</p>
+  </div>
+
+<!-- Footer -->
+<footer class="bg-white py-6 mt-12 border-t">
+    <div class="max-w-7xl mx-auto text-center px-4">
+        <p class="text-gray-500 text-sm">© <span id="currentYear"></span> GatherLove. All rights reserved.</p>
+    </div>
+</footer>
+
+<script th:inline="javascript">
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+      // Get the form element - adjust the selector to match your form
+  const withdrawForm = document.querySelector('form[action*="/withdraw"]');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  
+  if (withdrawForm) {
+    withdrawForm.addEventListener('submit', function(e) {
+      // Show loading overlay when form is submitted
+      loadingOverlay.style.display = 'flex';
+    });
+  }
+</script>
+
+</body>
+</html>

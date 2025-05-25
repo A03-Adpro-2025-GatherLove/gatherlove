@@ -110,14 +110,15 @@ public class CampaignController {
     }
 
     @GetMapping("/my")
-    public String showMyCampaigns(@AuthenticationPrincipal UserEntity user, Model model) {
-        List<Campaign> campaigns = campaignService.getCampaignsByUser(user);
+    public String showMyCampaigns(@AuthenticationPrincipal UserDetailsImpl user, Model model) {
+        UserEntity userEntity = user.getUser();
+        List<Campaign> campaigns = campaignService.getCampaignsByUser(userEntity);
         
         // Update status of campaigns if needed
         campaigns.forEach(campaign -> campaignService.updateCampaignStatus(campaign.getId()));
         
         // Refresh the list after updating statuses
-        model.addAttribute("campaignList", campaignService.getCampaignsByUser(user));
+        model.addAttribute("campaignList", campaignService.getCampaignsByUser(userEntity));
         return "campaign/my";
     }
     
@@ -204,5 +205,69 @@ public class CampaignController {
         }
         
         return "redirect:/campaign/my";
+    }
+
+    @GetMapping("/withdraw/{id}")
+    public String showWithdrawalPage(@PathVariable("id") String id,
+                                    @AuthenticationPrincipal UserDetailsImpl user,
+                                    Model model,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            // Check if user is authenticated
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "You must be logged in to withdraw funds");
+                return "redirect:/login?redirect=/campaign/view/" + id;
+            }
+
+            // Get the campaign
+            Campaign campaign = campaignService.getCampaignById(id);
+            
+            // Check if user is the fundraiser
+            if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "You are not authorized to withdraw funds from this campaign");
+                return "redirect:/campaign/view/" + id;
+            }
+            
+            // Add campaign to model
+            model.addAttribute("campaign", campaign);
+            
+            // Check if deadline has passed
+            boolean deadlinePassed = campaign.getDeadline().isBefore(LocalDate.now());
+            model.addAttribute("deadlinePassed", deadlinePassed);
+            
+            return "campaign/withdraw";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/campaign/view/" + id;
+        }
+    }
+
+    @PostMapping("/withdraw/{id}/confirm")
+    public String processWithdrawal(@PathVariable("id") String id,
+                                  @AuthenticationPrincipal UserDetailsImpl user,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            // Check if user is authenticated
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "You must be logged in to withdraw funds");
+                return "redirect:/login?redirect=/campaign/view/" + id;
+            }
+
+            UserEntity userEntity = user.getUser();
+            boolean success = campaignService.processCampaignWithdrawal(id, userEntity);
+            if (success) {
+                redirectAttributes.addFlashAttribute("successMessage", 
+                    "Funds have been successfully withdrawn to your wallet");
+                return "redirect:/wallet/balance"; // Redirect to the wallet page
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", 
+                    "Withdrawal process failed");
+                return "redirect:/campaign/withdraw/" + id;
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/campaign/withdraw/" + id;
+        }
     }
 }
