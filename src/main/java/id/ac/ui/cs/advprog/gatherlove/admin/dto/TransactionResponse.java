@@ -9,8 +9,8 @@ import java.util.UUID;
 @Data
 public class TransactionResponse {
     private UUID id;
-    private String campaignId;
-    private UUID donorId;
+    private String campaignTitle;
+    private String username;
     private BigDecimal amount;
     private String message;
     private LocalDateTime donationTimestamp;

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Campaigns</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between">
+            <div class="text-2xl font-bold text-green-600">GatherLove</div>
+            <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+            <a href="#" class="bg-red-600 text-white px-4 py-2 rounded hover:shadow-lg" id="logout-btn">Logout</a>
+        </div>
+    </header>
+    <div class="container mx-auto p-4 mt-4">
+        <aside class="w-64 bg-gray-100 p-4 rounded-lg">
+            <ul>
+                <li class="py-2"><a href="/admin" class="text-gray-600 hover:text-gray-900">Dashboard</a></li>
+                <li class="py-2"><a href="/admin/campaigns" class="font-bold text-gray-600 hover:text-gray-900">Campaigns</a></li>
+                <li class="py-2"><a href="/admin/transactions" class="text-gray-600 hover:text-gray-900">Transactions</a></li>
+                <li class="py-2"><a href="/admin/users" class="text-gray-600 hover:text-gray-900">Users</a></li>
+            </ul>
+        </aside>
+        <div class="flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Campaigns</h2>
+                <div class="flex items-center">
+                    <select id="status" class="block w-full pl-10 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent">
+                        <option value="">All</option>
+                        <option value="PENDING_VERIFICATION">Pending Verification</option>
+                        <option value="APPROVED">Approved</option>
+                        <option value="REJECTED">Rejected</option>
+                    </select>
+                    <button id="refresh" class="ml-4 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md">Refresh</button>
+                </div>
+            </div>
+            <table class="w-full table-auto border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">ID</th>
+                        <th class="px-4 py-2">Judul Kampanye</th>
+                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Tgl Mulai</th>
+                        <th class="px-4 py-2">Tgl Selesai</th>
+                        <th class="px-4 py-2">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="campaigns-table">
+                    <!-- campaigns will be rendered here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script th:src="@{/js/utils.js}"></script>
+    <script th:src="@{/js/handleLogout.js}"></script>
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', handleLogout);
+        const statusSelect = document.getElementById('status');
+        const refreshButton = document.getElementById('refresh');
+        const campaignsTable = document.getElementById('campaigns-table');
+
+        // fetch campaigns data on page load
+        fetchCampaigns();
+
+        // fetch campaigns data when status filter changes
+        statusSelect.addEventListener('change', fetchCampaigns);
+
+        // fetch campaigns data when refresh button is clicked
+        refreshButton.addEventListener('click', fetchCampaigns);
+
+        function fetchCampaigns() {
+            const status = statusSelect.value;
+            const url = `/api/admin/campaigns?status=${status}`;
+            fetchWithAuthToken(url)
+                .then(response => response.json())
+                .then(data => renderCampaigns(data));
+        }
+
+        function renderCampaigns(campaigns) {
+            const tableRows = campaigns.map(campaign => {
+                return `
+                    <tr>
+                        <td class="px-4 py-2 text-center">${campaign.campaignId}</td>
+                        <td class="px-4 py-2 text-center">${campaign.title}</td>
+                        <td class="px-4 py-2 text-center">${campaign.status}</td>
+                        <td class="px-4 py-2 text-center">${campaign.startDate}</td>
+                        <td class="px-4 py-2 text-center">${campaign.deadline}</td>
+                        <td class="px-4 py-2 text-center">
+                            <a href="/admin/campaigns/${campaign.campaignId}" class="text-blue-600 hover:text-blue-700">Detail</a>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            campaignsTable.innerHTML = tableRows;
+        }
+    </script>
+</body>
+</html>

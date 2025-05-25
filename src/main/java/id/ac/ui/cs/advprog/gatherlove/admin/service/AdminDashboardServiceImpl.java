@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.gatherlove.admin.dto.Stats;
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.authentication.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,10 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
         stats.setTotalUsers(userRepository.count());
         
         stats.setTotalFundRaised(donationRepository.getTotalFundRaised());
+
+        if (stats.getTotalFundRaised() == null) {
+            stats.setTotalFundRaised(BigDecimal.ZERO);
+        }
         
         return stats;
     }

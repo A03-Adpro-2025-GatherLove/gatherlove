@@ -139,4 +139,9 @@ public class CampaignServiceImpl implements CampaignService {
         campaign.addDonation(amount);
         campaignRepository.save(campaign);
     }
+
+    @Override
+    public List<Campaign> getAllCampaigns() {
+        return campaignRepository.findAll();
+    }
 }
