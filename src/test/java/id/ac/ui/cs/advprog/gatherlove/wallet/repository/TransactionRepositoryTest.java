@@ -28,6 +28,7 @@ class TransactionRepositoryTest {
         walletRepository.save(wallet);
 
         Transaction transaction = new Transaction(TransactionType.TOP_UP, BigDecimal.valueOf(6000), "GOPAY");
+        transaction.setRequestId(UUID.randomUUID());
         transaction.setWallet(wallet);
         transactionRepository.save(transaction);
 

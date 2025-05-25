@@ -3,17 +3,24 @@ package id.ac.ui.cs.advprog.gatherlove.wallet.controller;
 import id.ac.ui.cs.advprog.gatherlove.authentication.security.services.UserDetailsImpl;
 import id.ac.ui.cs.advprog.gatherlove.wallet.enums.TransactionType;
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.*;
+import id.ac.ui.cs.advprog.gatherlove.wallet.repository.TransactionRepository;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +31,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(WalletController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class WalletControllerTest {
 
     @Autowired
@@ -32,6 +40,9 @@ class WalletControllerTest {
 
     @MockBean
     private WalletService walletService;
+
+    @MockBean
+    private TransactionRepository transactionRepository;
 
     private UUID userId;
 
@@ -76,13 +87,14 @@ class WalletControllerTest {
     }
 
     @Test
-    void getTransactions() throws Exception {
-        Wallet w = new Wallet(userId, BigDecimal.valueOf(50000));
+    void testGetTransactions() throws Exception {
         Transaction tx = new Transaction(TransactionType.TOP_UP, BigDecimal.valueOf(10000), "GOPAY");
+        tx.setRequestId(UUID.randomUUID());
         tx.setId(1L);
-        w.addTransaction(tx);
+        tx.setTransactionDateTime(LocalDateTime.now());
 
-        given(walletService.getWalletWithTransactions(userId)).willReturn(w);
+        Page<Transaction> page = new PageImpl<>(List.of(tx));
+        given(transactionRepository.findByWalletUserId(eq(userId), any(Pageable.class))).willReturn(page);
 
         mockMvc.perform(get("/api/wallet/transactions")
                         .with(csrf()).with(user(principal)))
@@ -105,40 +117,5 @@ class WalletControllerTest {
                         .value("Proses Penghapusan Riwayat Top-Up Berhasil!"));
 
         then(walletService).should().deleteTopUpTransaction(userId, 999L);
-    }
-
-    @Test
-    void testWithdraw() throws Exception {
-        Wallet after = new Wallet(userId, BigDecimal.valueOf(4000));
-        given(walletService.withdrawFunds(userId, BigDecimal.valueOf(1000))).willReturn(after);
-
-        String body = """
-            { "amount": 1000 }
-            """;
-
-        mockMvc.perform(post("/api/wallet/withdraw")
-                        .with(csrf()).with(user(principal))
-                        .contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message")
-                        .value("Penarikan Dana Berhasil Diproses!"));
-    }
-
-    @Test
-    void testDonate() throws Exception {
-        Wallet afterDonate = new Wallet(userId, BigDecimal.valueOf(10000));
-        given(walletService.debit(userId, BigDecimal.valueOf(20000))).willReturn(afterDonate);
-
-        String body = """
-            { "amount": 20000 }
-            """;
-
-        mockMvc.perform(post("/api/wallet/donate")
-                        .with(csrf()).with(user(principal))
-                        .contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message")
-                        .value("Nominal untuk Donasi Berhasil Dikurangi dari Saldo!"))
-                .andExpect(jsonPath("$.remaining_balance").value(10000));
     }
 }

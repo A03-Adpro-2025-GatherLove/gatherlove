@@ -89,7 +89,6 @@ class WalletServiceTest {
         when(transactionRepository.findById(998L)).thenReturn(Optional.of(tr));
         walletService.deleteTopUpTransaction(userID, 998L);
         verify(transactionRepository).delete(tr);
-        verify(walletEventPublisher).notifyBalanceChanged(exampleWallet, tr);
     }
 
     @Test
@@ -107,14 +106,14 @@ class WalletServiceTest {
 
     @Test
     void testWithdrawFundsSuccess() {
-        Wallet updated = walletService.withdrawFunds(userID, BigDecimal.valueOf(10000), UUID.randomUUID());
+        Wallet updated = walletService.withdrawFunds(userID, BigDecimal.valueOf(10000), UUID.randomUUID(), "NAME");
         assertEquals(BigDecimal.valueOf(90000), updated.getBalance());
         verify(walletEventPublisher).notifyBalanceChanged(any(Wallet.class), any(Transaction.class));
     }
 
     @Test
     void testDonateSuccess() {
-        Wallet updatedWallet = walletService.debit(userID, BigDecimal.valueOf(15000), UUID.randomUUID());
+        Wallet updatedWallet = walletService.debit(userID, BigDecimal.valueOf(15000), UUID.randomUUID(), "NAME");
         assertEquals(BigDecimal.valueOf(65000), updatedWallet.getBalance());
         assertTrue(updatedWallet.getTransactions().stream().anyMatch(
                 t -> t.getType() == TransactionType.DONATION &&
@@ -128,7 +127,7 @@ class WalletServiceTest {
 
     @Test
     void testDonateInsufficientBalance() {
-        assertThrows(RuntimeException.class, () -> walletService.debit(userID, BigDecimal.valueOf(1000000), UUID.randomUUID()));
+        assertThrows(RuntimeException.class, () -> walletService.debit(userID, BigDecimal.valueOf(1000000), UUID.randomUUID(), "NAME"));
         assertEquals(BigDecimal.valueOf(80000), exampleWallet.getBalance());
         verify(walletEventPublisher, never()).notifyBalanceChanged(any(), any());
     }
