@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -89,15 +90,15 @@ public class CampaignServiceImpl implements CampaignService {
         return campaignRepository.save(campaign);
     }
 
-    @Async("campaignTaskExecutor")
     @Override
+    @Transactional
     public Campaign addDonationToCampaign(String campaignId, BigDecimal amount) {
         Campaign campaign = getCampaignById(campaignId);
         campaign.addDonation(amount);
-        // Check if the donation changed the campaign status (e.g., reached the target)
         campaign.checkStatus();
         return campaignRepository.save(campaign);
     }
+
 
     @Override
     public List<Campaign> getCampaignsByStatus(CampaignStatus status) {

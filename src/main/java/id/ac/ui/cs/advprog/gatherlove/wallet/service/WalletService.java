@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gatherlove.wallet.service;
 
-import id.ac.ui.cs.advprog.gatherlove.wallet.model.Wallet;
+import id.ac.ui.cs.advprog.gatherlove.wallet.model.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -16,7 +16,9 @@ public interface WalletService {
 
     void deleteTopUpTransaction(UUID userId, Long transactionId);
 
-    Wallet withdrawFunds(UUID userId, BigDecimal amount, UUID requestId);
+    Wallet withdrawFunds(UUID userId, BigDecimal amount, UUID requestId, String campaignName);
 
-    Wallet debit(UUID donorId, BigDecimal amount, UUID requestId);
+    Wallet debit(UUID donorId, BigDecimal amount, UUID requestId, String campaignName);
+
+    Transaction getTransactionById(UUID userId, Long transactionId);
 }

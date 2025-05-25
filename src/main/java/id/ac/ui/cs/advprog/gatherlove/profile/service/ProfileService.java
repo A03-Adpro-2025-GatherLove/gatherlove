@@ -7,9 +7,11 @@ import id.ac.ui.cs.advprog.gatherlove.profile.dto.ProfileResponse;
 import id.ac.ui.cs.advprog.gatherlove.profile.exception.ResourceNotFoundException;
 import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
 import id.ac.ui.cs.advprog.gatherlove.profile.repository.ProfileRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ProfileService {
@@ -22,34 +24,31 @@ public class ProfileService {
         this.userRepository = userRepository;
     }
 
-    public ProfileResponse completeProfile(ProfileRequest request, UUID userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public ProfileResponse completeProfile(ProfileRequest request, UUID profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
-        Profile profile = Profile.builder()
-                .name(request.getName())
-                .phoneNumber(request.getPhoneNumber())
-                .bio(request.getBio())
-                .user(user)
-                .build();
+        profile.setFullName(request.getFullName());
+        profile.setPhoneNumber(request.getPhoneNumber());
+        profile.setBio(request.getBio());
 
         Profile savedProfile = profileRepository.save(profile);
 
         return ProfileResponse.builder()
                 .id(savedProfile.getId())
-                .name(savedProfile.getName())
+                .fullName(savedProfile.getFullName())
                 .phoneNumber(savedProfile.getPhoneNumber())
                 .bio(savedProfile.getBio())
                 .build();
     }
 
-    public ProfileResponse viewProfile(UUID profileId) {  // Changed from Long to UUID
+    public ProfileResponse viewProfile(UUID profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
         return ProfileResponse.builder()
                 .id(profile.getId())
-                .name(profile.getName())
+                .fullName(profile.getFullName())
                 .phoneNumber(profile.getPhoneNumber())
                 .bio(profile.getBio())
                 .build();
@@ -59,7 +58,7 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
-        profile.setName(request.getName());
+        profile.setFullName(request.getFullName());
         profile.setPhoneNumber(request.getPhoneNumber());
         profile.setBio(request.getBio());
 
@@ -67,7 +66,7 @@ public class ProfileService {
 
         return ProfileResponse.builder()
                 .id(updatedProfile.getId())
-                .name(updatedProfile.getName())
+                .fullName(updatedProfile.getFullName())
                 .phoneNumber(updatedProfile.getPhoneNumber())
                 .bio(updatedProfile.getBio())
                 .build();
@@ -80,5 +79,23 @@ public class ProfileService {
         profile.setBio(null);
 
         profileRepository.save(profile);
+    }
+
+    @Async
+    public CompletableFuture<ProfileResponse> completeProfileAsync(ProfileRequest request, UUID userId) {
+        ProfileResponse response = completeProfile(request, userId);
+        return CompletableFuture.completedFuture(response);
+    }
+
+    @Async
+    public CompletableFuture<ProfileResponse> updateProfileAsync(UUID profileId, ProfileRequest request) {
+        ProfileResponse response = updateProfile(profileId, request);
+        return CompletableFuture.completedFuture(response);
+    }
+
+    @Async
+    public CompletableFuture<Void> deleteBioAsync(UUID profileId) {
+        deleteBio(profileId);
+        return CompletableFuture.completedFuture(null);
     }
 }

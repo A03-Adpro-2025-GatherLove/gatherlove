@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record TopUpRequest(
-        @Pattern(regexp = "GOPAY|DANA", flags = Pattern.Flag.CASE_INSENSITIVE,
-                message = "The payment method must be GOPAY or DANA")
+        @Pattern(regexp = "GOPAY|DANA|OVO|BNI|PAYPAL|WISE", flags = Pattern.Flag.CASE_INSENSITIVE,
+                message = "The payment method must be of those that are provided")
         String method,
 
         @NotNull UUID requestId,
@@ -14,6 +14,6 @@ public record TopUpRequest(
         @NotBlank(message = "phone_number is required")
         String phone_number,
 
-        @DecimalMin(value = "5000", message = "Top-up value must be at least Rp. 5.000,-")
+        @DecimalMin(value = "1000", message = "Top-up value must be at least Rp. 1.000,-")
         BigDecimal amount
 ) {}

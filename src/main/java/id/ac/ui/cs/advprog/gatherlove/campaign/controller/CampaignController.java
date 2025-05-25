@@ -1,9 +1,12 @@
 package id.ac.ui.cs.advprog.gatherlove.campaign.controller;
 
 import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
+import id.ac.ui.cs.advprog.gatherlove.authentication.security.services.UserDetailsImpl;
 import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.service.CampaignService;
+import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
+import id.ac.ui.cs.advprog.gatherlove.donation.service.DonationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -12,8 +15,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +32,13 @@ public class CampaignController {
 
     private final CampaignService campaignService;
     private static final String CREATE_VIEW = "campaign/create";
+    private final DonationService donationService;
+
+    private UUID getCurrentUserId() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (UserDetailsImpl) auth.getPrincipal();
+        return principal.getId();
+    }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
@@ -80,6 +92,10 @@ public class CampaignController {
             model.addAttribute("campaign", campaign);
             model.addAttribute("formattedDeadline", formattedDeadline);
             model.addAttribute("progress", progress);
+
+            List<Donation> donations = donationService.findDonationsByCampaign(id);
+            model.addAttribute("donations", donations);
+            model.addAttribute("currentUser", getCurrentUserId());
             
             // Check if deadline has passed
             boolean deadlinePassed = campaign.getDeadline().isBefore(LocalDate.now());

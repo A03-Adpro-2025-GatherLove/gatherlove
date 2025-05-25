@@ -7,112 +7,130 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
-    
-    <!-- Navigation Bar -->
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-green-600">GatherLove</div>
-            <div class="hidden md:flex space-x-4">
-                <a href="#" class="text-gray-700 hover:text-green-600">Home</a>
-                <a href="#" class="text-gray-700 hover:text-green-600">Campaigns</a>
-                <a href="#" class="text-gray-700 hover:text-green-600">About</a>
-                <a href="#" class="text-gray-700 hover:text-green-600">Articles</a>
-            </div>
-            <div class="hidden md:flex space-x-4" id="auth-links">
-                <a href="/login" class="bg-green-600 text-white px-4 py-2 rounded hover:shadow-lg" id="login-link">Login</a>
-                <a href="/register" class="bg-blue-600 text-white px-4 py-2 rounded hover:shadow-lg" id="signup-link">Sign Up</a>
-            </div>
-            <div class="hidden md:flex space-x-4" id="logout-link" style="display: none;">
-                <a href="#" class="bg-red-600 text-white px-4 py-2 rounded hover:shadow-lg" id="logout-btn">Logout</a>
-            </div>
-        </div>
-    </nav>
-    
-    <!-- Hero Section -->
-    <header class="bg-gradient-to-r from-green-100 to-blue-100 py-20">
-        <div class="max-w-7xl mx-auto text-center">
-            <h1 class="text-4xl font-bold text-gray-800">Empower Change with Transparent Fundraising.</h1>
-            <p class="mt-4 text-lg text-gray-600">Create or support campaigns for social causes. Track every donation securely.</p>
-            <div class="mt-8 space-x-4">
-                <a href="#" class="bg-green-600 text-white px-6 py-3 rounded hover:scale-105 hover:shadow-lg">Start a Campaign</a>
-                <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded hover:scale-105 hover:shadow-lg">Browse Campaigns</a>
-            </div>
-        </div>
-    </header>
-    
-    <!-- Key Features Section -->
-    <section class="py-20">
-        <div class="max-w-7xl mx-auto text-center">
-            <h2 class="text-3xl font-bold text-gray-800">Why Choose GatherLove?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
-                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                    <div class="text-4xl">🟢</div>
-                    <h3 class="mt-4 text-xl font-semibold">Create Campaigns</h3>
-                    <p class="mt-2 text-gray-600">Easily launch and manage fundraising campaigns.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                    <div class="text-4xl">💸</div>
-                    <h3 class="mt-4 text-xl font-semibold">Secure Donations</h3>
-                    <p class="mt-2 text-gray-600">Track donations and ensure funds reach their goals.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                    <div class="text-4xl">📊</div>
-                    <h3 class="mt-4 text-xl font-semibold">Transparent Reports</h3>
-                    <p class="mt-2 text-gray-600">Real-time updates and proof of fund usage.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                    <div class="text-4xl">🔒</div>
-                    <h3 class="mt-4 text-xl font-semibold">Admin-Verified</h3>
-                    <p class="mt-2 text-gray-600">All campaigns are screened for legitimacy.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- How It Works Section -->
-    <section class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto text-center">
-            <h2 class="text-3xl font-bold text-gray-800">How It Works</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
-                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                    <div class="text-4xl">1️⃣</div>
-                    <h3 class="mt-4 text-xl font-semibold">Sign Up / Create a Campaign</h3>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                    <div class="text-4xl">2️⃣</div>
-                    <h3 class="mt-4 text-xl font-semibold">Share with Your Network</h3>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                    <div class="text-4xl">3️⃣</div>
-                    <h3 class="mt-4 text-xl font-semibold">Withdraw Funds Securely After Approval</h3>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="bg-white py-6">
-        <div class="max-w-7xl mx-auto text-center">
-            <div class="flex justify-center space-x-4 mb-4">
-                <a href="#" class="text-gray-600 hover:text-green-600">Facebook</a>
-                <a href="#" class="text-gray-600 hover:text-green-600">Twitter
-                <a href="#" class="text-gray-600 hover:text-green-600">Twitter</a>
-                <a href="#" class="text-gray-600 hover:text-green-600">Instagram</a>
-            </div>
-            <p class="text-gray-500 text-sm">© 2025 GatherLove. All rights reserved.</p>
-        </div>
-    </footer>
 
-    <script th:src="@{/js/utils.js}"></script>
-    <script th:src="@{/js/handleLogout.js}"></script>
-    <script>
-        const jwtToken = localStorage.getItem('jwtToken');
-        if (jwtToken) {
-            document.getElementById('auth-links').style.display = 'none';
-            document.getElementById('logout-link').style.display = 'flex';
+<!-- Navigation Bar -->
+<nav class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="text-2xl font-bold text-green-600">GatherLove</div>
+        <div class="hidden md:flex space-x-4">
+            <a href="#" class="text-gray-700 hover:text-green-600">Home</a>
+            <a href="#" class="text-gray-700 hover:text-green-600">Campaigns</a>
+            <a href="#" class="text-gray-700 hover:text-green-600">About</a>
+            <a href="#" class="text-gray-700 hover:text-green-600">Articles</a>
+        </div>
+        <div class="hidden md:flex space-x-4" id="auth-links">
+            <a href="/login" class="bg-green-600 text-white px-4 py-2 rounded hover:shadow-lg" id="login-link">Login</a>
+            <a href="/register" class="bg-blue-600 text-white px-4 py-2 rounded hover:shadow-lg" id="signup-link">Sign Up</a>
+        </div>
+        <div class="hidden md:flex space-x-4" id="user-links" style="display: none;">
+            <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded hover:shadow-lg flex items-center" id="profile-link">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                My Profile
+            </a>
+            <a href="#" class="bg-red-600 text-white px-4 py-2 rounded hover:shadow-lg" id="logout-btn">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="bg-gradient-to-r from-green-100 to-blue-100 py-20">
+    <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-4xl font-bold text-gray-800">Empower Change with Transparent Fundraising.</h1>
+        <p class="mt-4 text-lg text-gray-600">Create or support campaigns for social causes. Track every donation securely.</p>
+        <div class="mt-8 space-x-4">
+            <a href="#" class="bg-green-600 text-white px-6 py-3 rounded hover:scale-105 hover:shadow-lg">Start a Campaign</a>
+            <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded hover:scale-105 hover:shadow-lg">Browse Campaigns</a>
+        </div>
+    </div>
+</header>
+
+<!-- Key Features Section -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-gray-800">Why Choose GatherLove?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                <div class="text-4xl">🟢</div>
+                <h3 class="mt-4 text-xl font-semibold">Create Campaigns</h3>
+                <p class="mt-2 text-gray-600">Easily launch and manage fundraising campaigns.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                <div class="text-4xl">💸</div>
+                <h3 class="mt-4 text-xl font-semibold">Secure Donations</h3>
+                <p class="mt-2 text-gray-600">Track donations and ensure funds reach their goals.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                <div class="text-4xl">📊</div>
+                <h3 class="mt-4 text-xl font-semibold">Transparent Reports</h3>
+                <p class="mt-2 text-gray-600">Real-time updates and proof of fund usage.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                <div class="text-4xl">🔒</div>
+                <h3 class="mt-4 text-xl font-semibold">Admin-Verified</h3>
+                <p class="mt-2 text-gray-600">All campaigns are screened for legitimacy.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-gray-800">How It Works</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                <div class="text-4xl">1️⃣</div>
+                <h3 class="mt-4 text-xl font-semibold">Sign Up / Create a Campaign</h3>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                <div class="text-4xl">2️⃣</div>
+                <h3 class="mt-4 text-xl font-semibold">Share with Your Network</h3>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                <div class="text-4xl">3️⃣</div>
+                <h3 class="mt-4 text-xl font-semibold">Withdraw Funds Securely After Approval</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-white py-6">
+    <div class="max-w-7xl mx-auto text-center">
+        <div class="flex justify-center space-x-4 mb-4">
+            <a href="#" class="text-gray-600 hover:text-green-600">Facebook</a>
+            <a href="#" class="text-gray-600 hover:text-green-600">Twitter</a>
+            <a href="#" class="text-gray-600 hover:text-green-600">Instagram</a>
+        </div>
+        <p class="text-gray-500 text-sm">© 2025 GatherLove. All rights reserved.</p>
+    </div>
+</footer>
+
+<script th:src="@{/js/utils.js}"></script>
+<script th:src="@{/js/handleLogout.js}"></script>
+<script>
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+        document.getElementById('auth-links').style.display = 'none';
+        document.getElementById('user-links').style.display = 'flex';
+
+        // Get user ID from JWT token and set profile link
+        try {
+            const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+            const userId = payload.sub || payload.userId || payload.id;
+            if (userId) {
+                document.getElementById('profile-link').href = `/me`;
+            }
+        } catch (error) {
+            console.error('Error parsing JWT token:', error);
+            // Fallback: redirect to a profile endpoint that can determine the current user
+            document.getElementById('profile-link').href = '/profile/me';
         }
+    }
 
-        document.getElementById('logout-btn').addEventListener('click', handleLogout);
-    </script>
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+</script>
 </body>
 </html>

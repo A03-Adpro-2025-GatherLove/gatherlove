@@ -50,7 +50,8 @@ public class DonationServiceImpl implements DonationService {
             throw new IllegalArgumentException("Donation amount must be positive.");
         }
         walletService.getOrCreateWallet(donorId);
-        walletService.debit(donorId, amount);
+        walletService.debit(donorId, amount, UUID.randomUUID(),
+                campaignService.getCampaignById(campaignId).getTitle());
         Donation donation = Donation.builder()
                 .donorId(donorId).campaignId(campaignId).amount(amount).message(message)
                 .donationTimestamp(LocalDateTime.now()).build();
