@@ -5,14 +5,16 @@ import id.ac.ui.cs.advprog.gatherlove.wallet.dto.*;
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.Transaction;
 import id.ac.ui.cs.advprog.gatherlove.wallet.model.Wallet;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
+import id.ac.ui.cs.advprog.gatherlove.wallet.repository.TransactionRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/wallet")
@@ -20,8 +22,11 @@ public class WalletController {
 
     private final WalletService walletService;
 
-    public WalletController(WalletService walletService) {
+    private final TransactionRepository transactionRepository;
+
+    public WalletController(WalletService walletService, TransactionRepository transactionRepository) {
         this.walletService = walletService;
+        this.transactionRepository = transactionRepository;
     }
 
     @GetMapping("/balance")
@@ -44,15 +49,23 @@ public class WalletController {
     }
 
     @GetMapping("/transactions")
-    public TransactionListResponse getTransactions() {
+    public TransactionListResponse getTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
         UUID userId = getCurrentUserId();
-        Wallet wallet = walletService.getWalletWithTransactions(userId);
 
-        var list = wallet.getTransactions().stream()
+        PageRequest pr = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.DESC, "transactionDateTime"));
+
+        Page<Transaction> slice = transactionRepository.findByWalletUserId(userId, pr);
+
+        var dto = slice.getContent()
+                .stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
-        return new TransactionListResponse(list);
+        return new TransactionListResponse(dto);
     }
 
     private TransactionDto toDto(Transaction t) {
