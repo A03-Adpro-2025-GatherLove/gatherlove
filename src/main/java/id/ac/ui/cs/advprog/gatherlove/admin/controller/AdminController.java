@@ -22,4 +22,10 @@ public class AdminController {
         model.addAttribute("stats", stats);
         return "admin/dashboard";
     }
+
+    @GetMapping("/campaigns")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String campaigns(Model model) {
+        return "admin/campaigns";
+    }
 }
