@@ -14,7 +14,7 @@
                 <div class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
                     <h3 class="text-xl font-semibold">Profile Details</h3>
                     <div class="flex space-x-2">
-                        <a th:href="@{/profiles/{id}/edit(id=${profile.id})}" class="bg-white text-blue-600 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 flex items-center">
+                        <a th:href="@{/profile/edit/{id}(id=${profile.id})}" class="bg-white text-blue-600 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
@@ -62,8 +62,8 @@
                                 <h3 class="text-lg font-semibold text-gray-800">Bio</h3>
                             </div>
                             <div class="ml-9">
-                                <p th:if="${profile.bio and !profile.bio.isEmpty()}" th:text="${profile.bio}" class="text-gray-700 leading-relaxed whitespace-pre-wrap">User bio goes here...</p>
-                                <p th:if="${!profile.bio or profile.bio.isEmpty()}" class="text-gray-500 italic">No bio available</p>
+                                <p th:if="${profile.bio != null and !#strings.isEmpty(profile.bio)}" th:text="${profile.bio}" class="text-gray-700 leading-relaxed whitespace-pre-wrap">User bio goes here...</p>
+                                <p th:if="${profile.bio == null or #strings.isEmpty(profile.bio)}" class="text-gray-500 italic">No bio available</p>
                             </div>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                                 <div class="text-sm text-gray-600">Phone Number</div>
                             </div>
                             <div class="bg-white rounded-lg p-4">
-                                <div class="text-2xl font-bold text-blue-600" th:text="${profile.bio != null and !profile.bio.isEmpty() ? '✓' : '✗'}">✓</div>
+                                <div class="text-2xl font-bold text-blue-600" th:text="${profile.bio != null and !#strings.isEmpty(profile.bio) ? '✓' : '✗'}">✓</div>
                                 <div class="text-sm text-gray-600">Bio</div>
                             </div>
                         </div>
