@@ -17,6 +17,8 @@ import id.ac.ui.cs.advprog.gatherlove.admin.model.Announcement;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDashboardService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AdminDonationService;
 import id.ac.ui.cs.advprog.gatherlove.admin.service.AnnouncementService;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
+import id.ac.ui.cs.advprog.gatherlove.authentication.service.UserService;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.service.CampaignService;
@@ -37,6 +39,9 @@ public class RestAdminController {
 
     @Autowired
     private CampaignService campaignService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("")
     public String admin() {
@@ -61,8 +66,13 @@ public class RestAdminController {
         for (Donation donation : donations) {
             TransactionResponse response = new TransactionResponse();
             response.setId(donation.getId());
-            response.setCampaignId(donation.getCampaignId());
-            response.setDonorId(donation.getDonorId());
+
+            Campaign campaign = campaignService.getCampaignById(donation.getCampaignId());
+            response.setCampaignTitle(campaign.getTitle());
+
+            UserEntity user = userService.getUserById(donation.getDonorId());
+            response.setUsername(user.getUsername());
+
             response.setAmount(donation.getAmount());
             response.setMessage(donation.getMessage());
             response.setDonationTimestamp(donation.getDonationTimestamp());
