@@ -4,65 +4,99 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Riwayat Transaksi</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+          rel="stylesheet"/>
+
     <script>
+        let page = 0;
+        const size = 7;
+
+        const rupiah = n => new Intl.NumberFormat('id-ID',
+            { style:'currency', currency:'IDR' }).format(n);
+
         async function loadTransactions() {
-            const res = await fetch(`/api/wallet/transactions`);
+            const res = await fetch(`/api/wallet/transactions?page=${page}&size=${size}`);
             const data = await res.json();
+
             const tbody = document.getElementById('txBody');
             tbody.innerHTML = '';
+
             data.transactions.forEach(tx => {
                 const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50';
                 tr.innerHTML = `
-                  <td class="px-4 py-2">${new Date(tx.timestamp).toLocaleString()}</td>
-                  <td class="px-4 py-2">${tx.type}</td>
-                  <td class="px-4 py-2">${tx.amount}</td>
-                  <td class="px-4 py-2">
-                    ${tx.type === 'TOP_UP' ? `<button onclick="deleteTx(${tx.transaction_id})"
-                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Hapus</button>` : ''}
-                  </td>
-                `;
+                    <td class="px-4 py-2 whitespace-nowrap">
+                        ${new Date(tx.timestamp).toLocaleString('id-ID')}
+                    </td>
+                    <td class="px-4 py-2">${tx.displayType}</td>
+                    <td class="px-4 py-2">${rupiah(tx.amount)}</td>
+                    <td class="px-4 py-2">
+                        ${tx.type === 'TOP_UP'
+                    ? `<button onclick="deleteTx(${tx.transaction_id})"
+                               class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                               Hapus</button>` : ''}
+                    </td>`;
                 tbody.appendChild(tr);
             });
+
+            document.getElementById('pageNum').textContent = page + 1;
+            document.getElementById('prevBtn').disabled = page === 0;
+            document.getElementById('nextBtn').disabled = data.transactions.length < size;
         }
+
+        function prevPage () { if (page > 0) { page--; loadTransactions(); } }
+        function nextPage () { page++; loadTransactions(); }
 
         async function deleteTx(txId) {
             if (!confirm('Apakah Anda yakin terhadap penghapusan?')) return;
-            const res = await fetch(`/api/wallet/transactions/${txId}`, { method: 'DELETE' });
-            if (res.ok) {
-                loadTransactions();
-            } else {
-                alert('Transaksi gagal dihapus');
-            }
+            const res = await fetch(`/api/wallet/transactions/${txId}`,
+                { method:'DELETE' });
+            res.ok ? loadTransactions()
+                : alert('Transaksi gagal dihapus');
         }
 
         document.addEventListener('DOMContentLoaded', loadTransactions);
     </script>
 </head>
+
 <body class="bg-gray-100 min-h-screen flex flex-col">
 <div class="container mx-auto flex-grow px-4 py-8">
     <div class="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl mx-auto">
         <div class="px-6 py-4 border-b">
             <h2 class="text-2xl font-semibold text-gray-800">Riwayat Transaksi</h2>
         </div>
+
         <div class="p-4 overflow-x-auto">
-            <table class="min-w-full bg-white">
+            <table class="min-w-full">
                 <thead>
                 <tr class="bg-gray-100 text-left">
                     <th class="px-4 py-2">Waktu</th>
-                    <th class="px-4 py-2">Type</th>
-                    <th class="px-4 py-2">Amount</th>
+                    <th class="px-4 py-2">Tipe</th>
+                    <th class="px-4 py-2">Nominal</th>
                     <th class="px-4 py-2">Aksi</th>
                 </tr>
                 </thead>
                 <tbody id="txBody" class="divide-y"></tbody>
             </table>
         </div>
-        <div class="p-4 border-t">
-            <button onclick="window.location.href=`/wallet/balance`"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded transition">
+
+        <div class="px-6 py-4 flex justify-between items-center border-t">
+            <button onclick="location.href='/wallet/balance'"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded transition">
                 Kembali
             </button>
+            <span class="text-gray-600">Halaman <span id="pageNum">1</span></span>
+            <div>
+                <button id="prevBtn" onclick="prevPage()"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded transition">
+                    &larr; Sebelumnya
+                </button>
+                <button id="nextBtn" onclick="nextPage()"
+                        class="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded transition">
+                    Selanjutnya &rarr;
+                </button>
+            </div>
         </div>
     </div>
 </div>
