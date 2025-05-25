@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
+import id.ac.ui.cs.advprog.gatherlove.profile.repository.ProfileRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,7 +53,10 @@ public class AuthController {
 
     @Autowired
     RoleRepository roleRepository;
-    
+
+    @Autowired
+    ProfileRepository profileRepository;
+
     @Autowired
     SessionRepository sessionRepository;
 
@@ -89,7 +94,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletResponse response) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -125,7 +130,39 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        // Create and save the profile
+        Profile profile = Profile.builder()
+                .user(user)
+                .build();
+
+        profileRepository.save(profile);
+
+        // Authenticate user after registration (using the non-encoded password)
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> userRoles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        // Set JWT cookie
+        Cookie jwtCookie = new Cookie("JWT-TOKEN", jwt);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(false); // Set to true in production with HTTPS
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(24 * 60 * 60); // 24 hours
+        response.addCookie(jwtCookie);
+
+        // Return JWT and user details
+        return ResponseEntity.ok(new JwtResponse(jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                userRoles));
     }
     
     @PostMapping("/logout")
