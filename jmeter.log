@@ -1,0 +1,287 @@
+2025-05-25 20:22:35,494 INFO o.a.j.u.JMeterUtils: Setting Locale to en_ID
+2025-05-25 20:22:35,509 INFO o.a.j.JMeter: Loading user properties from: C:\Users\Abhi\Downloads\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\user.properties
+2025-05-25 20:22:35,510 INFO o.a.j.JMeter: Loading system properties from: C:\Users\Abhi\Downloads\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\system.properties
+2025-05-25 20:22:35,516 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2025-05-25 20:22:35,517 INFO o.a.j.JMeter: Version 5.6.3
+2025-05-25 20:22:35,517 INFO o.a.j.JMeter: java.version=1.8.0_51
+2025-05-25 20:22:35,517 INFO o.a.j.JMeter: java.vm.name=Java HotSpot(TM) 64-Bit Server VM
+2025-05-25 20:22:35,517 INFO o.a.j.JMeter: os.name=Windows 8.1
+2025-05-25 20:22:35,518 INFO o.a.j.JMeter: os.arch=amd64
+2025-05-25 20:22:35,518 INFO o.a.j.JMeter: os.version=6.3
+2025-05-25 20:22:35,518 INFO o.a.j.JMeter: file.encoding=Cp1252
+2025-05-25 20:22:35,518 INFO o.a.j.JMeter: java.awt.headless=true
+2025-05-25 20:22:35,518 INFO o.a.j.JMeter: Max memory     =3679977472
+2025-05-25 20:22:35,518 INFO o.a.j.JMeter: Available Processors =16
+2025-05-25 20:22:35,521 INFO o.a.j.JMeter: Default Locale=English (Indonesia)
+2025-05-25 20:22:35,521 INFO o.a.j.JMeter: JMeter  Locale=English (Indonesia)
+2025-05-25 20:22:35,521 INFO o.a.j.JMeter: JMeterHome=C:\Users\Abhi\Downloads\apache-jmeter-5.6.3\apache-jmeter-5.6.3
+2025-05-25 20:22:35,521 INFO o.a.j.JMeter: user.dir  =C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove
+2025-05-25 20:22:35,522 INFO o.a.j.JMeter: PWD       =C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove
+2025-05-25 20:22:35,523 INFO o.a.j.JMeter: IP: 192.168.0.102 Name: LAPTOP-NHA1CSS5 FullName: host.docker.internal
+2025-05-25 20:22:35,538 INFO o.a.j.JMeter: Setting property 'jmeter.reportgenerator.outputdir' to:'C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\test-results\profile\report'
+2025-05-25 20:22:35,541 INFO o.a.j.s.FileServer: Default base='C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove'
+2025-05-25 20:22:35,543 INFO o.a.j.s.FileServer: Set new base='C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\src\test\jmeter'
+2025-05-25 20:22:35,736 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2025-05-25 20:22:35,754 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2025-05-25 20:22:35,760 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2025-05-25 20:22:35,765 INFO o.a.j.s.SaveService: Loading file: src\test\jmeter\profile-test-plan.jmx
+2025-05-25 20:22:35,846 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-05-25 20:22:35,847 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-05-25 20:22:35,847 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-05-25 20:22:35,847 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-05-25 20:22:35,847 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2025-05-25 20:22:35,847 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2025-05-25 20:22:36,136 INFO o.a.j.JMeter: Creating summariser <summary>
+2025-05-25 20:22:36,140 INFO o.a.j.r.d.ReportGenerator: ReportGenerator will use for Parsing the separator: ','
+2025-05-25 20:22:36,141 INFO o.a.j.r.d.ReportGenerator: Will generate report at end of test from  results file: test-results\profile\results.jtl
+2025-05-25 20:22:36,141 INFO o.a.j.r.d.ReportGenerator: Reading report generator properties from: C:\Users\Abhi\Downloads\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\reportgenerator.properties
+2025-05-25 20:22:36,143 INFO o.a.j.r.d.ReportGenerator: Merging with JMeter properties
+2025-05-25 20:22:36,150 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.temp_dir' not found, using default value 'temp' instead.
+2025-05-25 20:22:36,153 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.apdex_per_transaction' not found, using default value 'null' instead.
+2025-05-25 20:22:36,153 INFO o.a.j.r.c.ReportGeneratorConfiguration: apdex_per_transaction is empty, not APDEX per transaction customization
+2025-05-25 20:22:36,153 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.sample_filter' not found, using default value 'null' instead.
+2025-05-25 20:22:36,153 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.report_title' not found, using default value 'null' instead.
+2025-05-25 20:22:36,153 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.start_date' not found, using default value 'null' instead.
+2025-05-25 20:22:36,153 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.end_date' not found, using default value 'null' instead.
+2025-05-25 20:22:36,153 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.date_format' not found, using default value 'null' instead.
+2025-05-25 20:22:36,154 INFO o.a.j.r.c.ReportGeneratorConfiguration: Will use date range start date: null, end date: null
+2025-05-25 20:22:36,159 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.totalTPS.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,159 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.activeThreadsOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,159 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.timeVsThreads.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,160 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimeDistribution.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,160 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.transactionsPerSecond.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,160 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentiles.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,160 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentilesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,160 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,160 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.connectTimeOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,160 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.latenciesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-05-25 20:22:36,161 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.filters_only_sample_series' not found, using default value 'true' instead.
+2025-05-25 20:22:36,162 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.series_filter' not found, using default value '' instead.
+2025-05-25 20:22:36,162 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.show_controllers_only' not found, using default value 'false' instead.
+2025-05-25 20:22:36,163 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.filters_only_sample_series' not found, using default value 'true' instead.
+2025-05-25 20:22:36,163 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.series_filter' not found, using default value '' instead.
+2025-05-25 20:22:36,163 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.show_controllers_only' not found, using default value 'false' instead.
+2025-05-25 20:22:36,176 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-05-25 20:22:36,177 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-05-25 20:22:36,177 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-05-25 20:22:36,182 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2025-05-25 20:22:36,182 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2025-05-25 20:22:36,577 INFO o.a.j.JMeter: Running test (1748179356577)
+2025-05-25 20:22:36,655 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : Profile API Load Test
+2025-05-25 20:22:36,655 INFO o.a.j.e.StandardJMeterEngine: Starting 50 threads for group Profile API Load Test.
+2025-05-25 20:22:36,655 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-05-25 20:22:36,655 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=50 ramp-up=5 delayedStart=false
+2025-05-25 20:22:36,664 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-1
+2025-05-25 20:22:36,697 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-05-25 20:22:36,697 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-05-25 20:22:36,711 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = LAPTOP-NHA1CSS5
+2025-05-25 20:22:36,723 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2025-05-25 20:22:36,725 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2025-05-25 20:22:36,725 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to UTF-8
+2025-05-25 20:22:36,725 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2025-05-25 20:22:36,725 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2025-05-25 20:22:36,760 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-2
+2025-05-25 20:22:36,859 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-3
+2025-05-25 20:22:36,959 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-4
+2025-05-25 20:22:37,057 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-5
+2025-05-25 20:22:37,158 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-6
+2025-05-25 20:22:37,257 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-7
+2025-05-25 20:22:37,356 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-8
+2025-05-25 20:22:37,457 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-9
+2025-05-25 20:22:37,557 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-10
+2025-05-25 20:22:37,658 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-11
+2025-05-25 20:22:37,757 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-12
+2025-05-25 20:22:37,856 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-13
+2025-05-25 20:22:37,959 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-14
+2025-05-25 20:22:38,058 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-15
+2025-05-25 20:22:38,156 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-16
+2025-05-25 20:22:38,258 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-17
+2025-05-25 20:22:38,356 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-18
+2025-05-25 20:22:38,455 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-19
+2025-05-25 20:22:38,556 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-20
+2025-05-25 20:22:38,657 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-21
+2025-05-25 20:22:38,757 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-22
+2025-05-25 20:22:38,858 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-23
+2025-05-25 20:22:38,957 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-24
+2025-05-25 20:22:39,058 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-25
+2025-05-25 20:22:39,158 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-26
+2025-05-25 20:22:39,257 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-27
+2025-05-25 20:22:39,357 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-28
+2025-05-25 20:22:39,456 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-29
+2025-05-25 20:22:39,557 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-30
+2025-05-25 20:22:39,657 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-31
+2025-05-25 20:22:39,757 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-32
+2025-05-25 20:22:39,857 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-33
+2025-05-25 20:22:39,956 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-34
+2025-05-25 20:22:40,057 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-35
+2025-05-25 20:22:40,157 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-36
+2025-05-25 20:22:40,256 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-37
+2025-05-25 20:22:40,355 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-38
+2025-05-25 20:22:40,456 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-39
+2025-05-25 20:22:40,556 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-40
+2025-05-25 20:22:40,656 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-41
+2025-05-25 20:22:40,768 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-42
+2025-05-25 20:22:40,856 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-43
+2025-05-25 20:22:40,956 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-44
+2025-05-25 20:22:41,057 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-45
+2025-05-25 20:22:41,156 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-46
+2025-05-25 20:22:41,256 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-47
+2025-05-25 20:22:41,356 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-48
+2025-05-25 20:22:41,456 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-49
+2025-05-25 20:22:41,556 INFO o.a.j.t.JMeterThread: Thread started: Profile API Load Test 1-50
+2025-05-25 20:22:53,542 INFO o.a.j.u.JsseSSLManager: Using default SSL protocol: TLS
+2025-05-25 20:22:53,542 INFO o.a.j.u.JsseSSLManager: SSL session context: per-thread
+2025-05-25 20:23:00,039 INFO o.a.j.r.Summariser: summary +    231 in 00:00:23 =    9.8/s Avg:  4083 Min:  4043 Max:  4394 Err:   231 (100.00%) Active: 50 Started: 50 Finished: 0
+2025-05-25 20:23:30,164 INFO o.a.j.r.Summariser: summary +    365 in 00:00:30 =   12.1/s Avg:  4083 Min:  4027 Max:  4110 Err:   365 (100.00%) Active: 50 Started: 50 Finished: 0
+2025-05-25 20:23:30,164 INFO o.a.j.r.Summariser: summary =    596 in 00:00:54 =   11.1/s Avg:  4083 Min:  4027 Max:  4394 Err:   596 (100.00%)
+2025-05-25 20:24:00,011 INFO o.a.j.r.Summariser: summary +    373 in 00:00:30 =   12.5/s Avg:  4082 Min:  4034 Max:  4112 Err:   373 (100.00%) Active: 50 Started: 50 Finished: 0
+2025-05-25 20:24:00,012 INFO o.a.j.r.Summariser: summary =    969 in 00:01:23 =   11.6/s Avg:  4083 Min:  4027 Max:  4394 Err:   969 (100.00%)
+2025-05-25 20:24:30,042 INFO o.a.j.r.Summariser: summary +    363 in 00:00:30 =   12.1/s Avg:  4079 Min:  4028 Max:  4113 Err:   363 (100.00%) Active: 50 Started: 50 Finished: 0
+2025-05-25 20:24:30,042 INFO o.a.j.r.Summariser: summary =   1332 in 00:01:53 =   11.7/s Avg:  4082 Min:  4027 Max:  4394 Err:  1332 (100.00%)
+2025-05-25 20:25:00,092 INFO o.a.j.r.Summariser: summary +    366 in 00:00:30 =   12.2/s Avg:  4074 Min:  4032 Max:  4116 Err:   366 (100.00%) Active: 50 Started: 50 Finished: 0
+2025-05-25 20:25:00,092 INFO o.a.j.r.Summariser: summary =   1698 in 00:02:24 =   11.8/s Avg:  4080 Min:  4027 Max:  4394 Err:  1698 (100.00%)
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-1
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-7
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-2
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-3
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-1
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-7
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-3
+2025-05-25 20:25:20,400 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-2
+2025-05-25 20:25:20,415 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-5
+2025-05-25 20:25:20,416 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-5
+2025-05-25 20:25:20,462 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-4
+2025-05-25 20:25:20,463 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-4
+2025-05-25 20:25:20,494 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-6
+2025-05-25 20:25:20,495 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-6
+2025-05-25 20:25:20,587 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-8
+2025-05-25 20:25:20,587 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-8
+2025-05-25 20:25:20,650 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-9
+2025-05-25 20:25:20,650 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-10
+2025-05-25 20:25:20,650 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-9
+2025-05-25 20:25:20,650 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-10
+2025-05-25 20:25:20,771 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-11
+2025-05-25 20:25:20,771 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-11
+2025-05-25 20:25:20,835 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-12
+2025-05-25 20:25:20,835 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-12
+2025-05-25 20:25:20,910 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-13
+2025-05-25 20:25:20,911 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-13
+2025-05-25 20:25:21,018 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-15
+2025-05-25 20:25:21,018 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-15
+2025-05-25 20:25:21,034 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-14
+2025-05-25 20:25:21,034 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-14
+2025-05-25 20:25:21,347 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-16
+2025-05-25 20:25:21,347 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-17
+2025-05-25 20:25:21,347 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-16
+2025-05-25 20:25:21,347 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-17
+2025-05-25 20:25:21,439 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-18
+2025-05-25 20:25:21,439 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-19
+2025-05-25 20:25:21,439 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-18
+2025-05-25 20:25:21,439 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-19
+2025-05-25 20:25:21,594 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-20
+2025-05-25 20:25:21,594 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-20
+2025-05-25 20:25:21,825 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-22
+2025-05-25 20:25:21,825 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-22
+2025-05-25 20:25:21,841 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-21
+2025-05-25 20:25:21,841 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-21
+2025-05-25 20:25:21,902 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-23
+2025-05-25 20:25:21,903 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-23
+2025-05-25 20:25:21,981 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-24
+2025-05-25 20:25:21,981 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-24
+2025-05-25 20:25:22,124 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-25
+2025-05-25 20:25:22,124 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-25
+2025-05-25 20:25:22,325 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-26
+2025-05-25 20:25:22,325 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-26
+2025-05-25 20:25:22,418 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-27
+2025-05-25 20:25:22,418 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-27
+2025-05-25 20:25:22,498 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-29
+2025-05-25 20:25:22,499 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-29
+2025-05-25 20:25:22,592 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-28
+2025-05-25 20:25:22,592 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-28
+2025-05-25 20:25:22,654 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-30
+2025-05-25 20:25:22,654 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-30
+2025-05-25 20:25:22,777 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-31
+2025-05-25 20:25:22,777 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-31
+2025-05-25 20:25:22,964 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-33
+2025-05-25 20:25:22,964 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-32
+2025-05-25 20:25:22,964 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-33
+2025-05-25 20:25:22,964 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-32
+2025-05-25 20:25:23,089 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-34
+2025-05-25 20:25:23,089 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-34
+2025-05-25 20:25:23,151 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-35
+2025-05-25 20:25:23,151 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-35
+2025-05-25 20:25:23,168 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-36
+2025-05-25 20:25:23,168 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-36
+2025-05-25 20:25:23,341 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-37
+2025-05-25 20:25:23,341 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-37
+2025-05-25 20:25:23,466 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-38
+2025-05-25 20:25:23,466 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-38
+2025-05-25 20:25:23,482 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-39
+2025-05-25 20:25:23,482 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-39
+2025-05-25 20:25:23,651 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-40
+2025-05-25 20:25:23,652 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-40
+2025-05-25 20:25:23,854 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-42
+2025-05-25 20:25:23,855 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-42
+2025-05-25 20:25:23,948 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-43
+2025-05-25 20:25:23,948 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-43
+2025-05-25 20:25:23,965 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-44
+2025-05-25 20:25:23,965 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-41
+2025-05-25 20:25:23,965 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-44
+2025-05-25 20:25:23,965 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-41
+2025-05-25 20:25:24,026 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-45
+2025-05-25 20:25:24,026 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-45
+2025-05-25 20:25:24,384 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-47
+2025-05-25 20:25:24,385 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-47
+2025-05-25 20:25:24,385 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-46
+2025-05-25 20:25:24,385 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-46
+2025-05-25 20:25:24,541 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-48
+2025-05-25 20:25:24,541 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-48
+2025-05-25 20:25:24,571 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-49
+2025-05-25 20:25:24,571 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-49
+2025-05-25 20:25:24,632 INFO o.a.j.t.JMeterThread: Thread is done: Profile API Load Test 1-50
+2025-05-25 20:25:24,632 INFO o.a.j.t.JMeterThread: Thread finished: Profile API Load Test 1-50
+2025-05-25 20:25:24,633 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-05-25 20:25:24,634 INFO o.a.j.r.Summariser: summary +    302 in 00:00:25 =   12.3/s Avg:  4064 Min:  4021 Max:  4107 Err:   302 (100.00%) Active: 0 Started: 50 Finished: 50
+2025-05-25 20:25:24,634 INFO o.a.j.r.Summariser: summary =   2000 in 00:02:48 =   11.9/s Avg:  4078 Min:  4021 Max:  4394 Err:  2000 (100.00%)
+2025-05-25 20:25:24,635 INFO o.a.j.JMeter: Generating Dashboard
+2025-05-25 20:25:24,635 INFO o.a.j.r.d.ReportGenerator: Flushing result collector before report Generation
+2025-05-25 20:25:24,647 INFO o.a.j.r.p.NormalizerSampleConsumer: Using format, 'ms', to parse timeStamp field
+2025-05-25 20:25:24,919 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): beginDate produced 0 samples
+2025-05-25 20:25:24,919 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): endDate produced 0 samples
+2025-05-25 20:25:24,925 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ApdexSummaryConsumer#stopProducing(): apdexSummary produced 0 samples
+2025-05-25 20:25:24,925 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.RequestsSummaryConsumer#stopProducing(): requestsSummary produced 0 samples
+2025-05-25 20:25:24,933 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.StatisticsSummaryConsumer#stopProducing(): statisticsSummary produced 0 samples
+2025-05-25 20:25:24,944 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.Top5ErrorsBySamplerConsumer#stopProducing(): top5ErrorsBySampler produced 0 samples
+2025-05-25 20:25:24,945 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ErrorsSummaryConsumer#stopProducing(): errorsSummary produced 0 samples
+2025-05-25 20:25:24,945 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.HitsPerSecondGraphConsumer#stopProducing(): hitsPerSecond produced 0 samples
+2025-05-25 20:25:24,994 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyVSRequestGraphConsumer#stopProducing(): latencyVsRequest produced 0 samples
+2025-05-25 20:25:24,995 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.SyntheticResponseTimeDistributionGraphConsumer#stopProducing(): syntheticResponseTimeDistribution produced 0 samples
+2025-05-25 20:25:24,996 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.BytesThroughputGraphConsumer#stopProducing(): bytesThroughputOverTime produced 0 samples
+2025-05-25 20:25:24,996 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.CodesPerSecondGraphConsumer#stopProducing(): codesPerSecond produced 0 samples
+2025-05-25 20:25:25,008 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeVSRequestGraphConsumer#stopProducing(): responseTimeVsRequest produced 0 samples
+2025-05-25 20:25:25,008 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): startIntervalControlerFilter produced 14000 samples
+2025-05-25 20:25:25,008 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TotalTPSGraphConsumer#stopProducing(): totalTPS produced 0 samples
+2025-05-25 20:25:25,009 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ActiveThreadsGraphConsumer#stopProducing(): activeThreadsOverTime produced 0 samples
+2025-05-25 20:25:25,009 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TimeVSThreadGraphConsumer#stopProducing(): timeVsThreads produced 0 samples
+2025-05-25 20:25:25,009 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeDistributionGraphConsumer#stopProducing(): responseTimeDistribution produced 0 samples
+2025-05-25 20:25:25,009 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TransactionsPerSecondGraphConsumer#stopProducing(): transactionsPerSecond produced 0 samples
+2025-05-25 20:25:25,010 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesGraphConsumer#stopProducing(): responseTimePercentiles produced 0 samples
+2025-05-25 20:25:25,012 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesOverTimeGraphConsumer#stopProducing(): responseTimePercentilesOverTime produced 0 samples
+2025-05-25 20:25:25,012 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeOverTimeGraphConsumer#stopProducing(): responseTimesOverTime produced 0 samples
+2025-05-25 20:25:25,012 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ConnectTimeOverTimeGraphConsumer#stopProducing(): connectTimeOverTime produced 0 samples
+2025-05-25 20:25:25,012 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyOverTimeGraphConsumer#stopProducing(): latenciesOverTime produced 0 samples
+2025-05-25 20:25:25,012 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): nameFilter produced 30000 samples
+2025-05-25 20:25:25,012 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): dateRangeFilter produced 6000 samples
+2025-05-25 20:25:25,012 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.NormalizerSampleConsumer#stopProducing(): normalizer produced 2000 samples
+2025-05-25 20:25:25,013 INFO o.a.j.r.p.CsvFileSampleSource: produce(): 2000 samples produced in 323ms on channel 0
+2025-05-25 20:25:25,013 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'json' of className:'org.apache.jmeter.report.dashboard.JsonExporter'
+2025-05-25 20:25:25,159 INFO o.a.j.r.d.JsonExporter: Found data for consumer statisticsSummary in context
+2025-05-25 20:25:25,159 INFO o.a.j.r.d.JsonExporter: Creating statistics for overall
+2025-05-25 20:25:25,160 INFO o.a.j.r.d.JsonExporter: Creating statistics for other transactions
+2025-05-25 20:25:25,160 INFO o.a.j.r.d.JsonExporter: Checking output folder
+2025-05-25 20:25:25,162 INFO o.a.j.r.d.JsonExporter: Writing statistics JSON to C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\test-results\profile\report\statistics.json
+2025-05-25 20:25:25,228 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'html' of className:'org.apache.jmeter.report.dashboard.HtmlTemplateExporter'
+2025-05-25 20:25:25,232 INFO o.a.j.r.d.HtmlTemplateExporter: Will generate dashboard in folder: C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\test-results\profile\report
+2025-05-25 20:25:25,368 INFO o.a.j.r.d.HtmlTemplateExporter: Report will be generated in: C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\test-results\profile\report, creating folder structure
+2025-05-25 20:25:25,371 INFO o.a.j.r.d.TemplateVisitor: Copying folder from 'C:\Users\Abhi\Downloads\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\report-template' to 'C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\test-results\profile\report', got message: C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\test-results\profile\report, found non empty folder with following content [C:\Users\Abhi\Documents\KULIAH\SEM4\AdPro\gatherlove\test-results\profile\report\statistics.json], will be ignored
+2025-05-25 20:25:25,930 INFO o.a.j.JMeter: Dashboard generated

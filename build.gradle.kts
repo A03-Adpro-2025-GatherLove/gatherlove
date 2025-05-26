@@ -72,6 +72,15 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    // Monitoring dependencies
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
+    // JMeter dependencies for testing
+    testImplementation("org.apache.jmeter:ApacheJMeter_core:5.6.3")
+    testImplementation("org.apache.jmeter:ApacheJMeter_java:5.6.3")
+    testImplementation("org.apache.jmeter:ApacheJMeter_http:5.6.3")
 }
 
 tasks.register<Test>("unitTest") {
