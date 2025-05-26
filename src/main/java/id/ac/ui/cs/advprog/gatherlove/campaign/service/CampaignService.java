@@ -23,5 +23,5 @@ public interface CampaignService {
     Campaign updateCampaignStatus(String id);
     void validateCampaignForDonation(UUID campaignId);
     void addCollectedAmount(UUID campaignId, BigDecimal amount);
-    List<Campaign> getAllCampaigns();
+    boolean processCampaignWithdrawal(String campaignId, UserEntity user);
 }

@@ -53,7 +53,7 @@ public class RestAdminController {
         if (announcement.getTitle() == null || announcement.getContent() == null) {
             return ResponseEntity.badRequest().body("Title and content are required");
         }
-        
+
         announcementService.sendAnnouncement(announcement);
         return ResponseEntity.ok("Announcement sent successfully");
     }
@@ -90,13 +90,7 @@ public class RestAdminController {
 
     @GetMapping("/campaigns")
     public ResponseEntity<List<CampaignResponse>> getCampaigns(@RequestParam(required = false) CampaignStatus status) {
-        List<Campaign> campaigns = null;
-        if (status == null) {
-            campaigns = campaignService.getAllCampaigns();
-        }
-        else {
-            campaigns = campaignService.getCampaignsByStatus(status);
-        }
+        List<Campaign> campaigns = campaignService.getCampaignsByStatus(status);
         List<CampaignResponse> responses = campaigns.stream()
                 .map(CampaignResponse::from)
                 .collect(Collectors.toList());
@@ -124,7 +118,7 @@ public class RestAdminController {
         try {
             adminDashboardService.deleteUser(user_id);
             return ResponseEntity.ok().body("User has been deleted");
-        } 
+        }
         catch (Exception e) {
             return ResponseEntity.badRequest().body("Error deleting user");
         }

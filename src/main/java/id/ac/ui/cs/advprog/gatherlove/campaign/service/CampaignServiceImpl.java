@@ -5,9 +5,11 @@ import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.CampaignStatus;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
+import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class CampaignServiceImpl implements CampaignService {
 
     private final CampaignRepository campaignRepository;
+    private final WalletService walletService;
 
     @Override
     public Campaign createCampaign(CampaignDto dto, UserEntity fundraiser) {
@@ -141,7 +144,46 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public List<Campaign> getAllCampaigns() {
-        return campaignRepository.findAll();
+    @Transactional
+    public boolean processCampaignWithdrawal(String campaignId, UserEntity user) {
+        Campaign campaign = getCampaignById(campaignId);
+        UUID userId = user.getId();
+        
+        // Check if the user is the fundraiser
+        if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(userId)) {
+            throw new IllegalStateException("You are not authorized to withdraw funds from this campaign");
+        }
+        
+        // Check if the campaign is completed
+        if (campaign.getStatus() != CampaignStatus.COMPLETED) {
+            throw new IllegalStateException("Funds can only be withdrawn from completed campaigns");
+        }
+        
+        // Check if there are funds to withdraw
+        if (campaign.getTotalDonated() == null || campaign.getTotalDonated().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalStateException("No funds available to withdraw");
+        }
+        
+        // Check if funds have already been withdrawn
+        if (campaign.isWithdrawn()) {
+            throw new IllegalStateException("Funds have already been withdrawn from this campaign");
+        }
+        
+        BigDecimal amountToWithdraw = campaign.getTotalDonated();
+        
+        // Generate a request ID for this withdrawal
+        UUID requestId = UUID.randomUUID();
+        
+        // Use WalletService to add funds to the fundraiser's wallet
+        walletService.withdrawFunds(userId, amountToWithdraw, requestId, campaign.getTitle());
+        
+        // Mark the campaign as withdrawn instead of zeroing the amount
+        campaign.setWithdrawn(true);
+        campaignRepository.save(campaign);
+        
+        log.info("Withdrawal of {} processed for campaign {} by user {}", 
+                amountToWithdraw, campaignId, userId);
+        
+        return true;
     }
 }

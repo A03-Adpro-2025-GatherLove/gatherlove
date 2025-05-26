@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.gatherlove.donation.exception.DonationNotFoundExcepti
 import id.ac.ui.cs.advprog.gatherlove.donation.exception.UnauthorizedException;
 import id.ac.ui.cs.advprog.gatherlove.donation.model.Donation;
 import id.ac.ui.cs.advprog.gatherlove.donation.service.DonationService;
+import id.ac.ui.cs.advprog.gatherlove.donation.command.CommandInvoker;
 import id.ac.ui.cs.advprog.gatherlove.donation.command.MakeDonationCommand;
 import id.ac.ui.cs.advprog.gatherlove.donation.command.RemoveDonationMessageCommand;
 
@@ -30,13 +31,19 @@ public class DonationController {
 
     private static final Logger logger = LoggerFactory.getLogger(DonationController.class);
 
+    private final DonationService donationService;
+    private final CommandInvoker commandInvoker;
+
     @Autowired
-    private DonationService donationService; // Receiver for the commands
+    public DonationController(DonationService donationService, CommandInvoker commandInvoker) {
+        this.donationService = donationService;
+        this.commandInvoker = commandInvoker;
+    }
 
     @PostMapping("/api/donations")
     public CompletableFuture<ResponseEntity<DonationResponse>> makeDonation(
             @RequestBody CreateDonationRequest req,
-            @AuthenticationPrincipal UserDetailsImpl currentUserDetails) {
+            @AuthenticationPrincipal UserDetailsImpl currentUserDetails) { // Menggunakan @AuthenticationPrincipal
 
         if (currentUserDetails == null) {
             logger.warn("Attempt to make donation by unauthenticated user for campaign ID: {}", req.getCampaignId());
@@ -45,10 +52,9 @@ public class DonationController {
             );
         }
 
-        UUID userId = currentUserDetails.getId();
+        UUID userId = currentUserDetails.getId(); // Mendapatkan ID dari UserDetailsImpl
         logger.info("Processing donation from user ID: {} for campaign ID: {}", userId, req.getCampaignId());
 
-        // Create and execute MakeDonationCommand
         MakeDonationCommand makeDonationCommand = new MakeDonationCommand(
                 donationService,
                 userId,
@@ -57,16 +63,16 @@ public class DonationController {
                 req.getMessage()
         );
 
-        return makeDonationCommand.execute() // Execute the command
+        return commandInvoker.executeCommand(makeDonationCommand)
                 .thenApply(donation -> {
-                    logger.info("Donation successful for user ID: {}, campaign ID: {}, donation ID: {}", userId, req.getCampaignId(), donation.getId());
+                    logger.info("Donation successful via invoker for user ID: {}, campaign ID: {}, donation ID: {}", userId, req.getCampaignId(), donation.getId());
                     return ResponseEntity
                             .status(HttpStatus.CREATED)
                             .body(DonationResponse.from(donation));
                 })
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    logger.error("Error during donation creation for user ID: {}, campaign ID: {}. Error: {}", userId, req.getCampaignId(), cause.getMessage(), cause);
+                    logger.error("Error during donation creation via invoker for user ID: {}, campaign ID: {}. Error: {}", userId, req.getCampaignId(), cause.getMessage(), cause);
                     if (cause instanceof IllegalArgumentException) {
                         return ResponseEntity.badRequest().body(null);
                     } else if (cause instanceof RuntimeException && cause.getMessage() != null && cause.getMessage().contains("Saldo tidak mencukupi")) {
@@ -76,20 +82,10 @@ public class DonationController {
                 });
     }
 
-    @GetMapping("/api/donations/campaign/{campaignId}")
-    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable String campaignId) {
-        logger.debug("Fetching donations for campaign ID: {}", campaignId);
-        List<Donation> list = donationService.findDonationsByCampaign(campaignId);
-        List<DonationResponse> resp = list.stream()
-                .map(DonationResponse::from)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(resp);
-    }
-
     @DeleteMapping("/api/donations/{id}/message")
     public CompletableFuture<ResponseEntity<DonationResponse>> removeMessage(
             @PathVariable UUID id,
-            @AuthenticationPrincipal UserDetailsImpl currentUserDetails) {
+            @AuthenticationPrincipal UserDetailsImpl currentUserDetails) { // Menggunakan @AuthenticationPrincipal
 
         if (currentUserDetails == null) {
             logger.warn("Attempt to remove message for donation ID: {} by unauthenticated user", id);
@@ -97,24 +93,23 @@ public class DonationController {
                     ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             );
         }
-        UUID requestingUserId = currentUserDetails.getId();
+        UUID requestingUserId = currentUserDetails.getId(); // Mendapatkan ID dari UserDetailsImpl
         logger.info("User ID: {} attempting to remove message for donation ID: {}", requestingUserId, id);
 
-        // Create and execute RemoveDonationMessageCommand
         RemoveDonationMessageCommand removeMessageCommand = new RemoveDonationMessageCommand(
                 donationService,
-                id, // donationId
+                id,
                 requestingUserId
         );
 
-        return removeMessageCommand.execute() // Execute the command
+        return commandInvoker.executeCommand(removeMessageCommand)
                 .thenApply(donation -> {
-                    logger.info("Message removed successfully for donation ID: {} by user ID: {}", id, requestingUserId);
+                    logger.info("Message removed successfully via invoker for donation ID: {} by user ID: {}", id, requestingUserId);
                     return ResponseEntity.ok(DonationResponse.from(donation));
                 })
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    logger.error("Error removing donation message for donation ID: {} by user ID: {}. Error: {}", id, requestingUserId, cause.getMessage(), cause);
+                    logger.error("Error removing donation message via invoker for donation ID: {} by user ID: {}. Error: {}", id, requestingUserId, cause.getMessage(), cause);
                     if (cause instanceof UnauthorizedException) {
                         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
                     } else if (cause instanceof DonationNotFoundException) {
@@ -126,16 +121,27 @@ public class DonationController {
 
     @GetMapping("/api/donations/my-history")
     public ResponseEntity<List<DonationResponse>> getMyHistory(
-            @AuthenticationPrincipal UserDetailsImpl currentUserDetails) {
+            @AuthenticationPrincipal UserDetailsImpl currentUserDetails) { // Menggunakan @AuthenticationPrincipal
 
         if (currentUserDetails == null) {
             logger.warn("Attempt to fetch donation history by unauthenticated user");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        UUID userId = currentUserDetails.getId();
+        UUID userId = currentUserDetails.getId(); // Mendapatkan ID dari UserDetailsImpl
         logger.debug("Fetching donation history for user ID: {}", userId);
 
         List<Donation> list = donationService.findDonationsByDonor(userId);
+        List<DonationResponse> resp = list.stream()
+                .map(DonationResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(resp);
+    }
+
+    // Metode GET lainnya (seperti getByCampaign) tidak memerlukan info user, jadi biarkan
+    @GetMapping("/api/donations/campaign/{campaignId}")
+    public ResponseEntity<List<DonationResponse>> getByCampaign(@PathVariable String campaignId) {
+        logger.debug("Fetching donations for campaign ID: {}", campaignId);
+        List<Donation> list = donationService.findDonationsByCampaign(campaignId);
         List<DonationResponse> resp = list.stream()
                 .map(DonationResponse::from)
                 .collect(Collectors.toList());
