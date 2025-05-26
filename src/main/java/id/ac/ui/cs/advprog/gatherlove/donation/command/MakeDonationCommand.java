@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class MakeDonationCommand implements Command<Donation> {
 
-    private final DonationService donationService; // Receiver
+    private final DonationService donationService;
     private final UUID donorId;
     private final String campaignId;
     private final BigDecimal amount;
@@ -24,7 +24,7 @@ public class MakeDonationCommand implements Command<Donation> {
     }
 
     @Override
-    public CompletableFuture<Donation> execute() { // Ubah return type
+    public CompletableFuture<Donation> execute() {
         return donationService.createDonation(donorId, campaignId, amount, message);
     }
 }

@@ -72,10 +72,6 @@ public class DonationController {
                     } else if (cause instanceof RuntimeException && cause.getMessage() != null && cause.getMessage().contains("Saldo tidak mencukupi")) {
                         return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
                     }
-                    // Anda bisa menambahkan penanganan untuk CampaignNotFoundException atau exception lain dari campaignService.validateCampaignForDonation
-                    // if (cause instanceof CampaignNotFoundException) { // Asumsi ada exception ini
-                    //     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // .body(new ErrorResponse("Campaign not found or not active."))
-                    // }
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
                 });
     }

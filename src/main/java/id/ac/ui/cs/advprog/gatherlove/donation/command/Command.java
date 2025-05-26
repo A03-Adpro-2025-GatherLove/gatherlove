@@ -4,5 +4,5 @@ import java.util.concurrent.CompletableFuture;
 
 @FunctionalInterface
 public interface Command<T> {
-    CompletableFuture<T> execute(); // Ubah return type
+    CompletableFuture<T> execute();
 }

@@ -48,10 +48,7 @@ public class DonationPageController {
 
     @GetMapping("/create/{campaignId}")
     public String showCreateDonationForm(@PathVariable("campaignId") String campaignId, Model model, @AuthenticationPrincipal UserEntity currentUser) {
-//        out.println(currentUser.getId());
-//        if (currentUser == null) {
-//            return "redirect:/login?redirect=/donate/create/" + campaignId;
-//        }
+
         try {
             Campaign campaign = campaignService.getCampaignById(campaignId);
             if (campaign == null || campaign.getStatus() != CampaignStatus.APPROVED) {
@@ -79,14 +76,6 @@ public class DonationPageController {
                                         Model model,
                                         RedirectAttributes redirectAttributes) {
 
-//        if (currentUser == null) {
-//            // PERUBAHAN DI SINI: Mengarahkan ke /login bukan /auth/login
-//            // Coba tambahkan campaignId ke redirect jika request.getCampaignId() tidak null
-//            String redirectPath = (request.getCampaignId() != null && !request.getCampaignId().isEmpty())
-//                    ? "/donate/create/" + request.getCampaignId()
-//                    : "/donate/browse"; // Fallback jika campaignId tidak ada
-//            return "redirect:/login?redirect=" + redirectPath;
-//        }
 
         Campaign campaign = null;
         if (request.getCampaignId() != null && !request.getCampaignId().isEmpty()) {
@@ -101,8 +90,6 @@ public class DonationPageController {
             if (campaign != null) {
                 model.addAttribute("campaign", campaign);
             } else {
-                // Jika campaign tidak bisa diambil (misal ID salah di form hidden),
-                // mungkin lebih baik redirect ke browse dengan pesan error
                 redirectAttributes.addFlashAttribute("errorMessage", "Invalid campaign ID provided.");
                 return "redirect:/donate/browse";
             }
@@ -116,7 +103,7 @@ public class DonationPageController {
             CompletableFuture<Donation> futureDonation =
                     donationService.createDonation(donorId, request.getCampaignId(), request.getAmount(), request.getMessage());
 
-            futureDonation.get(); // Tunggu operasi async selesai (blocking)
+            futureDonation.get();
 
             redirectAttributes.addFlashAttribute("successMessage", "Thank you for your generous donation!");
             return "redirect:/donate/browse";

@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class RemoveDonationMessageCommand implements Command<Donation> {
 
-    private final DonationService donationService; // Receiver
+    private final DonationService donationService;
     private final UUID donationId;
     private final UUID requestingUserId;
 
@@ -19,7 +19,7 @@ public class RemoveDonationMessageCommand implements Command<Donation> {
     }
 
     @Override
-    public CompletableFuture<Donation> execute() { // Ubah return type
+    public CompletableFuture<Donation> execute() {
         return donationService.removeDonationMessage(donationId, requestingUserId);
     }
 }
