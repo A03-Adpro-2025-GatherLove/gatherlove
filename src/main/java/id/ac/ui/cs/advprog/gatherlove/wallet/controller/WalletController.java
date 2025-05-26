@@ -7,82 +7,66 @@ import id.ac.ui.cs.advprog.gatherlove.wallet.model.Wallet;
 import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
 import id.ac.ui.cs.advprog.gatherlove.wallet.repository.TransactionRepository;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.http.*;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/wallet")
+@RequiredArgsConstructor
 public class WalletController {
 
     private final WalletService walletService;
-
     private final TransactionRepository transactionRepository;
 
-    public WalletController(WalletService walletService, TransactionRepository transactionRepository) {
-        this.walletService = walletService;
-        this.transactionRepository = transactionRepository;
-    }
-
     @GetMapping("/balance")
-    public BalanceResponse getBalance() {
-        UUID userId = getCurrentUserId();
+    public BalanceResponse getBalance(@AuthenticationPrincipal UserDetailsImpl user) {
+        UUID userId = user.getId();
         return new BalanceResponse(walletService.getWalletBalance(userId));
     }
 
     @PostMapping("/topup")
-    public ResponseEntity<TopUpResponse> topUp(@Valid @RequestBody TopUpRequest body) {
-        UUID userId = getCurrentUserId();
-
-        Wallet wallet = walletService.topUp(userId, body.amount(), body.phone_number(),
-                                            body.method(), body.requestId());
+    public ResponseEntity<TopUpResponse> topUp(@AuthenticationPrincipal UserDetailsImpl user,
+                                               @Valid @RequestBody TopUpRequest body) {
+        Wallet wallet = walletService.topUp(
+                user.getId(),
+                body.amount(),
+                body.phone_number(),
+                body.method(),
+                body.requestId()
+        );
 
         TopUpResponse res = new TopUpResponse(
-                "Proses Top-Up Saldo Berhasil!", wallet.getBalance()
+                "Proses Top-Up Saldo Berhasil!",
+                wallet.getBalance()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
     @GetMapping("/transactions")
-    public TransactionListResponse getTransactions(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public TransactionListResponse getTransactions(@AuthenticationPrincipal UserDetailsImpl user,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "10") int size) {
+        PageRequest pr = PageRequest.of(page, size,Sort.by(Sort.Direction.DESC, "transactionDateTime"));
+        Page<Transaction> slice = transactionRepository.findByWalletUserId(user.getId(), pr);
 
-        UUID userId = getCurrentUserId();
-
-        PageRequest pr = PageRequest.of(page, size,
-                Sort.by(Sort.Direction.DESC, "transactionDateTime"));
-
-        Page<Transaction> slice = transactionRepository.findByWalletUserId(userId, pr);
-
-        var dto = slice.getContent()
-                .stream()
-                .map(this::toDto)
-                .toList();
+        var dto = slice.getContent().stream().map(this::toDto).toList();
 
         return new TransactionListResponse(dto);
     }
 
+    @DeleteMapping("/transactions/{transactionId}")
+    public DeleteResponse deleteTransaction(@AuthenticationPrincipal UserDetailsImpl user,
+                                            @PathVariable Long transactionId) {
+        walletService.deleteTopUpTransaction(user.getId(), transactionId);
+        return new DeleteResponse("Proses Penghapusan Riwayat Top-Up Berhasil!");
+    }
+
     private TransactionDto toDto(Transaction t) {
         return new TransactionDto(t.getId(), t.getType(), t.getAmount(), t.getTransactionDateTime());
-    }
-
-    private UUID getCurrentUserId() {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        var principal = (UserDetailsImpl) auth.getPrincipal();
-        return principal.getId();
-    }
-
-    @DeleteMapping("/transactions/{transactionId}")
-    public DeleteResponse deleteTransaction(@PathVariable Long transactionId) {
-        UUID userId = getCurrentUserId();
-
-        walletService.deleteTopUpTransaction(userId, transactionId);
-        return new DeleteResponse("Proses Penghapusan Riwayat Top-Up Berhasil!");
     }
 }
