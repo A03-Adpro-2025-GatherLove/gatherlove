@@ -25,62 +25,30 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileResponse completeProfile(ProfileRequest request, UUID profileId) {
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
-
-        profile.setFullName(request.getFullName());
-        profile.setPhoneNumber(request.getPhoneNumber());
-        profile.setBio(request.getBio());
-
+        Profile profile = findProfileById(profileId);
+        updateProfileFromRequest(profile, request);
         Profile savedProfile = profileRepository.save(profile);
-
-        return ProfileResponse.builder()
-                .id(savedProfile.getId())
-                .fullName(savedProfile.getFullName())
-                .phoneNumber(savedProfile.getPhoneNumber())
-                .bio(savedProfile.getBio())
-                .build();
+        return buildProfileResponse(savedProfile);
     }
 
     @Override
     public ProfileResponse viewProfile(UUID profileId) {
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
-
-        return ProfileResponse.builder()
-                .id(profile.getId())
-                .fullName(profile.getFullName())
-                .phoneNumber(profile.getPhoneNumber())
-                .bio(profile.getBio())
-                .build();
+        Profile profile = findProfileById(profileId);
+        return buildProfileResponse(profile);
     }
 
     @Override
     public ProfileResponse updateProfile(UUID profileId, ProfileRequest request) {
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
-
-        profile.setFullName(request.getFullName());
-        profile.setPhoneNumber(request.getPhoneNumber());
-        profile.setBio(request.getBio());
-
+        Profile profile = findProfileById(profileId);
+        updateProfileFromRequest(profile, request);
         Profile updatedProfile = profileRepository.save(profile);
-
-        return ProfileResponse.builder()
-                .id(updatedProfile.getId())
-                .fullName(updatedProfile.getFullName())
-                .phoneNumber(updatedProfile.getPhoneNumber())
-                .bio(updatedProfile.getBio())
-                .build();
+        return buildProfileResponse(updatedProfile);
     }
 
     @Override
     public void deleteBio(UUID profileId) {
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
-
+        Profile profile = findProfileById(profileId);
         profile.setBio(null);
-
         profileRepository.save(profile);
     }
 
@@ -103,5 +71,26 @@ public class ProfileServiceImpl implements ProfileService {
     public CompletableFuture<Void> deleteBioAsync(UUID profileId) {
         deleteBio(profileId);
         return CompletableFuture.completedFuture(null);
+    }
+
+    // Helper methods to reduce code duplication
+    private Profile findProfileById(UUID profileId) {
+        return profileRepository.findById(profileId)
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
+    }
+
+    private void updateProfileFromRequest(Profile profile, ProfileRequest request) {
+        profile.setFullName(request.getFullName());
+        profile.setPhoneNumber(request.getPhoneNumber());
+        profile.setBio(request.getBio());
+    }
+
+    private ProfileResponse buildProfileResponse(Profile profile) {
+        return ProfileResponse.builder()
+                .id(profile.getId())
+                .fullName(profile.getFullName())
+                .phoneNumber(profile.getPhoneNumber())
+                .bio(profile.getBio())
+                .build();
     }
 }

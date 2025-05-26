@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface ProfileService {
-
     ProfileResponse completeProfile(ProfileRequest request, UUID profileId);
     
     ProfileResponse viewProfile(UUID profileId);
