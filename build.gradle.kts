@@ -3,6 +3,7 @@ plugins {
 	jacoco
 	id("org.springframework.boot") version "3.4.4"
 	id("io.spring.dependency-management") version "1.1.7"
+    id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -114,4 +115,11 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+}
+
+sonar {
+  properties {
+    property("sonar.projectKey", "advprog-a03-gatherlove")
+    property("sonar.projectName", "advprog-a03-gatherlove")
+  }
 }
