@@ -1,76 +1,165 @@
 package id.ac.ui.cs.advprog.gatherlove.profile.repository;
 
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.Role;
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.profile.model.Profile;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class ProfileRepositoryTest {
+class ProfileRepositoryTest {
 
     @Autowired
-    private ProfileRepository repository;
+    private TestEntityManager entityManager;
 
-    @Test
-    @DisplayName("Should save and retrieve a profile by ID")
-    void saveAndFindById() {
-        Profile profile = new Profile();
-        profile.setName("Alice");
-        profile.setEmail("alice@example.com");
-        profile.setPhoneNumber("08999999999");
-        profile.setBio("Hi, I'm Alice");
+    @Autowired
+    private ProfileRepository profileRepository;
 
-        Profile saved = repository.save(profile);
+    private UserEntity testUser;
+    private Profile testProfile;
 
-        Optional<Profile> result = repository.findById(saved.getId());
+    @BeforeEach
+    void setUp() {
+        // Create and persist a test user
+        testUser = new UserEntity();
+        testUser.setUsername("testuser");
+        testUser.setEmail("test@example.com");
+        testUser.setPassword("password123");
+        entityManager.persist(testUser);
+        entityManager.flush();
 
-        assertThat(result).isPresent();
-        assertThat(result.get().getName()).isEqualTo("Alice");
+        // Create a test profile linked to the user
+        testProfile = Profile.builder()
+                .fullName("Test User")
+                .phoneNumber("+1234567890")
+                .bio("This is a test bio")
+                .user(testUser)
+                .build();
+        
+        // Note: we don't set the ID as it should use the user's ID through @MapsId
+        entityManager.persist(testProfile);
+        entityManager.flush();
     }
 
     @Test
-    @DisplayName("Should return empty if profile ID does not exist")
-    void findById_nonExistent_shouldReturnEmpty() {
-        Optional<Profile> result = repository.findById(999L);
-        assertThat(result).isNotPresent();
+    void whenSaveProfile_thenProfileIsPersisted() {
+        // Given a new profile
+        UserEntity newUser = new UserEntity();
+        newUser.setUsername("newuser");
+        newUser.setEmail("new@example.com");
+        newUser.setPassword("password456");
+        entityManager.persist(newUser);
+        
+        Profile newProfile = Profile.builder()
+                .fullName("New User")
+                .phoneNumber("+9876543210")
+                .bio("New user bio")
+                .user(newUser)
+                .build();
+        
+        // When saving the profile
+        Profile savedProfile = profileRepository.save(newProfile);
+        
+        // Then it should be persisted with the same ID as the user
+        assertThat(savedProfile).isNotNull();
+        assertThat(savedProfile.getId()).isEqualTo(newUser.getId());
+        assertThat(savedProfile.getFullName()).isEqualTo("New User");
     }
 
     @Test
-    @DisplayName("Should update an existing profile")
-    void updateProfile() {
-        Profile profile = new Profile();
-        profile.setName("Bob");
-        profile.setEmail("bob@example.com");
-        profile.setPhoneNumber("081212121212");
-        profile.setBio("Hello world");
-        Profile saved = repository.save(profile);
-
-        saved.setBio("Updated bio");
-        Profile updated = repository.save(saved);
-
-        assertThat(updated.getBio()).isEqualTo("Updated bio");
+    void whenFindById_thenReturnProfile() {
+        // When finding by ID
+        Optional<Profile> found = profileRepository.findById(testUser.getId());
+        
+        // Then the profile should be found
+        assertThat(found).isPresent();
+        assertThat(found.get().getFullName()).isEqualTo("Test User");
+        assertThat(found.get().getUser().getUsername()).isEqualTo("testuser");
     }
 
     @Test
-    @DisplayName("Should delete a profile")
-    void deleteProfile() {
-        Profile profile = new Profile();
-        profile.setName("Charlie");
-        profile.setEmail("charlie@example.com");
-        profile.setPhoneNumber("0800000000");
-        profile.setBio("Bye");
+    void whenFindByNonExistentId_thenReturnEmpty() {
+        // When finding by a non-existent ID
+        Optional<Profile> found = profileRepository.findById(UUID.randomUUID());
+        
+        // Then no profile should be found
+        assertThat(found).isEmpty();
+    }
 
-        Profile saved = repository.save(profile);
-        Long id = saved.getId();
+    @Test
+    void whenFindAll_thenReturnAllProfiles() {
+        // Given another profile
+        UserEntity anotherUser = new UserEntity();
+        anotherUser.setUsername("anotheruser");
+        anotherUser.setEmail("another@example.com");
+        anotherUser.setPassword("password789");
+        entityManager.persist(anotherUser);
+        
+        Profile anotherProfile = Profile.builder()
+                .fullName("Another User")
+                .phoneNumber("+1122334455")
+                .bio("Another user's bio")
+                .user(anotherUser)
+                .build();
+        entityManager.persist(anotherProfile);
+        entityManager.flush();
+        
+        // When finding all profiles
+        List<Profile> profiles = profileRepository.findAll();
+        
+        // Then all profiles should be returned
+        assertThat(profiles).hasSize(2);
+    }
 
-        repository.delete(saved);
+    @Test
+    void whenUpdateProfile_thenProfileIsUpdated() {
+        // Given a profile with updated fields
+        testProfile.setFullName("Updated Name");
+        testProfile.setBio("Updated bio information");
+        
+        // When updating the profile
+        Profile updatedProfile = profileRepository.save(testProfile);
+        
+        // Then the profile should be updated
+        assertThat(updatedProfile.getFullName()).isEqualTo("Updated Name");
+        assertThat(updatedProfile.getBio()).isEqualTo("Updated bio information");
+        
+        // Verify in database
+        Profile foundProfile = entityManager.find(Profile.class, testUser.getId());
+        assertThat(foundProfile.getFullName()).isEqualTo("Updated Name");
+    }
 
-        Optional<Profile> result = repository.findById(id);
-        assertThat(result).isEmpty();
+    @Test
+    void whenDeleteProfile_thenProfileIsRemoved() {
+        // Given a profile ID
+        UUID profileId = testProfile.getId();
+        
+        // When deleting the profile
+        profileRepository.deleteById(profileId);
+        entityManager.flush();
+        
+        // Then the profile should be removed
+        Profile foundProfile = entityManager.find(Profile.class, profileId);
+        assertThat(foundProfile).isNull();
+    }
+
+    @Test
+    void whenProfileSaved_thenUserRelationshipIsPreserved() {
+        // Given a profile
+        Profile foundProfile = profileRepository.findById(testUser.getId()).orElseThrow();
+        
+        // Then the user relationship should be preserved
+        assertThat(foundProfile.getUser()).isNotNull();
+        assertThat(foundProfile.getUser().getUsername()).isEqualTo("testuser");
+        assertThat(foundProfile.getUser().getEmail()).isEqualTo("test@example.com");
     }
 }
