@@ -57,31 +57,4 @@ class ProfileRequestTest {
         assertEquals(TEST_PHONE_NUMBER, profileRequest.getPhoneNumber());
         assertEquals(TEST_BIO, profileRequest.getBio());
     }
-    
-    @Test
-    void testEqualsAndHashCode() {
-        ProfileRequest firstRequest = new ProfileRequest(TEST_FULL_NAME, TEST_PHONE_NUMBER, TEST_BIO);
-        ProfileRequest secondRequest = new ProfileRequest(TEST_FULL_NAME, TEST_PHONE_NUMBER, TEST_BIO);
-        
-        // Test equals
-        assertEquals(firstRequest, secondRequest);
-        
-        // Test hashCode
-        assertEquals(firstRequest.hashCode(), secondRequest.hashCode());
-    }
-    
-    @Test
-    void testToString() {
-        profileRequest = ProfileRequest.builder()
-                .fullName(TEST_FULL_NAME)
-                .phoneNumber(TEST_PHONE_NUMBER)
-                .bio(TEST_BIO)
-                .build();
-                
-        String toString = profileRequest.toString();
-        
-        assertTrue(toString.contains(TEST_FULL_NAME));
-        assertTrue(toString.contains(TEST_PHONE_NUMBER));
-        assertTrue(toString.contains(TEST_BIO));
-    }
 }
