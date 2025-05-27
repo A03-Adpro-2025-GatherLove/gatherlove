@@ -31,62 +31,7 @@
   </style>
 </head>
 <body class="bg-gray-100">
-
-<nav class="bg-white shadow sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
-      <div class="flex items-center">
-        <a th:href="@{/}" class="text-2xl font-bold text-green-600">GatherLove</a>
-      </div>
-      <div class="hidden md:block">
-        <div class="ml-10 flex items-baseline space-x-4">
-          <a th:href="@{/}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
-          <a th:href="@{/donate/browse}" class="text-green-600 hover:text-green-700 px-3 py-2 rounded-md text-sm font-medium font-semibold">Browse Campaigns</a>
-          <a th:href="@{/campaign/my}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="my-campaigns-link-nav" style="display:none;">My Campaigns</a>
-          <a th:href="@{/campaign/create}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="create-campaign-link-nav" style="display:none;">Create Campaign</a>
-          <a th:href="@{/wallet/balance}" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium" id="wallet-link-nav" style="display:none;">My Wallet</a>
-        </div>
-      </div>
-      <div class="hidden md:flex items-center ml-4 md:ml-6">
-        <div class="space-x-4" id="auth-links-desktop">
-          <a th:href="@{/login}" class="bg-green-600 text-white px-4 py-2 rounded hover:shadow-lg" id="login-link-desktop">Login</a>
-          <a th:href="@{/register}" class="bg-blue-600 text-white px-4 py-2 rounded hover:shadow-lg" id="signup-link-desktop">Sign Up</a>
-        </div>
-        <div class="space-x-4 items-center" id="user-info-desktop" style="display: none;">
-          <span id="username-display-desktop" class="text-gray-700 text-sm font-medium"></span>
-          <a href="#" class="bg-red-600 text-white px-4 py-2 rounded hover:shadow-lg" id="logout-btn-desktop">Logout</a>
-        </div>
-      </div>
-      <div class="-mr-2 flex md:hidden">
-        <button type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
-          <span class="sr-only">Open main menu</span>
-          <svg class="block h-6 w-6" id="icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          <svg class="hidden h-6 w-6" id="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="md:hidden hidden" id="mobile-menu">
-    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-      <a th:href="@{/}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Home</a>
-      <a th:href="@{/donate/browse}" class="text-green-600 bg-green-50 hover:bg-green-100 block px-3 py-2 rounded-md text-base font-medium font-semibold">Browse Campaigns</a>
-      <a th:href="@{/campaign/my}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium" id="my-campaigns-link-mobile" style="display:none;">My Campaigns</a>
-      <a th:href="@{/campaign/create}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium" id="create-campaign-link-mobile" style="display:none;">Create Campaign</a>
-      <a th:href="@{/wallet/balance}" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium" id="wallet-link-mobile" style="display:none;">My Wallet</a>
-    </div>
-    <div class="pt-4 pb-3 border-t border-gray-200">
-      <div id="auth-links-mobile" class="px-2 space-y-2">
-        <a th:href="@{/login}" class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-md text-base font-medium hover:bg-green-700">Login</a>
-        <a th:href="@{/register}" class="block w-full bg-blue-600 text-white text-center px-4 py-2 rounded-md text-base font-medium hover:bg-blue-700">Sign Up</a>
-      </div>
-      <div id="user-info-mobile" style="display: none;" class="px-5 py-3">
-        <div class="text-base font-medium text-gray-800 mb-1" id="username-display-mobile"></div>
-        <a href="#" id="logout-btn-mobile" class="mt-1 block w-full text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700">Logout</a>
-      </div>
-    </div>
-  </div>
-</nav>
-
+<div th:replace="wallet/navbar :: navbar"></div>
 <div class="container mx-auto px-4 py-8">
   <header class="mb-12 text-center">
     <h1 class="text-4xl font-bold text-gray-800">Support a Cause</h1>

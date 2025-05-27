@@ -22,7 +22,12 @@
                         <a th:href="@{/register}" class="bg-blue-600 text-white px-4 py-2 rounded hover:shadow-lg" id="signup-link-desktop">Sign Up</a>
                     </div>
                     <div class="space-x-4 items-center" id="user-info-desktop" style="display: none;">
-                        <span id="username-display-desktop" class="text-gray-700 text-sm font-medium"></span>
+                        <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded hover:shadow-lg flex items-center" id="profile-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            My Profile
+                        </a>
                         <a href="#" class="bg-red-600 text-white px-4 py-2 rounded hover:shadow-lg" id="logout-btn-desktop">Logout</a>
                     </div>
                 </div>
@@ -98,7 +103,7 @@
             const createCampaignLinkMobile = document.getElementById('create-campaign-link-mobile');
             const walletLinkMobile = document.getElementById('wallet-link-mobile');
 
-            if (username && jwtToken) {
+            if (jwtToken) {
                 if (authLinksDesktop) authLinksDesktop.style.display = 'none';
                 if (userInfoDesktop) userInfoDesktop.style.display = 'flex';
                 if (usernameDisplayDesktop) usernameDisplayDesktop.textContent = 'Hi, ' + username;
@@ -114,6 +119,21 @@
                 if (createCampaignLinkMobile) createCampaignLinkMobile.style.display = 'block';
                 if (walletLinkMobile) walletLinkMobile.style.display = 'block';
                 if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
+
+                // Get user ID from JWT token and set profile link
+                try {
+                    const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+                    const userId = payload.sub || payload.userId || payload.id;
+                    if (userId) {
+                        document.getElementById('profile-link').href = `/me`;
+                    }
+                } catch (error) {
+                    console.error('Error parsing JWT token:', error);
+                    // Fallback: redirect to a profile endpoint that can determine the current user
+                    document.getElementById('profile-link').href = '/profile/me';
+                }
+
+
             } else {
                 if (authLinksDesktop) authLinksDesktop.style.display = 'flex';
                 if (userInfoDesktop) userInfoDesktop.style.display = 'none';

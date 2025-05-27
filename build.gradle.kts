@@ -12,6 +12,7 @@ version = "0.0.1-SNAPSHOT"
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
+		// Let Gradle use any available Java 21 implementation
 	}
 }
 
@@ -115,11 +116,20 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+    reports {
+        xml.required = true  // Required for SonarQube coverage import
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
 }
 
 sonar {
   properties {
     property("sonar.projectKey", "advprog-a03-gatherlove")
     property("sonar.projectName", "advprog-a03-gatherlove")
+    property("sonar.sourceEncoding", "UTF-8")
+    property("sonar.java.coveragePlugin", "jacoco")
+    property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.asFile.get()}/reports/jacoco/test/jacocoTestReport.xml")
+    property("sonar.junit.reportPaths", "${layout.buildDirectory.asFile.get()}/test-results/test")
   }
 }
