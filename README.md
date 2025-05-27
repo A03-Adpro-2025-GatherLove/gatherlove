@@ -157,3 +157,39 @@ Berdasarkan hasil diskusi, kami mengidentifikasi beberapa risk hotspot pada arsi
 
 ### Campaign Module: Code Diagram (Kanda)
 ![Campaign Module: Code Diagram](static/img/Campaign-Code-Diagram.png)
+
+## Java Version Compatibility
+
+This project is compatible with Java 21. If you're using Java 24, you may encounter the following error:
+```
+Could not create an instance of type org.gradle.api.reporting.internal.DefaultReportContainer.
+Type T not present
+```
+
+### Local Development Solution
+
+To solve this issue locally, you have two options:
+
+1. **Use the provided script**:
+   ```bash
+   # Use this to run any Gradle command
+   ./run-with-java21.sh [gradle command]
+   
+   # Examples:
+   ./run-with-java21.sh build
+   ./run-with-java21.sh test
+   ./run-with-java21.sh bootRun
+   ```
+
+2. **Switch your JAVA_HOME to Java 21**:
+   ```bash
+   export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+   export PATH=$JAVA_HOME/bin:$PATH
+   ./gradlew build
+   ```
+
+This will ensure that your code coverage is properly computed during local builds.
+
+### CI/CD Pipeline
+
+The GitHub Actions workflow has been configured to use Java 21 explicitly for compatibility.

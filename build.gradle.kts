@@ -12,6 +12,7 @@ version = "0.0.1-SNAPSHOT"
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
+		// Let Gradle use any available Java 21 implementation
 	}
 }
 
