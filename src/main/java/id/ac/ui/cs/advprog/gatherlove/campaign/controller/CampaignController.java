@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,7 +53,7 @@ public class CampaignController {
     public String createCampaign(
             @Valid @ModelAttribute("campaignDto") CampaignDto campaignDto,
             BindingResult bindingResult,
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
@@ -60,6 +61,9 @@ public class CampaignController {
             return CREATE_VIEW;
         }
 
+        // Extract UserEntity from UserDetailsImpl
+        UserEntity user = userDetails.getUser();
+        
         campaignService.createCampaign(campaignDto, user);
         redirectAttributes.addFlashAttribute("successMessage", "Kampanye berhasil dibuat!");
 
@@ -67,7 +71,7 @@ public class CampaignController {
     }
 
     @GetMapping("/view/{id}")
-    public String viewCampaignDetails(@PathVariable("id") String id, Model model) {
+    public String viewCampaignDetails(@PathVariable("id") String id, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
             
@@ -84,18 +88,24 @@ public class CampaignController {
                         .divide(campaign.getTargetAmount(), 2, RoundingMode.HALF_UP);
             }
             
-            // TODO: Fetch fundraiser name from the campaign
+            // Get fundraiser name
             String fundraiserName = campaign.getFundraiser() != null ? campaign.getFundraiser().getUsername() : "Unknown";
+            
             model.addAttribute("fundraiserName", fundraiserName);
 
             // Add data to model
             model.addAttribute("campaign", campaign);
             model.addAttribute("formattedDeadline", formattedDeadline);
             model.addAttribute("progress", progress);
+            model.addAttribute("formattedCreatedAt", 
+                campaign.getCreatedAt() != null ? 
+                campaign.getCreatedAt().format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm")) : 
+                "Unknown");
 
             List<Donation> donations = donationService.findDonationsByCampaign(id);
             model.addAttribute("donations", donations);
-            model.addAttribute("currentUser", getCurrentUserId());
+            UUID userId = userDetails.getUser().getId();
+            model.addAttribute("currentUser", userId);
             
             // Check if deadline has passed
             boolean deadlinePassed = campaign.getDeadline().isBefore(LocalDate.now());
@@ -110,24 +120,26 @@ public class CampaignController {
     }
 
     @GetMapping("/my")
-    public String showMyCampaigns(@AuthenticationPrincipal UserEntity user, Model model) {
-        List<Campaign> campaigns = campaignService.getCampaignsByUser(user);
+    public String showMyCampaigns(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        UserEntity userEntity = userDetails.getUser();
+        List<Campaign> campaigns = campaignService.getCampaignsByUser(userEntity);
         
         // Update status of campaigns if needed
         campaigns.forEach(campaign -> campaignService.updateCampaignStatus(campaign.getId()));
         
         // Refresh the list after updating statuses
-        model.addAttribute("campaignList", campaignService.getCampaignsByUser(user));
+        model.addAttribute("campaignList", campaignService.getCampaignsByUser(userEntity));
         return "campaign/my";
     }
     
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") String id, 
-                              @AuthenticationPrincipal UserEntity user,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails,
                               Model model, 
                               RedirectAttributes redirectAttributes) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
+            UserEntity user = userDetails.getUser();
             
             // Check if the current user is the fundraiser
             if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
@@ -160,7 +172,7 @@ public class CampaignController {
     public String updateCampaign(@PathVariable("id") String id,
                                 @Valid @ModelAttribute("campaignDto") CampaignDto dto,
                                 BindingResult result,
-                                @AuthenticationPrincipal UserEntity user,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails,
                                 RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "campaign/edit";
@@ -168,6 +180,7 @@ public class CampaignController {
     
         try {
             Campaign campaign = campaignService.getCampaignById(id);
+            UserEntity user = userDetails.getUser();
             
             // Check if the current user is the fundraiser
             if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
@@ -186,10 +199,11 @@ public class CampaignController {
     
     @PostMapping("/delete/{id}")
     public String deleteCampaign(@PathVariable("id") String id, 
-                                @AuthenticationPrincipal UserEntity user,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails,
                                 RedirectAttributes redirectAttributes) {
         try {
             Campaign campaign = campaignService.getCampaignById(id);
+            UserEntity user = userDetails.getUser();
             
             // Check if the current user is the fundraiser
             if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
@@ -204,5 +218,69 @@ public class CampaignController {
         }
         
         return "redirect:/campaign/my";
+    }
+
+    @GetMapping("/withdraw/{id}")
+    public String showWithdrawalPage(@PathVariable("id") String id,
+                                    @AuthenticationPrincipal UserDetailsImpl user,
+                                    Model model,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            // Check if user is authenticated
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "You must be logged in to withdraw funds");
+                return "redirect:/login?redirect=/campaign/view/" + id;
+            }
+
+            // Get the campaign
+            Campaign campaign = campaignService.getCampaignById(id);
+            
+            // Check if user is the fundraiser
+            if (campaign.getFundraiser() == null || !campaign.getFundraiser().getId().equals(user.getId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "You are not authorized to withdraw funds from this campaign");
+                return "redirect:/campaign/view/" + id;
+            }
+            
+            // Add campaign to model
+            model.addAttribute("campaign", campaign);
+            
+            // Check if deadline has passed
+            boolean deadlinePassed = campaign.getDeadline().isBefore(LocalDate.now());
+            model.addAttribute("deadlinePassed", deadlinePassed);
+            
+            return "campaign/withdraw";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/campaign/view/" + id;
+        }
+    }
+
+    @PostMapping("/withdraw/{id}/confirm")
+    public String processWithdrawal(@PathVariable("id") String id,
+                                  @AuthenticationPrincipal UserDetailsImpl user,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            // Check if user is authenticated
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "You must be logged in to withdraw funds");
+                return "redirect:/login?redirect=/campaign/view/" + id;
+            }
+
+            UserEntity userEntity = user.getUser();
+            boolean success = campaignService.processCampaignWithdrawal(id, userEntity);
+            if (success) {
+                redirectAttributes.addFlashAttribute("successMessage", 
+                    "Funds have been successfully withdrawn to your wallet");
+                return "redirect:/wallet/balance"; // Redirect to the wallet page
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", 
+                    "Withdrawal process failed");
+                return "redirect:/campaign/withdraw/" + id;
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/campaign/withdraw/" + id;
+        }
     }
 }

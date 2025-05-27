@@ -38,12 +38,12 @@ public class DonationServiceImpl implements DonationService {
     @Transactional // Transaksi tetap berlaku untuk operasi dalam method ini
     @Async("asyncTaskExecutor") // Menjalankan method ini di thread pool yang didefinisikan
     public CompletableFuture<Donation> createDonation(UUID donorId, String campaignId, BigDecimal amount, String message) {
-        // Simulasi delay untuk menunjukkan sifat async (opsional, hapus untuk produksi)
-        // try {
-        //     Thread.sleep(5000); // Delay 5 detik
-        // } catch (InterruptedException e) {
-        //     Thread.currentThread().interrupt();
-        // }
+//        // Simulasi delay untuk menunjukkan sifat async (opsional, hapus untuk produksi)
+//         try {
+//             Thread.sleep(10000); // Delay 5 detik
+//         } catch (InterruptedException e) {
+//             Thread.currentThread().interrupt();
+//         }
 
         campaignService.validateCampaignForDonation(UUID.fromString(campaignId));
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {

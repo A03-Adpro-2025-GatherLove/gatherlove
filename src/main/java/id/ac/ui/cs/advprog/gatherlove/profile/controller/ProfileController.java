@@ -27,17 +27,11 @@ public class ProfileController {
             @Valid @RequestBody ProfileRequest request,
             @PathVariable UUID userId) {
 
-        if (request.getPhoneNumber() == null ||
-                request.getPhoneNumber().trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Phone number is required"));
+        ResponseEntity<?> validationResponse = validateProfileRequest(request);
+        if (validationResponse != null) {
+            return validationResponse;
         }
-
-        if (request.getFullName() == null ||
-                request.getFullName().trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Full name is required"));
-        }
+        
         ProfileResponse response = profileService.completeProfile(request, userId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -47,16 +41,9 @@ public class ProfileController {
             @Valid @RequestBody ProfileRequest request,
             @PathVariable UUID userId) {
 
-        if (request.getPhoneNumber() == null ||
-                request.getPhoneNumber().trim().isEmpty()) {
-            return CompletableFuture.completedFuture(ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Phone number is required")));
-        }
-
-        if (request.getFullName() == null ||
-                request.getFullName().trim().isEmpty()) {
-            return CompletableFuture.completedFuture(ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Full name is required")));
+        ResponseEntity<?> validationResponse = validateProfileRequest(request);
+        if (validationResponse != null) {
+            return CompletableFuture.completedFuture(validationResponse);
         }
 
         return profileService.completeProfileAsync(request, userId)
@@ -64,7 +51,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{profileId}")
-    public ResponseEntity<ProfileResponse> viewProfile(@PathVariable UUID profileId) {  // Changed from Long to UUID
+    public ResponseEntity<ProfileResponse> viewProfile(@PathVariable UUID profileId) {
         ProfileResponse response = profileService.viewProfile(profileId);
         return ResponseEntity.ok(response);
     }
@@ -74,16 +61,9 @@ public class ProfileController {
             @PathVariable UUID profileId,
             @Valid @RequestBody ProfileRequest request) {
 
-        if (request.getPhoneNumber() == null ||
-                request.getPhoneNumber().trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Phone number is required"));
-        }
-
-        if (request.getFullName() == null ||
-                request.getFullName().trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Full name is required"));
+        ResponseEntity<?> validationResponse = validateProfileRequest(request);
+        if (validationResponse != null) {
+            return validationResponse;
         }
 
         ProfileResponse response = profileService.updateProfile(profileId, request);
@@ -95,16 +75,9 @@ public class ProfileController {
             @PathVariable UUID profileId,
             @Valid @RequestBody ProfileRequest request) {
 
-        if (request.getPhoneNumber() == null ||
-                request.getPhoneNumber().trim().isEmpty()) {
-            return CompletableFuture.completedFuture(ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Phone number is required")));
-        }
-
-        if (request.getFullName() == null ||
-                request.getFullName().trim().isEmpty()) {
-            return CompletableFuture.completedFuture(ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Full name is required")));
+        ResponseEntity<?> validationResponse = validateProfileRequest(request);
+        if (validationResponse != null) {
+            return CompletableFuture.completedFuture(validationResponse);
         }
 
         return profileService.updateProfileAsync(profileId, request)
@@ -112,7 +85,7 @@ public class ProfileController {
     }
 
     @DeleteMapping("/{profileId}/bio")
-    public ResponseEntity<Void> deleteBio(@PathVariable UUID profileId) {  // Changed from Long to UUID
+    public ResponseEntity<Void> deleteBio(@PathVariable UUID profileId) {
         profileService.deleteBio(profileId);
         return ResponseEntity.noContent().build();
     }
@@ -121,5 +94,19 @@ public class ProfileController {
     public CompletableFuture<ResponseEntity<Void>> deleteBioAsync(@PathVariable UUID profileId) {
         return profileService.deleteBioAsync(profileId)
                 .thenApply(result -> ResponseEntity.noContent().build());
+    }
+    
+    private ResponseEntity<?> validateProfileRequest(ProfileRequest request) {
+        if (request.getPhoneNumber() == null || request.getPhoneNumber().trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Phone number is required"));
+        }
+
+        if (request.getFullName() == null || request.getFullName().trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Full name is required"));
+        }
+        
+        return null;
     }
 }

@@ -3,6 +3,7 @@ plugins {
 	jacoco
 	id("org.springframework.boot") version "3.4.4"
 	id("io.spring.dependency-management") version "1.1.7"
+    id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -72,6 +73,15 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    // Monitoring dependencies
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
+    // JMeter dependencies for testing
+    testImplementation("org.apache.jmeter:ApacheJMeter_core:5.6.3")
+    testImplementation("org.apache.jmeter:ApacheJMeter_java:5.6.3")
+    testImplementation("org.apache.jmeter:ApacheJMeter_http:5.6.3")
 }
 
 tasks.register<Test>("unitTest") {
@@ -105,4 +115,11 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+}
+
+sonar {
+  properties {
+    property("sonar.projectKey", "advprog-a03-gatherlove")
+    property("sonar.projectName", "advprog-a03-gatherlove")
+  }
 }

@@ -52,12 +52,13 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
+<div th:replace="wallet/navbar :: navbar"></div>
 <div class="container mx-auto flex-grow px-4 py-8">
     <div class="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Balance</h2>
 
         <p id="saldo" class="text-4xl font-bold text-green-600 mb-6">
-            Loading…
+            Loading...
         </p>
 
         <div class="flex space-x-4 mb-8">
@@ -69,7 +70,7 @@
 
         <h3 class="font-semibold mb-2">Recent Transactions</h3>
         <ul id="recentTx" class="space-y-2">
-            <li class="text-gray-500">Loading…</li>
+            <li class="text-gray-500">Loading...</li>
         </ul>
         <div class="flex space-x-4 mb-8">
             <button onclick="location.href='/wallet/transactions'"
