@@ -55,9 +55,11 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Change wrapper permissions
         run: chmod +x gradlew
-      - name: Build and analyze
+      - name: Build and test with JaCoCo report
+        run: ./gradlew build test jacocoTestReport
+      - name: Run SonarQube analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed for PR information
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew build sonar --info
+        run: ./gradlew sonar --info

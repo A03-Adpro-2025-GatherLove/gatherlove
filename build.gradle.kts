@@ -115,11 +115,20 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
 }
 
 sonar {
   properties {
     property("sonar.projectKey", "advprog-a03-gatherlove")
     property("sonar.projectName", "advprog-a03-gatherlove")
+    property("sonar.sourceEncoding", "UTF-8")
+    property("sonar.java.coveragePlugin", "jacoco")
+    property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    property("sonar.junit.reportPaths", "${project.buildDir}/test-results/test")
   }
 }
