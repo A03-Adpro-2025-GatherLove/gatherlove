@@ -103,7 +103,7 @@
             const createCampaignLinkMobile = document.getElementById('create-campaign-link-mobile');
             const walletLinkMobile = document.getElementById('wallet-link-mobile');
 
-            if (username && jwtToken) {
+            if (jwtToken) {
                 if (authLinksDesktop) authLinksDesktop.style.display = 'none';
                 if (userInfoDesktop) userInfoDesktop.style.display = 'flex';
                 if (usernameDisplayDesktop) usernameDisplayDesktop.textContent = 'Hi, ' + username;
@@ -119,6 +119,21 @@
                 if (createCampaignLinkMobile) createCampaignLinkMobile.style.display = 'block';
                 if (walletLinkMobile) walletLinkMobile.style.display = 'block';
                 if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
+
+                // Get user ID from JWT token and set profile link
+                try {
+                    const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+                    const userId = payload.sub || payload.userId || payload.id;
+                    if (userId) {
+                        document.getElementById('profile-link').href = `/me`;
+                    }
+                } catch (error) {
+                    console.error('Error parsing JWT token:', error);
+                    // Fallback: redirect to a profile endpoint that can determine the current user
+                    document.getElementById('profile-link').href = '/profile/me';
+                }
+
+
             } else {
                 if (authLinksDesktop) authLinksDesktop.style.display = 'flex';
                 if (userInfoDesktop) userInfoDesktop.style.display = 'none';
