@@ -29,6 +29,8 @@ services:
     networks:
       - gatherlove-network
     restart: unless-stopped
+    extra_hosts:
+      - "a03gatherlove.duckdns.org:host-gateway"
 
   grafana:
     image: grafana/grafana:latest
