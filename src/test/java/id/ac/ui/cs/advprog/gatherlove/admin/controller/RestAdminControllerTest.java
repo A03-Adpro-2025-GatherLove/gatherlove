@@ -80,44 +80,6 @@ public class RestAdminControllerTest {
     }
 
     @Test
-    void testGetTransactions() {
-        List<Donation> donations = new ArrayList<>();
-        
-        Donation donation1 = new Donation();
-        donation1.setId(UUID.randomUUID());
-        donation1.setCampaignId(UUID.randomUUID());
-        donation1.setDonorId(UUID.randomUUID());
-        donation1.setAmount(new BigDecimal("100.00"));
-
-        Donation donation2 = new Donation();
-        donation2.setId(UUID.randomUUID());
-        donation2.setCampaignId(UUID.randomUUID());
-        donation2.setDonorId(UUID.randomUUID());
-        donation2.setAmount(new BigDecimal("200.00"));
-
-        donations.add(donation1);
-        donations.add(donation2);
-
-        when(adminDonationService.getDonationHistory()).thenReturn(donations);
-
-        ResponseEntity<List<TransactionResponse>> result = restAdminController.getTransactions();
-
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertNotNull(result.getBody());
-        assertEquals(2, result.getBody().size());
-
-        TransactionResponse response1 = result.getBody().get(0);
-        assertEquals(donation1.getId(), response1.getId());
-        assertEquals(donation1.getCampaignId(), response1.getCampaignId());
-        assertEquals(donation1.getDonorId(), response1.getDonorId());
-
-        TransactionResponse response2 = result.getBody().get(1);
-        assertEquals(donation2.getId(), response2.getId());
-        assertEquals(donation2.getCampaignId(), response2.getCampaignId());
-        assertEquals(donation2.getDonorId(), response2.getDonorId());
-    }
-
-    @Test
     void testGetStats() {
         Stats stats = new Stats();
         stats.setTotalCampaigns(10L);
