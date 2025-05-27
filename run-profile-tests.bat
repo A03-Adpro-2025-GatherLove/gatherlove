@@ -17,6 +17,18 @@ REM Create directories for results if they don't exist
 if not exist "test-results" mkdir test-results
 if not exist "test-results\profile" mkdir test-results\profile
 
+REM Clean up existing report directory and results file to prevent JMeter errors
+echo Cleaning up existing report directory and results...
+if exist "test-results\profile\report" (
+    rmdir /s /q "test-results\profile\report"
+)
+mkdir "test-results\profile\report"
+
+if exist "test-results\profile\results.jtl" (
+    echo Removing old results file...
+    del /f /q "test-results\profile\results.jtl"
+)
+
 echo Starting JMeter test execution...
 
 REM Check if path is to jar file
