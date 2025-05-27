@@ -14,17 +14,7 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
-
-<!-- Navbar (Seperti yang Anda berikan di awal) -->
-<nav class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="/" class="text-2xl font-bold text-green-600">GatherLove</a>
-        <div class="flex space-x-4">
-            <a href="/" class="text-gray-700 hover:text-green-600">Home</a>
-            <a href="/campaign/my" class="text-gray-700 hover:text-green-600">My Campaigns</a>
-        </div>
-    </div>
-</nav>
+<div th:replace="wallet/navbar :: navbar"></div>
 
 <div class="max-w-6xl mx-auto py-8 px-4">
     <div th:if="${errorMessage}" class="mb-4 p-3 bg-red-100 text-red-800 rounded">
@@ -45,7 +35,7 @@
             </div>
 
             <div class="lg:w-1/2 p-6 lg:overflow-y-auto lg:max-h-[600px] custom-scrollbar">
-                <!-- Status & Deadline Badges (Sama seperti HTML awal Anda) -->
+               
                 <div class="flex flex-wrap justify-between items-center mb-2 gap-2">
                     <div class="flex flex-wrap gap-2">
                         <span th:if="${campaign.status.name() == 'PENDING_VERIFICATION'}" class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending Verification</span>
@@ -109,7 +99,7 @@
                     <p class="text-sm text-orange-800" th:text="${#temporals.format(campaign.createdAt, 'dd MMMM yyyy HH:mm')}"></p>
                 </div>
 
-                <!-- === BAGIAN PESAN DONASI DIMASUKKAN DI SINI === -->
+                
                 <div class="mt-8 pt-6 border-t border-gray-200">
                     <h2 class="text-xl font-semibold mb-4 text-gray-800">Words of Support</h2>
                     <div id="noMessagesPlaceholder"
@@ -128,7 +118,7 @@
                             </p>
 
                             <!-- Tombol Hapus Pesan -->
-                            <!-- currentUser adalah UUID dari controller (Opsi 2) -->
+                            
                             <div th:if="${currentUser != null && donation.donorId != null && currentUser.toString() == donation.donorId.toString()}"
                                  class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 <button th:attr="onclick=|confirmDeleteMessage('${donation.id}')|"
@@ -142,9 +132,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- === SELESAI BAGIAN PESAN DONASI === -->
 
-                <!-- Action Buttons (SAMA SEPERTI HTML AWAL ANDA) -->
                 <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200 mt-8">
                     <a th:if="${campaign.status.name() == 'APPROVED' &&
                             !(campaign.fundraiser != null && #authentication != null && #authentication.principal != 'anonymousUser' &&
@@ -175,7 +163,7 @@
                         Back to Home
                     </a>
 
-                    <!-- Active withdraw button -->
+                  
                     <a th:if="${campaign.fundraiser != null && #authentication != null && #authentication.principal != 'anonymousUser' &&
                             #authentication.name == campaign.fundraiser.username && campaign.status.name() == 'COMPLETED' && !campaign.withdrawn}"
                        th:href="@{/campaign/withdraw/{id}(id=${campaign.id})}"
@@ -183,7 +171,7 @@
                         Withdraw Funds
                     </a>
                     
-                    <!-- Disabled withdraw button when already withdrawn -->
+               
                     <button th:if="${campaign.fundraiser != null && #authentication != null && #authentication.principal != 'anonymousUser' &&
                             #authentication.name == campaign.fundraiser.username && campaign.status.name() == 'COMPLETED' && campaign.withdrawn}"
                             class="bg-gray-400 text-white py-2 px-6 rounded-md text-center cursor-not-allowed"
@@ -196,7 +184,6 @@
         </div>
     </div>
 
-    <!-- Placeholder jika Campaign Tidak Ditemukan -->
     <div th:unless="${campaign != null}" class="text-center py-20">
         <h1 class="text-2xl font-semibold text-gray-700">Campaign Not Found</h1>
         <p class="text-gray-500 mt-2">The campaign you are looking for does not exist or could not be loaded.</p>
@@ -206,7 +193,7 @@
     </div>
 </div>
 
-<!-- Footer (Sederhana) -->
+
 <footer class="bg-white py-6 mt-12 border-t">
     <div class="max-w-7xl mx-auto text-center px-4">
         <p class="text-gray-500 text-sm">© <span id="currentYear"></span> GatherLove. All rights reserved.</p>
