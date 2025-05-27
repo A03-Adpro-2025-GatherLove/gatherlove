@@ -7,7 +7,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileResponse {
@@ -15,4 +14,41 @@ public class ProfileResponse {
     private String fullName;
     private String phoneNumber;
     private String bio;
+    
+    // Static method to create a new Builder
+    public static Builder builder() {
+        return new Builder();
+    }
+    
+    // Builder static inner class
+    public static class Builder {
+        private UUID id;
+        private String fullName;
+        private String phoneNumber;
+        private String bio;
+        
+        public Builder id(UUID id) {
+            this.id = id;
+            return this;
+        }
+        
+        public Builder fullName(String fullName) {
+            this.fullName = fullName;
+            return this;
+        }
+        
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+        
+        public Builder bio(String bio) {
+            this.bio = bio;
+            return this;
+        }
+        
+        public ProfileResponse build() {
+            return new ProfileResponse(id, fullName, phoneNumber, bio);
+        }
+    }
 }
