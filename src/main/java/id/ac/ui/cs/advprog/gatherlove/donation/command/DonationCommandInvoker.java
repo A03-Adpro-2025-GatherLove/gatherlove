@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component; // Atau @Service
 import java.util.concurrent.CompletableFuture;
 
-@Component // Menjadikannya Spring bean agar bisa di-inject
+@Component
 public class DonationCommandInvoker implements CommandInvoker {
 
     private static final Logger logger = LoggerFactory.getLogger(DonationCommandInvoker.class);
@@ -13,8 +13,6 @@ public class DonationCommandInvoker implements CommandInvoker {
     @Override
     public <T> CompletableFuture<T> executeCommand(Command<T> command) {
         logger.info("Executing command: {}", command.getClass().getSimpleName());
-        // Di sini kita bisa menambahkan logic tambahan sebelum/sesudah eksekusi
-        // Misalnya, logging, metrics, dll.
         CompletableFuture<T> result = command.execute();
         result.whenComplete((res, ex) -> {
             if (ex != null) {

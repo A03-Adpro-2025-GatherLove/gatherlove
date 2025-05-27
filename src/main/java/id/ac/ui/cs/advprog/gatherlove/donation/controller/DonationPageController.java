@@ -26,8 +26,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static java.lang.System.out;
-
 @Controller
 @RequestMapping("/donate")
 public class DonationPageController {
@@ -54,8 +52,6 @@ public class DonationPageController {
     public String showCreateDonationForm(@PathVariable("campaignId") String campaignId, Model model,
                                          @AuthenticationPrincipal UserDetailsImpl currentUserDetails) { // Tambahkan @AuthenticationPrincipal
         if (currentUserDetails == null) {
-            // Jika user tidak login, bisa redirect ke login atau tampilkan pesan
-            // model.addAttribute("errorMessage", "You need to be logged in to donate.");
             return "redirect:/login?redirect=/donate/create/" + campaignId; // Contoh redirect ke login
         }
 
