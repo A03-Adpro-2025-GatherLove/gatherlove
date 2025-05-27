@@ -1,15 +1,17 @@
 package id.ac.ui.cs.advprog.gatherlove.campaign.service;
 
+import id.ac.ui.cs.advprog.gatherlove.authentication.model.UserEntity;
 import id.ac.ui.cs.advprog.gatherlove.campaign.dto.CampaignDto;
 import id.ac.ui.cs.advprog.gatherlove.campaign.model.Campaign;
 import id.ac.ui.cs.advprog.gatherlove.campaign.repository.CampaignRepository;
-import id.ac.ui.cs.advprog.gatherlove.user.model.User;
+import id.ac.ui.cs.advprog.gatherlove.wallet.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -18,11 +20,13 @@ public class CampaignServiceTest {
 
     private CampaignService campaignService;
     private CampaignRepository campaignRepository;
+    private WalletService walletService;
 
     @BeforeEach
     void setUp() {
         campaignRepository = mock(CampaignRepository.class);
-        campaignService = new CampaignServiceImpl(campaignRepository);
+        walletService = mock(WalletService.class);
+        campaignService = new CampaignServiceImpl(campaignRepository, walletService);
     }
 
     @Test
@@ -35,7 +39,8 @@ public class CampaignServiceTest {
         dto.setDeadline(LocalDate.now().plusDays(10));
         dto.setImageUrl("https://example.com/image.jpg");
 
-        User fundraiser = new User();
+        UserEntity fundraiser = new UserEntity();
+        fundraiser.setId(UUID.randomUUID());
         fundraiser.setUsername("fundraiser123");
 
         // Act
