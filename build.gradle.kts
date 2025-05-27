@@ -116,7 +116,7 @@ tasks.test {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
-        xml.required = true
+        xml.required = true  // Required for SonarQube coverage import
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
     }
@@ -128,7 +128,7 @@ sonar {
     property("sonar.projectName", "advprog-a03-gatherlove")
     property("sonar.sourceEncoding", "UTF-8")
     property("sonar.java.coveragePlugin", "jacoco")
-    property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
-    property("sonar.junit.reportPaths", "${project.buildDir}/test-results/test")
+    property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.asFile.get()}/reports/jacoco/test/jacocoTestReport.xml")
+    property("sonar.junit.reportPaths", "${layout.buildDirectory.asFile.get()}/test-results/test")
   }
 }
